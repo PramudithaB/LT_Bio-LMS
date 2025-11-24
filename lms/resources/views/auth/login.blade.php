@@ -14,8 +14,8 @@
                     colors: {
                         // Using a richer, vibrant purple that is the core of the UI
                         'primary-purple': '#ff0000', 
-                        'dark-purple': '#0000', // Darker shade for hover/background
-                        'form-border': '#0000', 
+                        'dark-purple': '#ff0000', // Darker shade for hover/background
+                        'form-border': '#ff0000', 
                     },
                 }
             }
@@ -33,8 +33,8 @@
         .form-input-styled {
             height: 52px; 
             transition: all 0.2s;
-            border-color: #e5e7eb;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); 
+            border-color: #ff0000;
+            box-shadow: 0 1px 2px 0 rgba(255, 0, 0, 0.05); 
             /* Ensure it is rounded like the image */
             border-radius: 0.5rem; 
             padding-left: 1rem;
@@ -88,7 +88,7 @@
         <div class="w-full max-w-md bg-white py-12 px-8 sm:px-10 rounded-xl shadow-lg border border-gray-100">
             
             <div class="text-left mb-10">
-                <h2 class="text-5xl font-extrabold text-gray-900 tracking-tight">sign in</h2>
+                <h2 class="text-5xl font-extrabold text-gray-900 tracking-tight">Sign in</h2>
                 <p class="text-gray-600 text-lg mt-1">Please login to continue to your account</p>
             </div>
             
