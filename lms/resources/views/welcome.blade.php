@@ -561,7 +561,7 @@
         <div class="container">
             <!-- Left Content -->
             <div class="hero-content">
-                <p class="hero-subtitle">ADVANCE LEVEL Biology</p>
+                <p class="hero-subtitle">ADVANDCE LEVEL Biology</p>
                 <h1 class="hero-title">Lakshitha</h1>
                 <h2 class="hero-name">Thennakoon</h2>
                 <p class="hero-description">B.Sc. (Engineering) Hons, University of Colombo</p>

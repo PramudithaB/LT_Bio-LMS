@@ -22,4 +22,6 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 Route::get('/admindashboard', [adminController::class, 'admindashboard'])->middleware(['auth','admin']);
+Route::get('/classview', [adminController::class, 'classview'])->name('classview');
+
 
