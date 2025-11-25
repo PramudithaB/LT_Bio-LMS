@@ -3,7 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\adminController;
-
+use App\Http\Controllers\ClassController;
 
 
 Route::get('/', function () {
@@ -24,5 +24,7 @@ require __DIR__.'/auth.php';
 Route::get('/admindashboard', [adminController::class, 'admindashboard'])->middleware(['auth','admin']);
 Route::get('/classview', [adminController::class, 'classview'])->name('classview');
 Route::get('/classvideo', [adminController::class, 'classvideo'])->name('classvideo');
+Route::get('/classmanage', [ClassController::class, 'classmanage'])->name('classmanage');
+
 
 
