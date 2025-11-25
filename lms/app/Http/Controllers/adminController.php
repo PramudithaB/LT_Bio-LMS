@@ -12,4 +12,7 @@ class adminController extends Controller
     public function classview(){
         return view('classview');
     }
+    public function classvideo(){
+        return view('classvideo');
+    }
 }

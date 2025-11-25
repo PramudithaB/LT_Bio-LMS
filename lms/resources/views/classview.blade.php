@@ -100,7 +100,7 @@
             <div class="bg-white p-5 rounded-xl shadow-lg border-t-4 border-primary-purple transition duration-300 hover:shadow-xl">
                 <h4 class="text-xl font-bold text-primary-purple mb-1">Week 1: Glycolysis</h4>
                 <p class="text-gray-600 text-sm mb-4">Initial stage of glucose breakdown. Focus on key enzymes and energy yield.</p>
-                <a href="https://www.youtube.com/watch?v=qH3UdyY4DD4" target="_blank" class="w-full flex items-center justify-center py-2 bg-primary-purple text-white font-semibold text-sm rounded-lg hover:bg-dark-purple transition duration-150">
+                <a href="{{route('classvideo')}}" target="_blank" class="w-full flex items-center justify-center py-2 bg-primary-purple text-white font-semibold text-sm rounded-lg hover:bg-dark-purple transition duration-150">
                     <i data-lucide="youtube" class="w-5 h-5 mr-2"></i> Go to Video
                 </a>
             </div>
