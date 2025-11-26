@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
     <title>LTBio - Lakshitha Thennakoon</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
@@ -621,8 +622,55 @@
     <section id="institutes">
         <p class="section-subtitle">WHERE WE TEACH</p>
         <h2 class="section-title">Student's Feedback</h2>
-          <section id="institutes">
-    <!-- Full-width Image Grid -->
+          {{-- <section id="institutes"> --}}
+
+    <form action="{{route('feedbackstore')}}" method="POST">
+    @csrf
+    <div style="max-width: 900px; margin: 20px auto; padding: 20px; background: #f8f8f8; border-radius: 10px;">
+
+    <h3 style="margin-bottom: 15px;">Submit Your Feedback</h3>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+
+        <input id="name" type="text" name="name" placeholder="Your Name"
+            style="width: 100%; padding: 10px; border-radius: 8px;">
+
+        <input id="email" type="email" name="email" placeholder="Email"
+            style="width: 100%; padding: 10px; border-radius: 8px;">
+
+        <input id="phone_number" type="text" name="phone_number" placeholder="Phone Number"
+            style="width: 100%; padding: 10px; border-radius: 8px;">
+
+        <div style="grid-column: span 2;">
+            <textarea id="message" name="message" placeholder="Write your message..."
+                style="width: 100%; height: 120px; padding: 10px; border-radius: 8px;"></textarea>
+        </div>
+
+        <div style="grid-column: span 2; text-align: left;">
+            <button onclick="submitFeedback()"
+                style="padding: 10px 20px; background: #f00505; border: none; color: white; border-radius: 8px; cursor: pointer;">
+                Submit
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+    </form>
+
+   {{-- <h3>Feedback List</h3> --}}
+
+{{-- @foreach(\App\Models\Feedback::latest()->get() as $fb)
+    <div style="border:1px solid #ddd; padding:10px; margin:5px;">
+        <strong>{{ $fb->name }}</strong>  {{-- | {{ $fb->email }} | {{ $fb->phone_number }} 
+        <p>{{ $fb->message }}</p>
+       
+    </div>
+@endforeach --}}
+
+
+    {{-- <!-- Full-width Image Grid -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 100px; width: 100%;">
         <img src="{{ asset('images/feed1.jpeg') }}" style="width: 330px; height: 350px; object-fit: cover;">
         <img src="{{ asset('images/feed2.jpeg') }}" style="width: 330px; height: 350px; object-fit: cover;">
@@ -632,7 +680,7 @@
         <img src="{{ asset('images/feed3.jpeg') }}" style="width: 330px; height: 350px; object-fit: cover;">
 
         <!-- Add more images as needed -->
-    </div>
+    </div> --}}
 </section>
         </div>
     </section>
@@ -750,5 +798,44 @@
             lastScroll = currentScroll;
         });
     </script>
+
+    <script>
+    function submitFeedback() {
+        let name = document.getElementById("name").value;
+        let email = document.getElementById("email").value;
+        let phone_number = document.getElementById("phone_number").value;
+        let message = document.getElementById("message").value;
+
+        if (!name || !email || !phone_number || !message) {
+            alert("Please fill all fields!");
+            return;
+        }
+
+        // Create feedback card
+        let feedbackDiv = document.getElementById("feedbackList");
+        let newFeedback = document.createElement("div");
+
+        newFeedback.style.background = "#ffffff";
+        newFeedback.style.padding = "12px";
+        newFeedback.style.borderRadius = "8px";
+        newFeedback.style.marginBottom = "10px";
+        newFeedback.style.border = "1px solid #ddd";
+
+        newFeedback.innerHTML = `
+            <strong>${name}</strong> <br>
+            <small>${email} </small>
+            <small> ${phone_number}</small>
+            <p>${message}</p>
+        `;
+
+        feedbackDiv.appendChild(newFeedback);
+
+        // Clear form
+        document.getElementById("name").value = "";
+        document.getElementById("email").value = "";
+        document.getElementById("phone_number").value = "";
+        document.getElementById("message").value = "";
+    }
+</script>
 </body>
 </html>
