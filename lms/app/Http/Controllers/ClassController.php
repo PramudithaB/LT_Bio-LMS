@@ -27,4 +27,11 @@ class ClassController extends Controller
         return 'success';
 }
 
+
+public function dashboard()
+{
+    $classes = ClassModel::all();
+    return view('dashboard', compact('classes'));
+}
+
 }
