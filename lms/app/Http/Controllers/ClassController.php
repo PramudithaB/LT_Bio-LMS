@@ -3,10 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\ClassModel;  // ✔️ import new model name
 
 class ClassController extends Controller
 {
     public function classmanage(){
-        return view('classmanage');
+        return view('admin.classmanage');
     }
+    
+    public function classstore(Request $request)
+{
+     $data = $request->validate([
+            'className' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'teacherName' => 'nullable|string|max:255',
+            'classTime' => 'nullable|string|max:255',
+            'sessionCount' => 'nullable|integer',
+            'month' => 'nullable|string|max:255',
+        ]);
+
+        ClassModel::create($data);
+
+        return 'success';
+}
+
 }

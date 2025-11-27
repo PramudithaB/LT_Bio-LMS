@@ -25,6 +25,8 @@ Route::get('/admindashboard', [adminController::class, 'admindashboard'])->middl
 Route::get('/classview', [adminController::class, 'classview'])->name('classview');
 Route::get('/classvideo', [adminController::class, 'classvideo'])->name('classvideo');
 Route::get('/classmanage', [ClassController::class, 'classmanage'])->name('classmanage');
+Route::post('/classstore', [ClassController::class, 'classstore'])->name('classstore');
+
 
 Route::post('/feedbackstore', [StudentFeedbackController::class, 'feedbackstore'])->name('feedbackstore');
 // Route::delete('/feedback/delete/{id}', [StudentFeedbackController::class, 'destroy'])->name('feedback.delete');
