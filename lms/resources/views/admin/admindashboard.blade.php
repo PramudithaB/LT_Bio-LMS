@@ -202,7 +202,7 @@
         <a href="#users">
             <i class="fas fa-users"></i> User Management
         </a>
-        <a href="#content">
+        <a href="{{route('classmanage')}}">
             <i class="fas fa-book-open"></i> Courses & Lectures
         </a>
         <a href="#settings">
@@ -216,6 +216,7 @@
     </nav>
 
     <!-- Main Content Area -->
+    
     <div id="main-content">
         
         <!-- Top Bar / Header -->
@@ -265,48 +266,34 @@
 
         <!-- Section: Recent Content Activity -->
         <section id="content-activity" style="padding-top: 40px;">
-            <h2 style="font-size: 1.8rem; margin-bottom: 20px;">Recent Content Activity</h2>
+            <h2 style="font-size: 1.8rem; margin-bottom: 20px;">All Classes </h2>
             <div class="card" style="overflow-x: auto;">
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Lecture Title</th>
-                            <th>Course</th>
-                            <th>Last Updated</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th>Class Name</th>
+                            <th>Description</th>
+                            <th>Teacher</th>
+                            <th>Class Time</th>
+                            <th>All sessions</th>
+                                                        <th>Months</th>
+
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>Intro to API Design</td>
-                            <td>Backend Fundamentals</td>
-                            <td>2025-11-20</td>
-                            <td style="color: #10b981;">Published</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        <tr>
-                            <td>CSS Grid Layouts</td>
-                            <td>Frontend Mastery</td>
-                            <td>2025-11-18</td>
-                            <td style="color: #f59e0b;">Draft</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        <tr>
-                            <td>Database Migrations</td>
-                            <td>DevOps Essentials</td>
-                            <td>2025-11-15</td>
-                            <td style="color: #10b981;">Published</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        <tr>
-                            <td>React Hooks Deep Dive</td>
-                            <td>Frontend Mastery</td>
-                            <td>2025-11-10</td>
-                            <td style="color: #ef4444;">Archived</td>
-                            <td><button>Restore</button></td>
-                        </tr>
-                    </tbody>
+                   <tbody>
+            @foreach ($classes as $c)
+                <tr>
+               
+                    <td>{{ $c->className }}</td>
+                    <td>{{ $c->description }}</td>
+                    <td>{{ $c->teacherName }}</td>
+                    <td>{{ $c->classTime }}</td>
+                    <td>{{ $c->sessionCount }}</td>
+                    <td>{{ $c->month }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+                   
                 </table>
             </div>
         </section>
@@ -375,5 +362,41 @@
             sidebarLinks[0].classList.add('active');
         });
     </script>
+  
+<div class="container">
+
+    <h2>Class List</h2>
+
+    <table border="1" cellspacing="0" cellpadding="8">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Class Name</th>
+                <th>Description</th>
+                <th>Teacher</th>
+                <th>Class Time</th>
+                <th>Sessions</th>
+                <th>Month</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach ($classes as $c)
+                <tr>
+                    <td>{{ $c->id }}</td>
+                    <td>{{ $c->className }}</td>
+                    <td>{{ $c->description }}</td>
+                    <td>{{ $c->teacherName }}</td>
+                    <td>{{ $c->classTime }}</td>
+                    <td>{{ $c->sessionCount }}</td>
+                    <td>{{ $c->month }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+</div>
+
+
 </body>
 </html>
