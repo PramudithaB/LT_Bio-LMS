@@ -205,6 +205,9 @@
         <a href="{{route('classmanage')}}">
             <i class="fas fa-book-open"></i> Courses & Lectures
         </a>
+        <a href="{{ route('feedbackmanage') }}">
+            <i class="fas fa-book-open"></i> Feedback
+        </a>
         <a href="#settings">
             <i class="fas fa-cog"></i> Settings
         </a>
