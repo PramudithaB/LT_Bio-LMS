@@ -22,27 +22,7 @@ return new class extends Migration
         $table->integer('sessionCount')->nullable();
         $table->string('month')->nullable();
 
-        // ------------------------------------------
-        // Week 1 – Week 5 fields
-        // ------------------------------------------
-        for ($i = 1; $i <= 4; $i++) {
-            $table->string("week{$i}Name")->nullable();
-            $table->text("week{$i}Desc")->nullable();
-            $table->text("week{$i}LongDesc")->nullable();
-            $table->string("week{$i}Link")->nullable();
-            $table->text("specialNoticeW{$i}")->nullable();
-            $table->json("week{$i}Files")->nullable(); // store PDFs/images as JSON array
-        }
-
-        // ------------------------------------------
-        // Special Class fields
-        // ------------------------------------------
-        $table->string('specialClassName')->nullable();
-        $table->text('specialClassDesc')->nullable();
-        $table->text('specialClassLongDesc')->nullable();
-        $table->string('specialClassLink')->nullable();
-        $table->text('specialNoticeSC')->nullable();
-        $table->json('specialClassFiles')->nullable();
+       
 
         $table->timestamps();
     });
