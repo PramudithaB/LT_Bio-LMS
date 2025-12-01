@@ -11,20 +11,44 @@ class ClassController extends Controller
         return view('admin.classmanage');
     }
     
-    public function classstore(Request $request)
+public function classstore(Request $request)
 {
-     $data = $request->validate([
-            'className' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'teacherName' => 'nullable|string|max:255',
-            'classTime' => 'nullable|string|max:255',
-            'sessionCount' => 'nullable|integer',
-            'month' => 'nullable|string|max:255',
-        ]);
+    // -----------------------------
+    // VALIDATION
+    // -----------------------------
+    $data = $request->validate([
+        'className' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'teacherName' => 'nullable|string|max:255',
+        'classTime' => 'nullable|string|max:255',
+        'sessionCount' => 'nullable|integer',
+        'month' => 'nullable|string|max:255',
 
-        ClassModel::create($data);
+      
 
-        return 'success';
+        
+
+       
+    ]);
+
+  
+
+   
+
+    // -----------------------------
+    // INSERT INTO DATABASE
+    // -----------------------------
+    ClassModel::create($data);
+
+    return response()->json(['status' => 'success']);
+}
+
+
+
+public function dashboard()
+{
+    $classes = ClassModel::all();
+    return view('dashboard', compact('classes'));
 }
 
 }

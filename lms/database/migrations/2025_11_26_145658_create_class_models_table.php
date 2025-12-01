@@ -9,19 +9,25 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('class_models', function (Blueprint $table) {
-            $table->id();
-              $table->string('className');
+   public function up(): void
+{
+    Schema::create('class_models', function (Blueprint $table) {
+        $table->id();
+
+        // Basic class details
+        $table->string('className');
         $table->text('description')->nullable();
         $table->string('teacherName')->nullable();
         $table->string('classTime')->nullable();
         $table->integer('sessionCount')->nullable();
         $table->string('month')->nullable();
-            $table->timestamps();
-        });
-    }
+
+       
+
+        $table->timestamps();
+    });
+}
+
 
     /**
      * Reverse the migrations.

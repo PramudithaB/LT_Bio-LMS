@@ -10,9 +10,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -21,11 +19,12 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
-Route::get('/admindashboard', [adminController::class, 'admindashboard'])->middleware(['auth', 'admin']);
+Route::get('/admindashboard', [adminController::class, 'admindashboard'])->name('admindashboard')->middleware(['auth', 'admin']);
 Route::get('/classview', [adminController::class, 'classview'])->name('classview');
 Route::get('/classvideo', [adminController::class, 'classvideo'])->name('classvideo');
 Route::get('/classmanage', [ClassController::class, 'classmanage'])->name('classmanage');
 Route::post('/classstore', [ClassController::class, 'classstore'])->name('classstore');
+Route::get('/dashboard', [ClassController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('classstore');
 
 
 Route::post('/feedbackstore', [StudentFeedbackController::class, 'feedbackstore'])->name('feedbackstore');

@@ -193,7 +193,7 @@
         </div>
         <!-- Data-target attribute links to the section ID -->
         <!-- DASHBOARD LINK: Removed active class -->
-        <a href="#overview" data-target="overview">
+        <a href="{{route('admindashboard')}}" data-target="overview">
             <i class="fas fa-tachometer-alt"></i> Dashboard
         </a>
         <a href="#users" data-target="users">
@@ -274,30 +274,7 @@
                             <th style="padding: 12px 15px; text-align: left; background-color: #374151; color: #e5e7eb; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; border-bottom: 1px solid #374151;">Status</th>
                             <th style="padding: 12px 15px; text-align: left; background-color: #374151; color: #e5e7eb; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; border-bottom: 1px solid #374151;">Actions</th>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <tr style="border-bottom: 1px solid #374151;">
-                            <td style="padding: 12px 15px;">Intro to API Design</td>
-                            <td style="padding: 12px 15px;">Backend Fundamentals</td>
-                            <td style="padding: 12px 15px;">2025-11-20</td>
-                            <td style="padding: 12px 15px; color: #10b981;">Published</td>
-                            <td style="padding: 12px 15px;"><button style="background: none; border: 1px solid #4f46e5; color: #60a5fa; padding: 5px 10px; border-radius: 4px; cursor: pointer; transition: background-color 0.2s, color 0.2s;">Edit</button></td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #374151;">
-                            <td style="padding: 12px 15px;">CSS Grid Layouts</td>
-                            <td style="padding: 12px 15px;">Frontend Mastery</td>
-                            <td style="padding: 12px 15px;">2025-11-18</td>
-                            <td style="padding: 12px 15px; color: #f59e0b;">Draft</td>
-                            <td style="padding: 12px 15px;"><button style="background: none; border: 1px solid #4f46e5; color: #60a5fa; padding: 5px 10px; border-radius: 4px; cursor: pointer; transition: background-color 0.2s, color 0.2s;">Edit</button></td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #374151;">
-                            <td style="padding: 12px 15px;">Database Migrations</td>
-                            <td style="padding: 12px 15px;">DevOps Essentials</td>
-                            <td style="padding: 12px 15px;">2025-11-15</td>
-                            <td style="padding: 12px 15px; color: #10b981;">Published</td>
-                            <td style="padding: 12px 15px;"><button style="background: none; border: 1px solid #4f46e5; color: #60a5fa; padding: 5px 10px; border-radius: 4px; cursor: pointer; transition: background-color 0.2s, color 0.2s;">Edit</button></td>
-                        </tr>
-                    </tbody>
+                
                 </table>
             </div>
         </section>
@@ -306,7 +283,7 @@
         <!-- 2. CLASS ADD PAGE (Active by Default) -->
         <!-- ==================================================================== -->
         <!-- Added 'active' class -->
-        <form action={{route('classstore')}} method="POST">
+        <form action={{route('classstore')}} method="POST" enctype="multipart/form-data">
             @csrf
         <section id="class-add" class="page-section active">
             <h2 style="font-size: 1.8rem; margin-bottom: 20px;">Add New Class</h2>
@@ -360,6 +337,47 @@
                             </select>
                         </div>
                     </div>
+
+                    {{-- Week 1
+
+                     <!-- week 1 class  -->
+
+                    <div style="display: flex; gap: 20px;">
+    <div class="form-group" style="flex: 1;">
+        <label for="week1Name">Week 1 Name:</label>
+        <input type="text" id="week1Name" name="week1Name" placeholder="e.g., Introduction to HTML" required>
+    </div>
+
+    <div class="form-group" style="flex: 1;">
+        <label for="week1Desc">Week 1 Description:</label>
+        <input type="text" id="week1Desc" name="week1Desc" placeholder="e.g., Basics and structure" required>
+    </div>
+</div>
+
+<div style="display: flex; gap: 20px; margin-top: 15px;">
+    <div class="form-group" style="flex: 1;">
+        <label for="week1Link">Week 1 Link:</label>
+        <input type="url" id="week1Link" name="week1Link" placeholder="e.g., https://example.com/class" required>
+    </div>
+
+    <div class="form-group" style="flex: 1;">
+        <label for="week1Files">Week 1 PDFs / Images:</label>
+        <input type="file" id="week1Files" name="week1Files[]" multiple accept="image/*, application/pdf" required>
+    </div>
+</div>
+
+<div style="display: flex; gap: 20px; margin-top: 15px;">
+    <div class="form-group" style="flex: 1;">
+        <label for="week1LongDesc">Week 1 Long Description:</label>
+        <textarea id="week1LongDesc" name="week1LongDesc" placeholder="Write detailed description here..." required></textarea>
+    </div>
+
+    <div class="form-group" style="flex: 1;">
+        <label for="specialNotice">Special Notice in Week 1:</label>
+        <textarea id="specialNotice" name="specialNoticeW1" placeholder="Any important notes..." required></textarea>
+    </div>
+</div>
+                 --}}
 
                     <button type="submit" class="btn-submit">
                         <i class="fas fa-plus-circle" style="margin-right: 8px;"></i>Create Class

@@ -7,15 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class ClassModel extends Model
 {
-    use HasFactory;
+   protected $table = 'class_models'; // optional if table name follows convention
 
-    protected $table = 'class_models';   // explicit table name (optional)
     protected $fillable = [
-        'className',
-        'description',
-        'teacherName',
-        'classTime',
-        'sessionCount',
-        'month',
-    ];
+    'className', 'description', 'teacherName', 'classTime', 'sessionCount', 'month',
+];
 }
