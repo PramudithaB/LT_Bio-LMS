@@ -17,8 +17,11 @@ class adminController extends Controller
         return view('classvideo');
     }
 
-  public function classview(){
-       $classes = ClassModel::all();   // or ->orderBy('id','desc')->get()
-    return view('classview', compact('classes'));
-    }
+public function classview($id)
+{
+    $class = ClassModel::with('lessons')->findOrFail($id);
+
+    return view('classview', compact('class'));
+}
+
 }
