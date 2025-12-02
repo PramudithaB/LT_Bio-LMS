@@ -163,7 +163,7 @@
 
             <p class="text-right text-xs font-medium text-gray-500 mb-4">{{ $class->month }}</p>
 
-            <a href="{{ route('classview') }}"
+            <a href="{{ route('classview', $class->id) }}"
                class="w-full flex items-center justify-center py-3 bg-primary-purple text-white font-semibold rounded-lg hover:bg-dark-purple transition duration-150">
                 <i data-lucide="arrow-right-circle" class="w-5 h-5 mr-2"></i>
                 Go to Class

@@ -94,38 +94,35 @@
         <!-- WEEKLY MODULES (4 SMALL CARDS) -->
         <h2 class="text-3xl font-bold text-gray-800 mb-5 flex items-center"><i data-lucide="calendar-days" class="w-7 h-7 mr-2 text-primary-purple"></i> Weekly Lesson Breakdown</h2>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            
-            <!-- Week 1 Card -->
-            <div class="bg-white p-5 rounded-xl shadow-lg border-t-4 border-primary-purple transition duration-300 hover:shadow-xl">
-                <h4 class="text-xl font-bold text-primary-purple mb-1">Week 1: Glycolysis</h4>
-                <p class="text-gray-600 text-sm mb-4">Initial stage of glucose breakdown. Focus on key enzymes and energy yield.</p>
-                <a href="{{route('classvideo')}}" target="_blank" class="w-full flex items-center justify-center py-2 bg-primary-purple text-white font-semibold text-sm rounded-lg hover:bg-dark-purple transition duration-150">
-                    <i data-lucide="youtube" class="w-5 h-5 mr-2"></i> Go to Video
-                </a>
-            </div>
-   <div class="bg-white p-5 rounded-xl shadow-lg border-t-4 border-primary-purple transition duration-300 hover:shadow-xl">
-                <h4 class="text-xl font-bold text-primary-purple mb-1">Week 2: Glycolysis</h4>
-                <p class="text-gray-600 text-sm mb-4">Initial stage of glucose breakdown. Focus on key enzymes and energy yield.</p>
-                <a href="https://www.youtube.com/watch?v=qH3UdyY4DD4" target="_blank" class="w-full flex items-center justify-center py-2 bg-primary-purple text-white font-semibold text-sm rounded-lg hover:bg-dark-purple transition duration-150">
-                    <i data-lucide="youtube" class="w-5 h-5 mr-2"></i> Go to Video
-                </a>
-            </div>   <div class="bg-white p-5 rounded-xl shadow-lg border-t-4 border-primary-purple transition duration-300 hover:shadow-xl">
-                <h4 class="text-xl font-bold text-primary-purple mb-1">Week 3: Glycolysis</h4>
-                <p class="text-gray-600 text-sm mb-4">Initial stage of glucose breakdown. Focus on key enzymes and energy yield.</p>
-                <a href="https://www.youtube.com/watch?v=qH3UdyY4DD4" target="_blank" class="w-full flex items-center justify-center py-2 bg-primary-purple text-white font-semibold text-sm rounded-lg hover:bg-dark-purple transition duration-150">
-                    <i data-lucide="youtube" class="w-5 h-5 mr-2"></i> Go to Video
-                </a>
-            </div>   <div class="bg-white p-5 rounded-xl shadow-lg border-t-4 border-primary-purple transition duration-300 hover:shadow-xl">
-                <h4 class="text-xl font-bold text-primary-purple mb-1">Week 4: Glycolysis</h4>
-                <p class="text-gray-600 text-sm mb-4">Initial stage of glucose breakdown. Focus on key enzymes and energy yield.</p>
-                <a href="https://www.youtube.com/watch?v=qH3UdyY4DD4" target="_blank" class="w-full flex items-center justify-center py-2 bg-primary-purple text-white font-semibold text-sm rounded-lg hover:bg-dark-purple transition duration-150">
-                    <i data-lucide="youtube" class="w-5 h-5 mr-2"></i> Go to Video
-                </a>
-            </div>
-           
-            
+  <h2 class="text-3xl font-bold mb-5">{{ $class->className }} – Lessons</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+
+    @forelse($class->lessons as $lesson)
+
+        <div class="bg-white p-5 rounded-xl shadow-lg border-t-4 border-primary-purple transition duration-300 hover:shadow-xl">
+            <h4 class="text-xl font-bold text-primary-purple mb-1">
+                {{ $lesson->name }}
+            </h4>
+
+            <p class="text-gray-600 text-sm mb-4">
+                {{ $lesson->description ?? 'No description.' }}
+            </p>
+
+            <a href="{{ route('classvideo') }}" 
+               target="_blank"
+               class="w-full flex items-center justify-center py-2 bg-primary-purple text-white font-semibold text-sm rounded-lg hover:bg-dark-purple transition duration-150">
+                <i data-lucide="youtube" class="w-5 h-5 mr-2"></i> Go to Video
+            </a>
         </div>
+
+    @empty
+        <p class="text-gray-500">No lessons found for this class.</p>
+    @endforelse
+
+</div>
+
+
 
         <!-- STUDY MATERIALS (PDFs, Papers, Tutes) -->
         <h2 class="text-3xl font-bold text-gray-800 mb-5 flex items-center"><i data-lucide="folder-open" class="w-7 h-7 mr-2 text-primary-purple"></i> Essential Study Materials</h2>

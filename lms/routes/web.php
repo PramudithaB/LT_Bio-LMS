@@ -20,7 +20,7 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__ . '/auth.php';
 Route::get('/admindashboard', [adminController::class, 'admindashboard'])->name('admindashboard')->middleware(['auth', 'admin']);
-Route::get('/classview', [adminController::class, 'classview'])->name('classview');
+Route::get('/classview/{id}', [adminController::class, 'classview'])->name('classview');
 Route::get('/classvideo', [adminController::class, 'classvideo'])->name('classvideo');
 Route::get('/classmanage', [ClassController::class, 'classmanage'])->name('classmanage');
 Route::post('/classstore', [ClassController::class, 'classstore'])->name('classstore');
