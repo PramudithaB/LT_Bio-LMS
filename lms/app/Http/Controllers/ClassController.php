@@ -13,9 +13,6 @@ class ClassController extends Controller
     
 public function classstore(Request $request)
 {
-    // -----------------------------
-    // VALIDATION
-    // -----------------------------
     $data = $request->validate([
         'className' => 'required|string|max:255',
         'description' => 'nullable|string',
@@ -24,20 +21,8 @@ public function classstore(Request $request)
         'sessionCount' => 'nullable|integer',
         'month' => 'nullable|string|max:255',
 
-      
-
-        
-
-       
     ]);
 
-  
-
-   
-
-    // -----------------------------
-    // INSERT INTO DATABASE
-    // -----------------------------
     ClassModel::create($data);
 
     return response()->json(['status' => 'success']);
