@@ -13,9 +13,12 @@ class adminController extends Controller
     return view('admin.admindashboard', compact('classes'));
     }
   
-    public function classvideo(){
-        return view('classvideo');
-    }
+  public function classvideo($lessonId)
+{
+    $lesson = \App\Models\Lesson::findOrFail($lessonId);
+
+    return view('classvideo', compact('lesson'));
+}
 
 public function classview($id)
 {
