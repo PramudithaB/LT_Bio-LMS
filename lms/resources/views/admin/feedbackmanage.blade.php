@@ -283,6 +283,7 @@
             <th style="padding:10px; text-align:left;">Email</th>
             <th style="padding:10px; text-align:left;">Phone_Number</th>
             <th style="padding:10px; text-align:left;">Actions</th>
+            <th style="padding:10px; text-align:left;">Status</th>
         </tr>
     </thead>
 
@@ -306,22 +307,42 @@
                     {{ $fb->phone_number }}
                 </td>
 
+               
+
                 <td style="padding:10px;">
                     <!-- Edit Button -->
-                    <button type="submit"  
-                       style="padding:5px 10px; background:#ffc107; color:white; border:none; border-radius:5px; text-decoration:none; margin-right:5px;">
-                        Approve
-                    </button>
+                    <!-- APPROVE BUTTON -->
+                    <form action="{{ route('feedbackapprove', $fb->id) }}" method="POST" style="display:inline;">
+                        @csrf
+                        @method('PUT')
 
-                    <!-- Delete Button -->
-                   
+                        <button type="submit"  
+                            style="padding:5px 10px; background:#ffc107; color:white; border:none; border-radius:5px; text-decoration:none; margin-right:5px;">
+                            Approve
+                        </button>
+                    </form>
+
+                    <!-- DELETE BUTTON -->
+                    <form action="{{ route('feedbackdelete', $fb->id) }}" method="POST" style="display:inline;">
                         @csrf
                         @method('DELETE')
+
                         <button type="submit" 
-                                style="padding:5px 10px; background:#dc3545; color:white; border:none; border-radius:5px; cursor:pointer;">
+                            style="padding:5px 10px; background:#dc3545; color:white; border:none; border-radius:5px; cursor:pointer;">
                             Delete
                         </button>
                     </form>
+
+                    <td style="padding:10px; color:#fff;">
+                        @if($fb->status == 'approved')
+                            <span style="color:#22c55e; font-weight:bold;">Approved</span>
+                        @else
+                            <span style="color:#f59e0b; font-weight:bold;">Pending</span>
+                        @endif
+                    </td>
+
+
+                    {{-- </form> --}}
                 </td> 
 
                 

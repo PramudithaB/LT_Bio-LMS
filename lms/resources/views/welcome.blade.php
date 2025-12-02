@@ -624,6 +624,12 @@
         <h2 class="section-title">Student's Feedback</h2>
           {{-- <section id="institutes"> --}}
 
+    @if(session('success'))
+    <div style="padding:10px; background:#d1fae5; color:#065f46; border-radius:8px; margin-bottom:15px;">
+        {{ session('success') }}
+    </div>
+    @endif
+
     <form action="{{route('feedbackstore')}}" method="POST">
     @csrf
     <div style="max-width: 900px; margin: 20px auto; padding: 20px; background: #f8f8f8; border-radius: 10px;">
@@ -652,6 +658,20 @@
                 Submit
             </button>
         </div>
+
+        @php
+            $approvedFeedbacks = \App\Models\Feedback::where('status', 'approved')->latest()->get();
+        @endphp
+
+        <h3 style="margin-top:40px;">What People Say</h3>
+
+        @foreach($approvedFeedbacks as $fb)
+        <div style="background:#ffffff; margin:10px 0; padding:15px; border-radius:10px; border-left:5px solid #4f46e5;">
+            <strong>{{ $fb->name }}</strong>
+            <p>{{ $fb->message }}</p>
+        </div>
+        @endforeach
+
 
     </div>
 

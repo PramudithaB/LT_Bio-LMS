@@ -30,3 +30,6 @@ Route::post('/feedbackstore', [StudentFeedbackController::class, 'feedbackstore'
 // Route::delete('/feedback/delete/{id}', [StudentFeedbackController::class, 'destroy'])->name('feedback.delete');
 // Route::get('/feedbackcreate', [StudentFeedbackController::class, 'feedbackcreate'])->name('feedbackcreate');
 Route::get('/feedbackmanage', [StudentFeedbackController::class, 'feedbackmanage'])->name('feedbackmanage');
+Route::put('/feedback/approve/{id}', [StudentFeedbackController::class, 'feedbackapprove'])->name('feedbackapprove');
+
+Route::delete('/feedback/delete/{id}', [StudentFeedbackController::class, 'feedbackdelete'])->name('feedbackdelete');
