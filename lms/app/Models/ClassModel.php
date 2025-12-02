@@ -12,4 +12,8 @@ class ClassModel extends Model
     protected $fillable = [
     'className', 'description', 'teacherName', 'classTime', 'sessionCount', 'month',
 ];
+public function lessons()
+{
+    return $this->hasMany(Lesson::class, 'class_id');
+}
 }

@@ -24,10 +24,18 @@ Route::get('/classview', [adminController::class, 'classview'])->name('classview
 Route::get('/classvideo', [adminController::class, 'classvideo'])->name('classvideo');
 Route::get('/classmanage', [ClassController::class, 'classmanage'])->name('classmanage');
 Route::post('/classstore', [ClassController::class, 'classstore'])->name('classstore');
-Route::get('/dashboard', [ClassController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('classstore');
+Route::get('/dashboard', [ClassController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 
 Route::post('/feedbackstore', [StudentFeedbackController::class, 'feedbackstore'])->name('feedbackstore');
 // Route::delete('/feedback/delete/{id}', [StudentFeedbackController::class, 'destroy'])->name('feedback.delete');
 // Route::get('/feedbackcreate', [StudentFeedbackController::class, 'feedbackcreate'])->name('feedbackcreate');
 Route::get('/feedbackmanage', [StudentFeedbackController::class, 'feedbackmanage'])->name('feedbackmanage');
+
+// Lessons
+Route::get('/admin/lesson/create', [ClassController::class, 'lessoncreate'])->name('lesson.lessoncreate');
+Route::post('/admin/lesson/store', [ClassController::class, 'lessonstore'])->name('lesson.lessonstore');
+
+// Class Lessons Page
+Route::get('/admin/class/{id}/lessons', [ClassController::class, 'showClassLessons'])
+        ->name('class.lessons');
