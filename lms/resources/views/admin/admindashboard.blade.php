@@ -263,8 +263,8 @@
         <a href="{{ route('feedbackmanage') }}">
             <i class="fas fa-book-open"></i> Feedback
         </a>
-        <a href="#settings">
-            <i class="fas fa-cog"></i> Settings
+        <a href="{{route('lesson.lessoncreate')}}">
+            <i class="fas fa-cog"></i> lessons
         </a>
         <div style="position: absolute; bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box;">
             <a href="#" style="border-left: none; background-color: #374151; border-radius: 6px;">
@@ -458,6 +458,69 @@
         </table>
 
     </div>
+@foreach($classes as $class)
+    <h2 class="text-2xl font-bold mb-3">{{ $class->className }} Lessons</h2>
+
+    <table border="1" cellpadding="10" cellspacing="0" width="100%" style="margin-bottom: 40px;">
+        <thead style="background: #f2f2f2;">
+            <tr>
+                <th>#</th>
+                <th>Lesson Name</th>
+                <th>Description</th>
+                <th>Link</th>
+                <th>File</th>
+                <th>Notice</th>
+                <th>Version</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @forelse($class->lessons as $index => $lesson)
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+
+                    <td>{{ $lesson->name }}</td>
+
+                    <td>{{ $lesson->description }}</td>
+
+                    <td>
+                        @if($lesson->link)
+                            <a href="{{ $lesson->link }}" target="_blank">Open</a>
+                        @else
+                            -
+                        @endif
+                    </td>
+
+                    <td>
+                        @if($lesson->file_path)
+                            <a href="{{ asset('storage/' . $lesson->file_path) }}" target="_blank">
+                                Download
+                            </a>
+                        @else
+                            -
+                        @endif
+                    </td>
+
+                    <td>
+                        {{ $lesson->notice ? $lesson->notice : '-' }}
+                    </td>
+
+                    <td>
+                        {{ $lesson->is_paid ? 'Paid' : 'Free' }}
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="7" style="text-align:center; color:gray;">
+                        No lessons found for this class.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+@endforeach
+
+
 
 
 </body>
