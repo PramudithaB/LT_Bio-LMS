@@ -266,6 +266,9 @@
         <a href="{{route('lesson.lessoncreate')}}">
             <i class="fas fa-cog"></i> lessons
         </a>
+         <a href="{{route('package.create')}}">
+            <i class="fas fa-cog"></i> Packages
+        </a>
         <div style="position: absolute; bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box;">
             <a href="#" style="border-left: none; background-color: #374151; border-radius: 6px;">
                 <i class="fas fa-sign-out-alt"></i> Logout
@@ -367,6 +370,31 @@
                 <a href="#" style="color: #60a5fa;">View All Users</a>
             </div>
         </section>
+<h2 class="text-2xl font-bold mt-10 mb-4">Registered Users</h2>
+
+<div class="overflow-x-auto">
+    <table class="w-full text-left border border-gray-300 rounded-lg">
+        <thead class="bg-gray-200 text-gray-700">
+            <tr>
+                <th class="p-3">ID</th>
+                <th class="p-3">Name</th>
+                <th class="p-3">Email</th>
+                <th class="p-3">Registered Date</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach($users as $user)
+                <tr class="border-t">
+                    <td class="p-3">{{ $user->id }}</td>
+                    <td class="p-3">{{ $user->name }}</td>
+                    <td class="p-3">{{ $user->email }}</td>
+                    <td class="p-3">{{ $user->created_at->format('Y-m-d') }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 
         <section id="settings" style="padding-top: 40px; padding-bottom: 40px;">
             <h2 style="font-size: 1.8rem; margin-bottom: 20px;">Platform Settings</h2>
