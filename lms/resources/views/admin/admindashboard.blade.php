@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,41 +13,73 @@
         body {
             font-family: 'Inter', sans-serif;
             margin: 0;
-            background-color: #1f2937; /* Dark background */
+            background-color: #1f2937;
+            /* Dark background */
             color: #f3f4f6;
             line-height: 1.5;
         }
-        h1, h2, h3, h4 {
+
+        h1,
+        h2,
+        h3,
+        h4 {
             color: #f3f4f6;
             margin-top: 0;
             font-weight: 600;
         }
+
         a {
             text-decoration: none;
             color: #60a5fa;
             transition: color 0.2s;
         }
+
         a:hover {
             color: #3b82f6;
         }
 
         /* Utility Classes (Inline Emulation) */
-        .flex { display: flex; }
-        .flex-col { flex-direction: column; }
-        .items-center { align-items: center; }
-        .justify-between { justify-content: space-between; }
-        .p-4 { padding: 1rem; }
-        .m-4 { margin: 1rem; }
-        .rounded-lg { border-radius: 0.5rem; }
-        .shadow-xl { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .flex {
+            display: flex;
+        }
+
+        .flex-col {
+            flex-direction: column;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .p-4 {
+            padding: 1rem;
+        }
+
+        .m-4 {
+            margin: 1rem;
+        }
+
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+
+        .shadow-xl {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
 
         /* Dashboard Layout */
         #dashboard-container {
             min-height: 100vh;
         }
+
         #sidebar {
             width: 250px;
-            background-color: #111827; /* Deeper dark blue for sidebar */
+            background-color: #111827;
+            /* Deeper dark blue for sidebar */
             position: fixed;
             top: 0;
             left: 0;
@@ -57,6 +90,7 @@
             padding-top: 20px;
             box-sizing: border-box;
         }
+
         #main-content {
             margin-left: 250px;
             padding: 20px;
@@ -64,6 +98,7 @@
             width: calc(100% - 250px);
             box-sizing: border-box;
         }
+
         #topbar {
             background-color: #1f2937;
             padding: 10px 20px;
@@ -84,11 +119,15 @@
             border-left: 3px solid transparent;
             transition: background-color 0.2s, border-left-color 0.2s;
         }
-        #sidebar a:hover, #sidebar .active {
+
+        #sidebar a:hover,
+        #sidebar .active {
             background-color: #374151;
-            border-left-color: #4f46e5; /* Indigo accent */
+            border-left-color: #4f46e5;
+            /* Indigo accent */
             color: #fff;
         }
+
         #sidebar a i {
             margin-right: 12px;
             width: 20px;
@@ -104,20 +143,25 @@
             font-size: 1.5rem;
             cursor: pointer;
         }
+
         @media (max-width: 1024px) {
             #sidebar {
                 transform: translateX(-100%);
             }
+
             #sidebar.open {
                 transform: translateX(0);
             }
+
             #main-content {
                 margin-left: 0;
                 width: 100%;
             }
+
             #menu-toggle {
                 display: block;
             }
+
             .hidden-mobile {
                 display: none;
             }
@@ -132,11 +176,13 @@
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
         }
+
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
         }
+
         .kpi-card {
             background-color: #374151;
             color: #fff;
@@ -144,25 +190,30 @@
             border-radius: 8px;
             border-left: 5px solid #4f46e5;
         }
+
         .kpi-card .value {
             font-size: 2rem;
             font-weight: 700;
         }
+
         .kpi-card .label {
             font-size: 0.9rem;
             color: #9ca3af;
         }
-        
+
         /* Data Table */
         .data-table {
             width: 100%;
             border-collapse: collapse;
         }
-        .data-table th, .data-table td {
+
+        .data-table th,
+        .data-table td {
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #374151;
         }
+
         .data-table th {
             background-color: #374151;
             color: #e5e7eb;
@@ -170,9 +221,11 @@
             text-transform: uppercase;
             font-size: 0.8rem;
         }
+
         .data-table tr:hover {
             background-color: #2c3a4d;
         }
+
         .data-table button {
             background: none;
             border: 1px solid #4f46e5;
@@ -182,12 +235,14 @@
             cursor: pointer;
             transition: background-color 0.2s, color 0.2s;
         }
+
         .data-table button:hover {
             background-color: #4f46e5;
             color: #fff;
         }
     </style>
 </head>
+
 <body id="dashboard-container">
 
     <!-- Sidebar -->
@@ -202,14 +257,17 @@
         <a href="#users">
             <i class="fas fa-users"></i> User Management
         </a>
-        <a href="#content">
+        <a href="{{ route('classmanage') }}">
             <i class="fas fa-book-open"></i> Courses & Lectures
         </a>
         <a href="{{ route('feedbackmanage') }}">
             <i class="fas fa-book-open"></i> Feedback
         </a>
-        <a href="#settings">
-            <i class="fas fa-cog"></i> Settings
+        <a href="{{route('lesson.lessoncreate')}}">
+            <i class="fas fa-cog"></i> lessons
+        </a>
+         <a href="{{route('package.create')}}">
+            <i class="fas fa-cog"></i> Packages
         </a>
         <div style="position: absolute; bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box;">
             <a href="#" style="border-left: none; background-color: #374151; border-radius: 6px;">
@@ -219,15 +277,18 @@
     </nav>
 
     <!-- Main Content Area -->
+
     <div id="main-content">
-        
+
         <!-- Top Bar / Header -->
         <header id="topbar" class="flex items-center justify-between">
             <button id="menu-toggle"><i class="fas fa-bars"></i></button>
             <h1 class="hidden-mobile" style="font-size: 1.5rem;">Welcome Back, Admin!</h1>
             <div class="flex items-center">
                 <i class="fas fa-bell" style="margin-right: 20px; color: #9ca3af;"></i>
-                <div style="width: 32px; height: 32px; background-color: #60a5fa; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #111827;">AD</div>
+                <div
+                    style="width: 32px; height: 32px; background-color: #60a5fa; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #111827;">
+                    AD</div>
             </div>
         </header>
 
@@ -235,14 +296,14 @@
         <section id="overview" style="padding-top: 20px;">
             <h2 style="font-size: 1.8rem; margin-bottom: 20px;">Dashboard Overview</h2>
             <div class="kpi-grid">
-                
+
                 <!-- KPI Card 1 -->
                 <div class="kpi-card">
                     <div class="value">4,582</div>
                     <div class="label">Total Students</div>
                     <i class="fas fa-chart-line" style="float: right; font-size: 2rem; opacity: 0.5;"></i>
                 </div>
-                
+
                 <!-- KPI Card 2 -->
                 <div class="kpi-card" style="border-left-color: #f59e0b;">
                     <div class="value">124</div>
@@ -268,52 +329,39 @@
 
         <!-- Section: Recent Content Activity -->
         <section id="content-activity" style="padding-top: 40px;">
-            <h2 style="font-size: 1.8rem; margin-bottom: 20px;">Recent Content Activity</h2>
+            <h2 style="font-size: 1.8rem; margin-bottom: 20px;">All Classes </h2>
             <div class="card" style="overflow-x: auto;">
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Lecture Title</th>
-                            <th>Course</th>
-                            <th>Last Updated</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th>Class Name</th>
+                            <th>Description</th>
+                            <th>Teacher</th>
+                            <th>Class Time</th>
+                            <th>All sessions</th>
+                            <th>Month</th>
+                            
+
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Intro to API Design</td>
-                            <td>Backend Fundamentals</td>
-                            <td>2025-11-20</td>
-                            <td style="color: #10b981;">Published</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        <tr>
-                            <td>CSS Grid Layouts</td>
-                            <td>Frontend Mastery</td>
-                            <td>2025-11-18</td>
-                            <td style="color: #f59e0b;">Draft</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        <tr>
-                            <td>Database Migrations</td>
-                            <td>DevOps Essentials</td>
-                            <td>2025-11-15</td>
-                            <td style="color: #10b981;">Published</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        <tr>
-                            <td>React Hooks Deep Dive</td>
-                            <td>Frontend Mastery</td>
-                            <td>2025-11-10</td>
-                            <td style="color: #ef4444;">Archived</td>
-                            <td><button>Restore</button></td>
-                        </tr>
+                        @foreach ($classes as $c)
+                            <tr>
+
+                                <td>{{ $c->className }}</td>
+                                <td>{{ $c->description }}</td>
+                                <td>{{ $c->teacherName }}</td>
+                                <td>{{ $c->classTime }}</td>
+                                <td>{{ $c->sessionCount }}</td>
+                                <td>{{ $c->month }}</td>
+                                
+                        @endforeach
                     </tbody>
+
                 </table>
             </div>
         </section>
-        
+
         <!-- Placeholder Sections for Navigation -->
         <section id="users" style="padding-top: 40px;">
             <h2 style="font-size: 1.8rem; margin-bottom: 20px;">User Management</h2>
@@ -322,6 +370,31 @@
                 <a href="#" style="color: #60a5fa;">View All Users</a>
             </div>
         </section>
+<h2 class="text-2xl font-bold mt-10 mb-4">Registered Users</h2>
+
+<div class="overflow-x-auto">
+    <table class="w-full text-left border border-gray-300 rounded-lg">
+        <thead class="bg-gray-200 text-gray-700">
+            <tr>
+                <th class="p-3">ID</th>
+                <th class="p-3">Name</th>
+                <th class="p-3">Email</th>
+                <th class="p-3">Registered Date</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach($users as $user)
+                <tr class="border-t">
+                    <td class="p-3">{{ $user->id }}</td>
+                    <td class="p-3">{{ $user->name }}</td>
+                    <td class="p-3">{{ $user->email }}</td>
+                    <td class="p-3">{{ $user->created_at->format('Y-m-d') }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 
         <section id="settings" style="padding-top: 40px; padding-bottom: 40px;">
             <h2 style="font-size: 1.8rem; margin-bottom: 20px;">Platform Settings</h2>
@@ -343,14 +416,14 @@
             menuToggle.addEventListener('click', function() {
                 sidebar.classList.toggle('open');
             });
-            
+
             // Close sidebar when a link is clicked (useful for mobile)
             sidebarLinks.forEach(link => {
                 link.addEventListener('click', function() {
                     if (window.innerWidth <= 1024) {
-                         sidebar.classList.remove('open');
+                        sidebar.classList.remove('open');
                     }
-                    
+
                     // Simple simulated tab switching
                     sidebarLinks.forEach(l => l.classList.remove('active'));
                     link.classList.add('active');
@@ -362,7 +435,8 @@
                 const scrollPos = window.scrollY + 100; // Offset for fixed topbar
 
                 document.querySelectorAll('section[id]').forEach(section => {
-                    if (section.offsetTop <= scrollPos && section.offsetTop + section.offsetHeight > scrollPos) {
+                    if (section.offsetTop <= scrollPos && section.offsetTop + section.offsetHeight >
+                        scrollPos) {
                         // Activate corresponding sidebar link
                         sidebarLinks.forEach(link => {
                             if (link.getAttribute('href') === '#' + section.id) {
@@ -378,5 +452,105 @@
             sidebarLinks[0].classList.add('active');
         });
     </script>
+
+    <div class="container">
+
+        <h2>Class List</h2>
+
+        <table border="1" cellspacing="0" cellpadding="8">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Class Name</th>
+                    <th>Description</th>
+                    <th>Teacher</th>
+                    <th>Class Time</th>
+                    <th>Sessions</th>
+                    <th>Month</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach ($classes as $c)
+                    <tr>
+                        <td>{{ $c->id }}</td>
+                        <td>{{ $c->className }}</td>
+                        <td>{{ $c->description }}</td>
+                        <td>{{ $c->teacherName }}</td>
+                        <td>{{ $c->classTime }}</td>
+                        <td>{{ $c->sessionCount }}</td>
+                        <td>{{ $c->month }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+    </div>
+@foreach($classes as $class)
+    <h2 class="text-2xl font-bold mb-3">{{ $class->className }} Lessons</h2>
+
+    <table border="1" cellpadding="10" cellspacing="0" width="100%" style="margin-bottom: 40px;">
+        <thead style="background: #f2f2f2;">
+            <tr>
+                <th>#</th>
+                <th>Lesson Name</th>
+                <th>Description</th>
+                <th>Link</th>
+                <th>File</th>
+                <th>Notice</th>
+                <th>Version</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @forelse($class->lessons as $index => $lesson)
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+
+                    <td>{{ $lesson->name }}</td>
+
+                    <td>{{ $lesson->description }}</td>
+
+                    <td>
+                        @if($lesson->link)
+                            <a href="{{ $lesson->link }}" target="_blank">Open</a>
+                        @else
+                            -
+                        @endif
+                    </td>
+
+                    <td>
+                        @if($lesson->file_path)
+                            <a href="{{ asset('storage/' . $lesson->file_path) }}" target="_blank">
+                                Download
+                            </a>
+                        @else
+                            -
+                        @endif
+                    </td>
+
+                    <td>
+                        {{ $lesson->notice ? $lesson->notice : '-' }}
+                    </td>
+
+                    <td>
+                        {{ $lesson->is_paid ? 'Paid' : 'Free' }}
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="7" style="text-align:center; color:gray;">
+                        No lessons found for this class.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+@endforeach
+
+
+
+
 </body>
+
 </html>

@@ -10,9 +10,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -21,10 +19,13 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
-Route::get('/admindashboard', [adminController::class, 'admindashboard'])->middleware(['auth', 'admin']);
-Route::get('/classview', [adminController::class, 'classview'])->name('classview');
-Route::get('/classvideo', [adminController::class, 'classvideo'])->name('classvideo');
+Route::get('/admindashboard', [adminController::class, 'admindashboard'])->name('admindashboard')->middleware(['auth', 'admin']);
+Route::get('/classview/{id}', [adminController::class, 'classview'])->name('classview');
+Route::get('/classvideo/{id}', [adminController::class, 'classvideo'])->name('classvideo');
 Route::get('/classmanage', [ClassController::class, 'classmanage'])->name('classmanage');
+Route::post('/classstore', [ClassController::class, 'classstore'])->name('classstore');
+Route::get('/dashboard', [ClassController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::post('/feedbackstore', [StudentFeedbackController::class, 'feedbackstore'])->name('feedbackstore');
 // Route::delete('/feedback/delete/{id}', [StudentFeedbackController::class, 'destroy'])->name('feedback.delete');
@@ -33,3 +34,13 @@ Route::get('/feedbackmanage', [StudentFeedbackController::class, 'feedbackmanage
 Route::put('/feedback/approve/{id}', [StudentFeedbackController::class, 'feedbackapprove'])->name('feedbackapprove');
 
 Route::delete('/feedback/delete/{id}', [StudentFeedbackController::class, 'feedbackdelete'])->name('feedbackdelete');
+
+// Lessons
+Route::get('/admin/lesson/create', [ClassController::class, 'lessoncreate'])->name('lesson.lessoncreate');
+Route::post('/admin/lesson/store', [ClassController::class, 'lessonstore'])->name('lesson.lessonstore');
+
+// Class Lessons Page
+Route::get('/admin/class/{id}/lessons', [ClassController::class, 'showClassLessons'])
+        ->name('class.lessons');
+Route::get('/admin/package/create', [adminController::class, 'createPackage'])->name('package.create');
+Route::post('/admin/package/store', [adminController::class, 'storePackage'])->name('package.store');

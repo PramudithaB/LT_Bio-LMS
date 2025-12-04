@@ -46,7 +46,12 @@
             }
         }
     </style>
-</head>
+</head><div class="container mt-4">
+
+
+
+</div>
+
 <body class="antialiased">
 
     <!-- Top Navigation Bar -->
@@ -131,79 +136,46 @@
             </div>
         </div>
 
-        <!-- Dashboard Grid Layout (Now single column) -->
-        <div class="dashboard-grid">
+        <!-- Dashboard Grid Layout (Now single column) -->  
+      <div class="dashboard-grid">
+
+    <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+        <i data-lucide="book-open-text" class="w-6 h-6 mr-2 text-primary-purple"></i>
+        Current Registered Classes
+    </h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+        @foreach($classes as $class)
+        <!-- Class Card -->
+        <div class="bg-white p-6 rounded-xl shadow-lg border-t-8 border-primary-purple hover:shadow-xl transition duration-300">
             
-            <!-- LEFT COLUMN: Registered Classes (Expanded to full width) -->
-            <div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center"><i data-lucide="book-open-text" class="w-6 h-6 mr-2 text-primary-purple"></i> Current Registered Classes</h3>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    
-                    <!-- Class Card 1: 2026 Theory -->
-                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-8 border-primary-purple hover:shadow-xl transition duration-300">
-                        <div class="flex items-center space-x-3 mb-3">
-                            <i data-lucide="graduation-cap" class="w-8 h-8 text-primary-purple"></i>
-                            <h4 class="text-2xl font-extrabold text-gray-900">2026 Theory</h4>
-                        </div>
-                        <p class="text-gray-600 mb-4 text-sm">Comprehensive coverage of the full Biology curriculum. Currently in Module 4: Cellular Respiration.</p>
-                        
-                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
-                            <div class="bg-primary-purple h-2.5 rounded-full" style="width: 65%"></div>
-                        </div>
-                        <p class="text-right text-xs font-medium text-gray-500 mb-4">65% Progress</p>
-                        
-                        <a href="{{route('classview')}}" class="w-full flex items-center justify-center py-3 bg-primary-purple text-white font-semibold rounded-lg hover:bg-dark-purple transition duration-150">
-                            <i data-lucide="arrow-right-circle" class="w-5 h-5 mr-2"></i> Go to Class
-                        </a>
-                        
-                    </div>
-                       <div class="bg-white p-6 rounded-xl shadow-lg border-t-8 border-primary-purple hover:shadow-xl transition duration-300">
-                        <div class="flex items-center space-x-3 mb-3">
-                            <i data-lucide="graduation-cap" class="w-8 h-8 text-primary-purple"></i>
-                            <h4 class="text-2xl font-extrabold text-gray-900">2026 Paper</h4>
-                        </div>
-                        <p class="text-gray-600 mb-4 text-sm">Comprehensive coverage of the full Biology curriculum. Currently in Module 4: Cellular Respiration.</p>
-                        
-                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
-                            <div class="bg-primary-purple h-2.5 rounded-full" style="width: 65%"></div>
-                        </div>
-                        <p class="text-right text-xs font-medium text-gray-500 mb-4">65% Progress</p>
-                        
-                        <a href="{{route('classview')}}" class="w-full flex items-center justify-center py-3 bg-primary-purple text-white font-semibold rounded-lg hover:bg-dark-purple transition duration-150">
-                            <i data-lucide="arrow-right-circle" class="w-5 h-5 mr-2"></i> Go to Class
-                        </a>
-                        
-                    </div>
-                           <div class="bg-white p-6 rounded-xl shadow-lg border-t-8 border-primary-purple hover:shadow-xl transition duration-300">
-                        <div class="flex items-center space-x-3 mb-3">
-                            <i data-lucide="graduation-cap" class="w-8 h-8 text-primary-purple"></i>
-                            <h4 class="text-2xl font-extrabold text-gray-900">2026 Revision</h4>
-                        </div>
-                        <p class="text-gray-600 mb-4 text-sm">Comprehensive coverage of the full Biology curriculum. Currently in Module 4: Cellular Respiration.</p>
-                        
-                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
-                            <div class="bg-primary-purple h-2.5 rounded-full" style="width: 65%"></div>
-                        </div>
-                        <p class="text-right text-xs font-medium text-gray-500 mb-4">65% Progress</p>
-                        
-                        <a href="{{route('classview')}}" class="w-full flex items-center justify-center py-3 bg-primary-purple text-white font-semibold rounded-lg hover:bg-dark-purple transition duration-150">
-                            <i data-lucide="arrow-right-circle" class="w-5 h-5 mr-2"></i> Go to Class
-                        </a>
-                        
-                    </div>
-
-                 
-                    
-                   
-
-                  
-                </div>
+            <div class="flex items-center space-x-3 mb-3">
+                <i data-lucide="graduation-cap" class="w-8 h-8 text-primary-purple"></i>
+                <h4 class="text-2xl font-extrabold text-gray-900">{{ $class->className }}</h4>
             </div>
-            
+
+            <p class="text-gray-600 mb-4 text-sm">{{ $class->description }}</p>
+
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                <div class="bg-primary-purple h-2.5 rounded-full" style="width: 65%"></div>
+            </div>
+
+            <p class="text-right text-xs font-medium text-gray-500 mb-4">{{ $class->month }}</p>
+
+            <a href="{{ route('classview', $class->id) }}"
+               class="w-full flex items-center justify-center py-3 bg-primary-purple text-white font-semibold rounded-lg hover:bg-dark-purple transition duration-150">
+                <i data-lucide="arrow-right-circle" class="w-5 h-5 mr-2"></i>
+                Go to Class
+            </a>
         </div>
+        @endforeach
 
     </div>
+
+</div>
+
+
 
     <!-- Initialize Lucide Icons and Dropdown Logic -->
     <script>
