@@ -13,6 +13,7 @@ class Feedback extends Model
         'email',
         'phone_number',
         'message',
+        'status',
     ];
 
     // public function user()
