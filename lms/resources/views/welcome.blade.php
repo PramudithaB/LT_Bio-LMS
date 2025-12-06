@@ -565,18 +565,16 @@
                 <p class="hero-subtitle">ADVANDCE LEVEL Biology</p>
                 <h1 class="hero-title">Lakshitha</h1>
                 <h2 class="hero-name">Thennakoon</h2>
-                <p class="hero-description">B.Sc. (Engineering) Hons, University of Colombo</p>
+                <p class="hero-description"> BSc (UG)Biochemistry & Molecular Biology University Of Colombo</p>
                 
                 <div class="badges">
-                    <span class="badge">SyZyGy</span>
-                    <span class="badge">IMS</span>
-                    <span class="badge">Pencil opera</span>
+                    
                     <span class="badge">Online පන්තිය</span>
                 </div>
                 
                 <div class="hero-buttons">
-                    <a href="#" class="btn-primary">TELEGRAM BOT</a>
-                    <a href="#" class="btn-secondary">CHAT WITH US →</a>
+                    {{-- <a href="https://t.me/LTbio26" class="btn-primary">TELEGRAM </a> --}}
+<a href="https://wa.me/94742877640" class="btn-secondary">CHAT WITH US →</a>
                 </div>
             </div>
             
@@ -592,7 +590,7 @@
     <!-- About Section -->
     <section id="about">
         <p class="section-subtitle">WHO WE ARE</p>
-        <h2 class="section-title">About Charitha Dissanayake</h2>
+        <h2 class="section-title">About Lakshitha Thennakoon</h2>
         
         <div class="about-content">
             <div class="about-text">
@@ -604,11 +602,11 @@
             <div class="about-features">
                 <div class="feature-card">
                     <h3>🎓 විශිෂ්ට අධ්‍යාපන</h3>
-                    <p>B.Sc. (Engineering) Hons, මොරටුව විශ්ව විද්‍යාලය</p>
+                    <p>BSc (UG)Biochemistry & Molecular Biology University Of Colombo</p>
                 </div>
                 <div class="feature-card">
-                    <h3>📚 දශක 2ක පළපුරුද්ද</h3>
-                    <p>2015 සිට දහස් ගණන් A සාමාර්ථයන් නිෂ්පාදනය</p>
+                    <h3>📚  2ක පළපුරුද්ද</h3>
+                    <p>2022 සිට  ගණන් A සාමාර්ථයන් නිෂ්පාදනය</p>
                 </div>
                 <div class="feature-card">
                     <h3>💻 නවීන පහසුකම්</h3>
@@ -618,7 +616,177 @@
         </div>
     </section>
 
-    <!-- Institutes Section -->
+ 
+
+   {{-- <h3>Feedback List</h3> --}}
+
+{{-- @foreach(\App\Models\Feedback::latest()->get() as $fb)
+    <div style="border:1px solid #ddd; padding:10px; margin:5px;">
+        <strong>{{ $fb->name }}</strong>  {{-- | {{ $fb->email }} | {{ $fb->phone_number }} 
+        <p>{{ $fb->message }}</p>
+       
+    </div>
+@endforeach --}}
+
+
+    {{-- <!-- Full-width Image Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 100px; width: 100%;">
+        <img src="{{ asset('images/feed1.jpeg') }}" style="width: 330px; height: 350px; object-fit: cover;">
+        <img src="{{ asset('images/feed2.jpeg') }}" style="width: 330px; height: 350px; object-fit: cover;">
+        <img src="{{ asset('images/feed3.jpeg') }}" style="width: 330px; height: 350px; object-fit: cover;">
+        <img src="{{ asset('images/feed4.jpeg') }}" style="width: 330px; height: 350px; object-fit: cover;">
+        <img src="{{ asset('images/feed2.jpeg') }}" style="width: 330px; height: 350px; object-fit: cover;">
+        <img src="{{ asset('images/feed3.jpeg') }}" style="width: 330px; height: 350px; object-fit: cover;">
+
+        <!-- Add more images as needed -->
+    </div> --}}
+</section>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="results">
+        <div class="results-banner">
+            <h2>Telegram Chaneels</h2>
+        </div>
+        
+<div style="
+    display:flex;
+    justify-content:center;
+    gap:100px;
+    flex-wrap:wrap;
+">
+
+    <!-- CARD 1 -->
+    <a href="https://t.me/LTbio26" style="text-decoration:none;">
+
+    <div style="
+        width:160px;
+        padding:20px;
+        border:1px solid #ffffff;
+        border-radius:16px;
+        background:#ff2b2b;
+        text-align:center;
+        box-shadow:0 4px 12px rgba(255, 255, 255, 0.4);
+        margin:20px auto;
+    ">
+
+        <!-- Circle Icon -->
+        <div style="
+            width:120px;
+            height:120px;
+            border-radius:50%;
+            background:#ffffff;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            position:relative;
+            margin:auto;
+        ">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" 
+                style="width:50px; height:50px;">
+            
+            <!-- Badge -->
+            <div style="
+                position:absolute;
+                bottom:6px;
+                left:50%;
+                transform:translateX(-50%);
+                width:38px;
+                height:38px;
+                border-radius:50%;
+                background:#000000cc;
+                border:2px solid #ffffff99;
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                font-size:17px;
+                font-weight:bold;
+                color:white;
+            ">
+                26
+            </div>
+        </div>
+
+        <!-- Channel Name -->
+        <div style="
+            margin-top:12px;
+            font-size:16px;
+            color:#e0e0e0;
+            font-weight:500;
+        ">
+            2026 Biology Revision
+        </div>
+
+    </div>
+
+    </a>
+
+    <!-- CARD 2 (Duplicate — Edit As Needed) -->
+    <a href="https://t.me/LTbio26" style="text-decoration:none;">
+
+    <div style="
+        width:160px;
+        padding:20px;
+        border:1px solid #ffffff;
+        border-radius:16px;
+        background:#ff2b2b;
+        text-align:center;
+        box-shadow:0 4px 12px rgba(255, 255, 255, 0.4);
+        margin:20px auto;
+    ">
+
+        <div style="
+            width:120px;
+            height:120px;
+            border-radius:50%;
+            background:#ffffff;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            position:relative;
+            margin:auto;
+        ">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" 
+                style="width:50px; height:50px;">
+
+            <div style="
+                position:absolute;
+                bottom:6px;
+                left:50%;
+                transform:translateX(-50%);
+                width:38px;
+                height:38px;
+                border-radius:50%;
+                background:#000000cc;
+                border:2px solid #ffffff99;
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                font-size:17px;
+                font-weight:bold;
+                color:white;
+            ">
+                27
+            </div>
+        </div>
+
+        <div style="
+            margin-top:12px;
+            font-size:16px;
+            color:#e0e0e0;
+            font-weight:500;
+        ">
+            2027 Theory Biology
+        </div>
+
+    </div>
+
+    </a>
+
+</div>
+
+   <!-- Institutes Section -->
     <section id="institutes">
         <p class="section-subtitle">WHERE WE TEACH</p>
         <h2 class="section-title">Student's Feedback</h2>
@@ -663,14 +831,14 @@
             $approvedFeedbacks = \App\Models\Feedback::where('status', 'approved')->latest()->get();
         @endphp
 
-        <h3 style="margin-top:40px;">What People Say</h3>
+        {{-- <h3 style="margin-top:40px;">What People Say</h3> --}}
 
-        @foreach($approvedFeedbacks as $fb)
+        {{-- @foreach($approvedFeedbacks as $fb)
         <div style="background:#ffffff; margin:10px 0; padding:15px; border-radius:10px; border-left:5px solid #4f46e5;">
             <strong>{{ $fb->name }}</strong>
             <p>{{ $fb->message }}</p>
         </div>
-        @endforeach
+        @endforeach --}}
 
 
     </div>
@@ -678,40 +846,63 @@
 </div>
 
     </form>
+  <!-- Full-width Image Grid -->
+ <!-- HEADER WITH ARROWS -->
+<div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:10px 0 15px 0;
+    padding:0 10px;
+">
+   
 
-   {{-- <h3>Feedback List</h3> --}}
+ 
+</div>
 
-{{-- @foreach(\App\Models\Feedback::latest()->get() as $fb)
-    <div style="border:1px solid #ddd; padding:10px; margin:5px;">
-        <strong>{{ $fb->name }}</strong>  {{-- | {{ $fb->email }} | {{ $fb->phone_number }} 
-        <p>{{ $fb->message }}</p>
-       
-    </div>
-@endforeach --}}
+<!-- HORIZONTAL SCROLL GALLERY -->
+<div id="scrollBox" style="
+    display:flex;
+    gap:15px;
+    overflow-x:auto;
+    padding:15px 5px;
+    scroll-snap-type:x mandatory;
+    white-space:nowrap;
+    scroll-behavior:smooth;
+">
+
+    <img src="{{ asset('images/feed1.jpeg') }}"
+         style="width:330px; height:350px; object-fit:cover; border-radius:12px;
+                scroll-snap-align:start; flex:0 0 auto;">
+
+    <img src="{{ asset('images/feed2.jpeg') }}"
+         style="width:330px; height:350px; object-fit:cover; border-radius:12px;
+                scroll-snap-align:start; flex:0 0 auto;">
+
+    <img src="{{ asset('images/feed3.jpeg') }}"
+         style="width:330px; height:350px; object-fit:cover; border-radius:12px;
+                scroll-snap-align:start; flex:0 0 auto;">
+
+    <img src="{{ asset('images/feed4.jpeg') }}"
+         style="width:330px; height:350px; object-fit:cover; border-radius:12px;
+                scroll-snap-align:start; flex:0 0 auto;">
+
+    <img src="{{ asset('images/feed2.jpeg') }}"
+         style="width:330px; height:350px; object-fit:cover; border-radius:12px;
+                scroll-snap-align:start; flex:0 0 auto;">
+
+    <img src="{{ asset('images/feed3.jpeg') }}"
+         style="width:330px; height:350px; object-fit:cover; border-radius:12px;
+                scroll-snap-align:start; flex:0 0 auto;">
+
+                
+</div>
 
 
-    {{-- <!-- Full-width Image Grid -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 100px; width: 100%;">
-        <img src="{{ asset('images/feed1.jpeg') }}" style="width: 330px; height: 350px; object-fit: cover;">
-        <img src="{{ asset('images/feed2.jpeg') }}" style="width: 330px; height: 350px; object-fit: cover;">
-        <img src="{{ asset('images/feed3.jpeg') }}" style="width: 330px; height: 350px; object-fit: cover;">
-        <img src="{{ asset('images/feed4.jpeg') }}" style="width: 330px; height: 350px; object-fit: cover;">
-        <img src="{{ asset('images/feed2.jpeg') }}" style="width: 330px; height: 350px; object-fit: cover;">
-        <img src="{{ asset('images/feed3.jpeg') }}" style="width: 330px; height: 350px; object-fit: cover;">
 
-        <!-- Add more images as needed -->
-    </div> --}}
-</section>
-        </div>
-    </section>
 
-    <!-- Results Section -->
-    <section id="results">
-        <div class="results-banner">
-            <h2>2023 A සාමාර්ථ</h2>
-            <p>දශක දෙකකට ආසන්න කාලයක සිට ප්‍රතිඵල මගින් වැඩිම A+ සංචිත ප්‍රමාණයක හිමිකරුවා</p>
-        </div>
-        
+
+
         <p class="section-subtitle">OUR ACHIEVEMENTS</p>
         <h2 class="section-title">Outstanding Results</h2>
         
