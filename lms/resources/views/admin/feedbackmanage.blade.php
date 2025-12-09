@@ -245,25 +245,28 @@
 <body id="dashboard-container">
 
     <!-- Sidebar -->
-    <nav id="sidebar">
+   <nav id="sidebar">
         <div style="text-align: center; padding: 10px 0 30px 0;">
             <h2 style="font-size: 1.8rem; color: #4f46e5;">Admin Panel</h2>
             <p style="font-size: 0.9rem; color: #9ca3af;">Content Management</p>
         </div>
-        <a href="admindashboard">
+        <a href="{{ route('admindashboard') }}">
             <i class="fas fa-tachometer-alt"></i> Dashboard
         </a>
         <a href="#users">
             <i class="fas fa-users"></i> User Management
         </a>
-        <a href="#content">
+        <a href="{{ route('classmanage') }}">
             <i class="fas fa-book-open"></i> Courses & Lectures
         </a>
-        <a href="{{ route('feedbackmanage') }}"  class="active">
+        <a href="{{ route('feedbackmanage') }}">
             <i class="fas fa-book-open"></i> Feedback
         </a>
-        <a href="#settings">
-            <i class="fas fa-cog"></i> Settings
+        <a href="{{route('lesson.lessoncreate')}}">
+            <i class="fas fa-cog"></i> lessons
+        </a>
+         <a href="{{route('package.create')}}">
+            <i class="fas fa-cog"></i> Packages
         </a>
         <div style="position: absolute; bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box;">
             <a href="#" style="border-left: none; background-color: #374151; border-radius: 6px;">
