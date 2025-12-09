@@ -191,20 +191,23 @@
             <h2 style="font-size: 1.8rem; color: #4f46e5;">Admin Panel</h2>
             <p style="font-size: 0.9rem; color: #9ca3af;">Content Management</p>
         </div>
-        <!-- Data-target attribute links to the section ID -->
-        <!-- DASHBOARD LINK: Removed active class -->
-        <a href="{{route('admindashboard')}}" data-target="overview">
+        <a href="{{ route('admindashboard') }}">
             <i class="fas fa-tachometer-alt"></i> Dashboard
         </a>
-        <a href="#users" data-target="users">
+        <a href="#users">
             <i class="fas fa-users"></i> User Management
         </a>
-        <!-- COURSES & LECTURES LINK: Added active class to make this the default selection -->
-        <a href="#class-add" data-target="class-add" class="active">
+        <a href="{{ route('classmanage') }}">
             <i class="fas fa-book-open"></i> Courses & Lectures
         </a>
-        <a href="#settings" data-target="settings">
-            <i class="fas fa-cog"></i> Settings
+        <a href="{{ route('feedbackmanage') }}">
+            <i class="fas fa-book-open"></i> Feedback
+        </a>
+        <a href="{{route('lesson.lessoncreate')}}">
+            <i class="fas fa-cog"></i> lessons
+        </a>
+         <a href="{{route('package.create')}}">
+            <i class="fas fa-cog"></i> Packages
         </a>
         <div style="position: absolute; bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box;">
             <a href="#" style="border-left: none; background-color: #374151; border-radius: 6px;">
