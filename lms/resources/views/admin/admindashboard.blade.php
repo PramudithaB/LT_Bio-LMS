@@ -292,40 +292,7 @@
             </div>
         </header>
 
-        <!-- Section: Overview -->
-        <section id="overview" style="padding-top: 20px;">
-            <h2 style="font-size: 1.8rem; margin-bottom: 20px;">Dashboard Overview</h2>
-            <div class="kpi-grid">
-
-                <!-- KPI Card 1 -->
-                <div class="kpi-card">
-                    <div class="value">4,582</div>
-                    <div class="label">Total Students</div>
-                    <i class="fas fa-chart-line" style="float: right; font-size: 2rem; opacity: 0.5;"></i>
-                </div>
-
-                <!-- KPI Card 2 -->
-                <div class="kpi-card" style="border-left-color: #f59e0b;">
-                    <div class="value">124</div>
-                    <div class="label">New Enrollments (Last 7 Days)</div>
-                    <i class="fas fa-user-plus" style="float: right; font-size: 2rem; opacity: 0.5;"></i>
-                </div>
-
-                <!-- KPI Card 3 -->
-                <div class="kpi-card" style="border-left-color: #10b981;">
-                    <div class="value">98.5%</div>
-                    <div class="label">Lecture Completion Rate</div>
-                    <i class="fas fa-check-circle" style="float: right; font-size: 2rem; opacity: 0.5;"></i>
-                </div>
-
-                <!-- KPI Card 4 -->
-                <div class="kpi-card" style="border-left-color: #ef4444;">
-                    <div class="value">$14,200</div>
-                    <div class="label">Monthly Revenue</div>
-                    <i class="fas fa-dollar-sign" style="float: right; font-size: 2rem; opacity: 0.5;"></i>
-                </div>
-            </div>
-        </section>
+      
 
         <!-- Section: Recent Content Activity -->
         <section id="content-activity" style="padding-top: 40px;">
@@ -362,28 +329,20 @@
             </div>
         </section>
 
-        <!-- Placeholder Sections for Navigation -->
-        <section id="users" style="padding-top: 40px;">
+          <section id="content-activity" style="padding-top: 40px;">
             <h2 style="font-size: 1.8rem; margin-bottom: 20px;">User Management</h2>
-            <div class="card">
-                <p>User list and permissions management tools go here.</p>
-                <a href="#" style="color: #60a5fa;">View All Users</a>
-            </div>
-        </section>
-<h2 class="text-2xl font-bold mt-10 mb-4">Registered Users</h2>
-
-<div class="overflow-x-auto">
-    <table class="w-full text-left border border-gray-300 rounded-lg">
-        <thead class="bg-gray-200 text-gray-700">
-            <tr>
+            <div class="card" style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead>
+                       <tr>
                 <th class="p-3">ID</th>
                 <th class="p-3">Name</th>
                 <th class="p-3">Email</th>
                 <th class="p-3">Registered Date</th>
             </tr>
         </thead>
-
-        <tbody>
+                    </thead>
+                   <tbody>
             @foreach($users as $user)
                 <tr class="border-t">
                     <td class="p-3">{{ $user->id }}</td>
@@ -393,15 +352,82 @@
                 </tr>
             @endforeach
         </tbody>
-    </table>
-</div>
 
-        <section id="settings" style="padding-top: 40px; padding-bottom: 40px;">
-            <h2 style="font-size: 1.8rem; margin-bottom: 20px;">Platform Settings</h2>
-            <div class="card">
-                <p>System configuration and integration settings.</p>
+                </table>
             </div>
         </section>
+
+      
+
+<div class="overflow-x-auto">
+   
+</div>
+@foreach($classes as $class)
+        <section id="content-activity" style="padding-top: 40px;">
+            <h2 style="font-size: 1.8rem; margin-bottom: 20px;">{{ $class->className }} - Lessons</h2>
+            <div class="card" style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                             <th>#</th>
+                <th>Lesson Name</th>
+                <th>Description</th>
+                <th>Link</th>
+                <th>File</th>
+                <th>Notice</th>
+                <th>Version</th>
+                            
+
+                        </tr>
+                    </thead>
+                   <tbody>
+            @forelse($class->lessons as $index => $lesson)
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+
+                    <td>{{ $lesson->name }}</td>
+
+                    <td>{{ $lesson->description }}</td>
+
+                    <td>
+                        @if($lesson->link)
+                            <a href="{{ $lesson->link }}" target="_blank">Open</a>
+                        @else
+                            -
+                        @endif
+                    </td>
+
+                    <td>
+                        @if($lesson->file_path)
+                            <a href="{{ asset('storage/' . $lesson->file_path) }}" target="_blank">
+                                Download
+                            </a>
+                        @else
+                            -
+                        @endif
+                    </td>
+
+                    <td>
+                        {{ $lesson->notice ? $lesson->notice : '-' }}
+                    </td>
+
+                    <td>
+                        {{ $lesson->is_paid ? 'Paid' : 'Free' }}
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="7" style="text-align:center; color:gray;">
+                        No lessons found for this class.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+
+                </table>
+            </div>
+        </section>
+@endforeach
 
     </div>
 
@@ -455,99 +481,9 @@
 
     <div class="container">
 
-        <h2>Class List</h2>
-
-        <table border="1" cellspacing="0" cellpadding="8">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Class Name</th>
-                    <th>Description</th>
-                    <th>Teacher</th>
-                    <th>Class Time</th>
-                    <th>Sessions</th>
-                    <th>Month</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @foreach ($classes as $c)
-                    <tr>
-                        <td>{{ $c->id }}</td>
-                        <td>{{ $c->className }}</td>
-                        <td>{{ $c->description }}</td>
-                        <td>{{ $c->teacherName }}</td>
-                        <td>{{ $c->classTime }}</td>
-                        <td>{{ $c->sessionCount }}</td>
-                        <td>{{ $c->month }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+      
 
     </div>
-@foreach($classes as $class)
-    <h2 class="text-2xl font-bold mb-3">{{ $class->className }} Lessons</h2>
-
-    <table border="1" cellpadding="10" cellspacing="0" width="100%" style="margin-bottom: 40px;">
-        <thead style="background: #f2f2f2;">
-            <tr>
-                <th>#</th>
-                <th>Lesson Name</th>
-                <th>Description</th>
-                <th>Link</th>
-                <th>File</th>
-                <th>Notice</th>
-                <th>Version</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @forelse($class->lessons as $index => $lesson)
-                <tr>
-                    <td>{{ $index + 1 }}</td>
-
-                    <td>{{ $lesson->name }}</td>
-
-                    <td>{{ $lesson->description }}</td>
-
-                    <td>
-                        @if($lesson->link)
-                            <a href="{{ $lesson->link }}" target="_blank">Open</a>
-                        @else
-                            -
-                        @endif
-                    </td>
-
-                    <td>
-                        @if($lesson->file_path)
-                            <a href="{{ asset('storage/' . $lesson->file_path) }}" target="_blank">
-                                Download
-                            </a>
-                        @else
-                            -
-                        @endif
-                    </td>
-
-                    <td>
-                        {{ $lesson->notice ? $lesson->notice : '-' }}
-                    </td>
-
-                    <td>
-                        {{ $lesson->is_paid ? 'Paid' : 'Free' }}
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="7" style="text-align:center; color:gray;">
-                        No lessons found for this class.
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-@endforeach
-
 
 
 
