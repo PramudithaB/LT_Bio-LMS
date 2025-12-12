@@ -57,5 +57,29 @@ public function storePackage(Request $request)
 
     return redirect()->route('admindashboard')->with('success', 'Package created successfully!');
 }
+public function checkoutPage()
+{
+    return view('checkout');
+}
+
+public function checkoutSubmit(Request $request)
+{
+    $request->validate([
+        'student_name' => 'required|string|max:255',
+        'class_name' => 'required|string',
+        'class_id' => 'required|string',
+        'remark' => 'nullable|string',
+        'file' => 'required|mimes:jpg,png,pdf|max:2048',
+    ]);
+
+    // 🌟 File upload
+    $path = $request->file('file')->store('checkout_files', 'public');
+
+    // Save to database if needed (Optional)
+    // Checkout::create([...]);
+
+    return redirect()->route('dashboard')->with('success', 'Checkout completed successfully!');
+}
+
 
 }
