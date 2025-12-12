@@ -37,6 +37,13 @@ public function createPackage()
 {
     return view('admin.package-create');
 }
+public function buyclass()
+{
+    $packages = Package::orderBy('id','desc')->get();
+
+    return view('buyclass', compact('packages'));
+}
+
 
 public function storePackage(Request $request)
 {
