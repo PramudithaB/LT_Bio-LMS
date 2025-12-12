@@ -45,3 +45,8 @@ Route::get('/admin/class/{id}/lessons', [ClassController::class, 'showClassLesso
 Route::get('/admin/package/create', [adminController::class, 'createPackage'])->name('package.create');
 Route::post('/admin/package/store', [adminController::class, 'storePackage'])->name('package.store');
 Route::get('/buyclass', [adminController::class, 'buyclass'])->name('buyclass');
+Route::get('/cart', function () {return view('cart');})->name('cart.view');
+Route::get('/checkout', [adminController::class, 'checkoutPage'])->name('checkout.page');
+Route::post('/checkout/submit', [adminController::class, 'checkoutSubmit'])->name('checkout.submit');
+
+
