@@ -270,9 +270,12 @@
             <i class="fas fa-cog"></i> Packages
         </a>
         <div style="position: absolute; bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box;">
-            <a href="#" style="border-left: none; background-color: #374151; border-radius: 6px;">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
+            <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                @csrf
+                <button type="submit" style="width: 100%; text-align: left; border-left: none; background-color: #374151; border-radius: 6px; border: none; cursor: pointer; display: flex; align-items: center; padding: 12px 20px; color: #d1d5db; font-size: 1rem; transition: background-color 0.2s;">
+                    <i class="fas fa-sign-out-alt" style="margin-right: 12px; width: 20px; text-align: center;"></i> Logout
+                </button>
+            </form>
         </div>
     </nav>
 
