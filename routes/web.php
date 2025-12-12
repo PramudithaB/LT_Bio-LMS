@@ -44,3 +44,4 @@ Route::get('/admin/class/{id}/lessons', [ClassController::class, 'showClassLesso
         ->name('class.lessons');
 Route::get('/admin/package/create', [adminController::class, 'createPackage'])->name('package.create');
 Route::post('/admin/package/store', [adminController::class, 'storePackage'])->name('package.store');
+Route::get('/buyclass', [adminController::class, 'buyclass'])->name('buyclass');
