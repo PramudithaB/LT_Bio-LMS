@@ -34,6 +34,13 @@
             background-color: #f3f4f6;
         }
     </style>
+    <style>
+.scale-125 {
+    transform: scale(1.25);
+    transition: transform 0.3s ease;
+}
+</style>
+
 </head>
 
 <body class="antialiased">
@@ -62,6 +69,16 @@
                     <a href="#" class="hover:text-primary-purple flex items-center">
                         <i data-lucide="download" class="w-5 h-5 mr-1"></i> Study Materials
                     </a>
+                    <!-- Cart Icon -->
+<a href="{{ route('cart.view') }}" class="relative">
+    <i data-lucide="shopping-cart" class="w-7 h-7 text-gray-600 hover:text-primary-purple"></i>
+
+    <span id="cart-count"
+        class="absolute -top-2 -right-2 bg-primary-purple text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+        0
+    </span>
+</a>
+
                 </div>
 
                 <!-- Right section -->
@@ -140,10 +157,12 @@
                     Rs. {{ number_format($pkg->monthly_fee) }}
                 </div>
 
-                <button
-                    class="w-full bg-primary-purple text-white py-3 rounded-lg font-semibold hover:bg-dark-purple transition">
-                    Buy Now
-                </button>
+             <button
+    onclick="addToCart({{ $pkg->id }}, '{{ $pkg->package_name }}', {{ $pkg->monthly_fee }})"
+    class="w-full bg-primary-purple text-white py-3 rounded-lg font-semibold hover:bg-dark-purple transition">
+    Add to Cart
+</button>
+
 
             </div>
             @endforeach
@@ -166,6 +185,40 @@
 
         document.addEventListener('click', () => drop.classList.add('hidden'));
     </script>
+    <script>
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    updateCartBadge();
+
+    function addToCart(id, name, price) {
+        // Check if item already exists
+        const exists = cart.find(item => item.id === id);
+
+        if (!exists) {
+            cart.push({ id, name, price });
+            localStorage.setItem("cart", JSON.stringify(cart));
+        }
+
+        updateCartBadge();
+        animateCart();
+    }
+
+    function updateCartBadge() {
+        const count = cart.length;
+        document.getElementById("cart-count").textContent = count;
+    }
+
+    // Cart animation
+    function animateCart() {
+        const badge = document.getElementById("cart-count");
+        badge.classList.add("scale-125");
+
+        setTimeout(() => {
+            badge.classList.remove("scale-125");
+        }, 300);
+    }
+</script>
+
 
 </body>
 </html>
