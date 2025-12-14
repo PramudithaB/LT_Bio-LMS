@@ -258,7 +258,8 @@
         <div class="hero-actions" style="margin-top:8px;">
           <!-- Keep the routes/links intact -->
           <!-- Example primary CTA (if you want a different link, keep your href) -->
-          <a href="https://wa.me/94742877640" class="btn btn-primary" target="_blank" rel="noopener noreferrer">CHAT WITH US →</a>
+                    <a href="{{ route('login') }}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Login →</a>
+
         </div>
 
        
