@@ -362,27 +362,55 @@
     </div>
 
     <!-- feedback form -->
-    <div style="margin-top:18px;">
-      @if (session('success'))
+<!-- feedback form -->
+<div style="margin-top:18px; width:100%;">
+    @if (session('success'))
         <div style="padding:10px; background:#d1fae5; color:#065f46; border-radius:8px; margin-bottom:15px;">
-          {{ session('success') }}
+            {{ session('success') }}
         </div>
-      @endif
+    @endif
 
-      <form action="{{ route('feedbackstore') }}" method="POST" class="feedback-panel" aria-label="Feedback form">
+    <form action="{{ route('feedbackstore') }}" method="POST" aria-label="Feedback form"
+          style="background:#fff; padding:18px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.08); width:100%; box-sizing:border-box;">
         @csrf
-        <h3 style="margin-bottom:12px">Submit Your Feedback</h3>
+        <h3 style="margin-bottom:12px;">Submit Your Feedback</h3>
 
-        <div class="feedback-grid">
-          <input id="name" type="text" name="name" placeholder="Your Name" required />
-          <input id="email" type="email" name="email" placeholder="Email" required />
-          <input id="phone_number" type="text" name="phone_number" placeholder="Phone Number" required />
-          <textarea id="message" name="message" placeholder="Write your message..." required></textarea>
+        <div class="feedback-grid" 
+             style="display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%;">
 
-          <button type="submit" onclick="return validateFeedbackForm()">Submit</button>
+            <input id="name" type="text" name="name" placeholder="Your Name" required
+                   style="padding:12px; border:1px solid #ddd; border-radius:6px; font-size:15px; width:100%; box-sizing:border-box;" />
+
+            <input id="email" type="email" name="email" placeholder="Email" required
+                   style="padding:12px; border:1px solid #ddd; border-radius:6px; font-size:15px; width:100%; box-sizing:border-box;" />
+
+            <input id="phone_number" type="text" name="phone_number" placeholder="Phone Number" required
+                   style="padding:12px; border:1px solid #ddd; border-radius:6px; font-size:15px; width:100%; box-sizing:border-box;" />
+
+            <textarea id="message" name="message" placeholder="Write your message..." required
+                      style="padding:12px; border:1px solid #ddd; border-radius:6px; font-size:15px; width:100%; height:130px; box-sizing:border-box; grid-column:span 2; resize:none;"></textarea>
+
+            <button type="submit" onclick="return validateFeedbackForm()"
+                    style="padding:12px; background:#ff0000; color:white; border:none; border-radius:6px; font-size:16px; cursor:pointer; grid-column:span 2;">
+                Submit
+            </button>
         </div>
-      </form>
-    </div>
+    </form>
+</div>
+
+<!-- Responsive media query (required for mobile) -->
+<style>
+@media (max-width: 640px) {
+    .feedback-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .feedback-grid textarea,
+    .feedback-grid button {
+        grid-column: span 1 !important;
+    }
+}
+</style>
+
 
     <!-- horizontal scrolling gallery -->
     <div style="margin-top:18px;">
