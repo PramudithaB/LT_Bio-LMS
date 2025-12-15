@@ -46,9 +46,11 @@ Route::get('/admin/package/create', [adminController::class, 'createPackage'])->
 Route::post('/admin/package/store', [adminController::class, 'storePackage'])->name('package.store');
 Route::get('/buyclass', [adminController::class, 'buyclass'])->name('buyclass');
 Route::get('/cart', function () {return view('cart');})->name('cart.view');
-Route::get('/checkout', [adminController::class, 'checkoutPage'])->name('checkout.page');
-Route::post('/checkout/submit', [adminController::class, 'checkoutSubmit'])->name('checkout.submit');
+Route::get('/checkout', [adminController::class, 'checkoutPage'])->name('checkout.page')->middleware('auth');
+Route::post('/checkout/submit', [adminController::class, 'checkoutSubmit'])->name('checkout.submit')->middleware('auth');
 Route::get('/paymentmanage', [adminController::class, 'paymentmanage'])->name('paymentmanage');
+Route::put('/payment/approve/{id}', [adminController::class, 'paymentApprove'])->name('payment.approve');
+Route::put('/payment/reject/{id}', [adminController::class, 'paymentReject'])->name('payment.reject');
 
 
 

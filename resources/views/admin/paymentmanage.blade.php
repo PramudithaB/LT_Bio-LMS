@@ -294,8 +294,7 @@
                             <th>Slip</th>
                             <th>Date</th>
                             <th>Action</th>
-                            
-
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -316,6 +315,35 @@
 
                     <td style="padding: 10px; color:#9ca3af;">
                         {{ $checkout->created_at->format('Y-m-d') }}
+                    </td>
+
+                    <td style="padding: 10px;">
+                        <form action="{{ route('payment.approve', $checkout->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" style="padding:6px 10px; background:#10b981; color:white; border:none; border-radius:4px; margin-right:6px;">
+                                Approve
+                            </button>
+                        </form>
+
+                        <form action="{{ route('payment.reject', $checkout->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" style="padding:6px 10px; background:#ef4444; color:white; border:none; border-radius:4px;">
+                                Reject
+                            </button>
+                        </form>
+                    </td>
+
+                    <td style="padding:10px; color:#e5e7eb; font-weight:700;">
+                        @php $status = $checkout->status ?? 'pending'; @endphp
+                        @if($status === 'approved')
+                            <span style="color:#10b981;">Approved</span>
+                        @elseif($status === 'rejected')
+                            <span style="color:#ef4444;">Rejected</span>
+                        @else
+                            <span style="color:#f59e0b;">Pending</span>
+                        @endif
                     </td>
                 </tr>
                 @endforeach

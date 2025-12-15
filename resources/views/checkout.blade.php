@@ -57,6 +57,9 @@
             <input type="file" name="file" accept="application/pdf,image/*" class="w-full border p-3 rounded" required>
         </div>
 
+        <!-- add hidden lesson id to track intended lesson (optional) -->
+        <input type="hidden" id="lesson_id" name="lesson_id" value="">
+
         <button class="bg-primary-purple text-white px-6 py-3 rounded-lg hover:bg-dark-purple transition font-semibold">
             Complete Checkout
         </button>
@@ -89,9 +92,22 @@
             <div class="text-xl font-bold mt-4 text-right">Total: Rs. ${total}</div>
         `;
 
-        // Fill form fields automatically
+        // Fill form fields automatically from cart
         document.getElementById("class_name").value = selectedNames.join(", ");
-        document.getElementById("class_id").value = selectedIds.join(", ");
+        document.getElementById("class_id").value = selectedIds.join(",");
+
+        // If page opened with query params (from "Go to Video"), prefer those values
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('class')) {
+            // prefer single class id passed in query
+            document.getElementById("class_id").value = params.get('class');
+        }
+        if (params.has('class_name')) {
+            document.getElementById("class_name").value = decodeURIComponent(params.get('class_name'));
+        }
+        if (params.has('lesson')) {
+            document.getElementById("lesson_id").value = params.get('lesson');
+        }
     </script>
 
 </body>

@@ -109,11 +109,48 @@
                 {{ $lesson->description ?? 'No description.' }}
             </p>
 
-<a href="{{ route('classvideo', $lesson->id) }}" 
-               target="_blank"
-               class="w-full flex items-center justify-center py-2 bg-primary-purple text-white font-semibold text-sm rounded-lg hover:bg-dark-purple transition duration-150">
-                <i data-lucide="youtube" class="w-5 h-5 mr-2"></i> Go to Video
-            </a>
+            @php
+                // default routes
+                $videoRoute = route('classvideo', $lesson->id);
+                $checkoutRoute = route('checkout.page') . '?class=' . $class->id . '&class_name=' . urlencode($class->className) . '&lesson=' . $lesson->id;
+
+                // assume free lessons are viewable
+                $canView = ! $lesson->is_paid;
+
+                if ($lesson->is_paid && auth()->check()) {
+                    $userId = auth()->id();
+                    $userName = auth()->user()->name ?? null;
+                    $classId = $lesson->class_id;
+
+                    // exact-match on CSV class_id (same approach used elsewhere)
+                    $hasApproved = \App\Models\Checkout::where('status', 'approved')
+                        ->whereRaw("CONCAT(',', REPLACE(class_id, ' ', ''), ',') LIKE ?", ['%,' . $classId . ',%'])
+                        ->where(function($q) use ($userId, $userName) {
+                            $q->where('user_id', $userId);
+                            if ($userName) {
+                                $q->orWhere('student_name', $userName);
+                            }
+                        })
+                        ->exists();
+
+                    if ($hasApproved) {
+                        $canView = true;
+                    }
+                }
+            @endphp
+
+            @if($canView)
+                <a href="{{ $videoRoute }}"
+                   class="w-full flex items-center justify-center py-2 bg-primary-purple text-white font-semibold text-sm rounded-lg hover:bg-dark-purple transition duration-150">
+                    <i data-lucide="youtube" class="w-5 h-5 mr-2"></i> Go to Video
+                </a>
+            @else
+                <a href="{{ $checkoutRoute }}"
+                   class="w-full flex items-center justify-center py-2 bg-yellow-500 text-white font-semibold text-sm rounded-lg hover:brightness-95 transition duration-150">
+                    <i data-lucide="credit-card" class="w-5 h-5 mr-2"></i> Pay / Checkout
+                </a>
+            @endif
+
         </div>
 
     @empty

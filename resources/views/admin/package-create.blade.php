@@ -81,7 +81,7 @@
             margin-top: 20px;
         }
 
-        input, textarea {
+        input, textarea, select {
             width: 100%;
             padding: 12px;
             background-color: #374151;
@@ -89,7 +89,7 @@
             border-radius: 6px;
             color: white;
         }
-        input:focus, textarea:focus {
+        input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: #4f46e5;
             box-shadow: 0 0 0 2px rgba(79,70,229,0.4);
@@ -177,8 +177,13 @@
                 @csrf
 
                 <div style="margin-bottom:15px;">
-                    <label>Package Name</label>
-                    <input type="text" name="package_name" required>
+                    <label>Select Class</label>
+                    <select name="class_id" required>
+                        <option value="" disabled selected>-- Select Class --</option>
+                        @foreach($classes as $c)
+                            <option value="{{ $c->id }}">{{ $c->className }} @if($c->month) ({{ $c->month }}) @endif</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div style="margin-bottom:15px;">

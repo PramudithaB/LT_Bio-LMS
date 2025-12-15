@@ -158,11 +158,10 @@
                 </div>
 
              <button
-    onclick="addToCart({{ $pkg->id }}, '{{ $pkg->package_name }}', {{ $pkg->monthly_fee }})"
+    onclick="addToCart({{ $pkg->class_id }}, '{{ $pkg->package_name }}', {{ $pkg->monthly_fee }})"
     class="w-full bg-primary-purple text-white py-3 rounded-lg font-semibold hover:bg-dark-purple transition">
     Add to Cart
 </button>
-
 
             </div>
             @endforeach
