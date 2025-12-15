@@ -53,7 +53,7 @@
         </div>
 
         <div>
-            <label class="font-semibold">Upload PDF or Image</label>
+            <label class="font-semibold">Payment Slip (PDF or Image)</label>
             <input type="file" name="file" accept="application/pdf,image/*" class="w-full border p-3 rounded" required>
         </div>
 

@@ -251,10 +251,10 @@
             <h2 style="font-size: 1.8rem; color: #4f46e5;">Admin Panel</h2>
             <p style="font-size: 0.9rem; color: #9ca3af;">Content Management</p>
         </div>
-        <a href="#overview" class="active">
+        <a href="{{ route('admindashboard') }}">
             <i class="fas fa-tachometer-alt"></i> Dashboard
         </a>
-        <a href="#users">
+        <a href="{{ route('dashboard') }}">
             <i class="fas fa-users"></i> User Management
         </a>
         <a href="{{ route('classmanage') }}">
@@ -269,9 +269,9 @@
          <a href="{{route('package.create')}}">
             <i class="fas fa-cog"></i> Packages
         </a>
-        <a href="{{ route('paymentmanage') }}">
+         <a href="{{ route('paymentmanage') }}">
             <i class="fas fa-file-invoice-dollar"></i> Payment Management
-        </a>    
+        </a>   
         <div style="position: absolute; bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box;">
             <a href="#" style="border-left: none; background-color: #374151; border-radius: 6px;">
                 <i class="fas fa-sign-out-alt"></i> Logout
@@ -279,82 +279,47 @@
         </div>
     </nav>
 
-    <!-- Main Content Area -->
-
-    <div id="main-content">
-
-        <!-- Top Bar / Header -->
-        <header id="topbar" class="flex items-center justify-between">
-            <button id="menu-toggle"><i class="fas fa-bars"></i></button>
-            <h1 class="hidden-mobile" style="font-size: 1.5rem;">Welcome Back, Admin!</h1>
-            <div class="flex items-center">
-                <i class="fas fa-bell" style="margin-right: 20px; color: #9ca3af;"></i>
-                <div
-                    style="width: 32px; height: 32px; background-color: #60a5fa; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #111827;">
-                    AD</div>
-            </div>
-        </header>
-
-      
+      <div id="main-content">
 
         <!-- Section: Recent Content Activity -->
         <section id="content-activity" style="padding-top: 40px;">
-            <h2 style="font-size: 1.8rem; margin-bottom: 20px;">All Classes </h2>
+            <h2 style="font-size: 1.8rem; margin-bottom: 20px;">Payment Management</h2>
             <div class="card" style="overflow-x: auto;">
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Class Name</th>
-                            <th>Description</th>
-                            <th>Teacher</th>
-                            <th>Class Time</th>
-                            <th>All sessions</th>
-                            <th>Month</th>
+                            <th>Student Name</th>
+                            <th>Class name</th>
+                            <th>Remark</th>
+                            <th>Slip</th>
+                            <th>Date</th>
+                            <th>Action</th>
                             
 
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($classes as $c)
-                            <tr>
+                @foreach($checkouts as $checkout)
+                <tr style="border-bottom: 1px solid #374151;">
+                    <td style="padding: 10px; color:#e5e7eb;">{{ $checkout->student_name }}</td>
+                    <td style="padding: 10px; color:#e5e7eb;">{{ $checkout->class_name }}</td>
+                    <td style="padding: 10px; color:#e5e7eb;">{{ $checkout->remark }}</td>
 
-                                <td>{{ $c->className }}</td>
-                                <td>{{ $c->description }}</td>
-                                <td>{{ $c->teacherName }}</td>
-                                <td>{{ $c->classTime }}</td>
-                                <td>{{ $c->sessionCount }}</td>
-                                <td>{{ $c->month }}</td>
-                                
-                        @endforeach
-                    </tbody>
+                    <td style="padding: 10px;">
+                        @if($checkout->file_path)
+                            <a href="{{ asset('storage/' . $checkout->file_path) }}" 
+                               style="color:#60a5fa;" target="_blank">View File</a>
+                        @else
+                            <span style="color:#9ca3af;">No File</span>
+                        @endif
+                    </td>
 
-                </table>
-            </div>
-        </section>
-
-          <section id="content-activity" style="padding-top: 40px;">
-            <h2 style="font-size: 1.8rem; margin-bottom: 20px;">User Management</h2>
-            <div class="card" style="overflow-x: auto;">
-                <table class="data-table">
-                    <thead>
-                       <tr>
-                <th class="p-3">ID</th>
-                <th class="p-3">Name</th>
-                <th class="p-3">Email</th>
-                <th class="p-3">Registered Date</th>
-            </tr>
-        </thead>
-                    </thead>
-                   <tbody>
-            @foreach($users as $user)
-                <tr class="border-t">
-                    <td class="p-3">{{ $user->id }}</td>
-                    <td class="p-3">{{ $user->name }}</td>
-                    <td class="p-3">{{ $user->email }}</td>
-                    <td class="p-3">{{ $user->created_at->format('Y-m-d') }}</td>
+                    <td style="padding: 10px; color:#9ca3af;">
+                        {{ $checkout->created_at->format('Y-m-d') }}
+                    </td>
                 </tr>
-            @endforeach
-        </tbody>
+                @endforeach
+            </tbody>
 
                 </table>
             </div>
@@ -365,74 +330,9 @@
 <div class="overflow-x-auto">
    
 </div>
-@foreach($classes as $class)
-        <section id="content-activity" style="padding-top: 40px;">
-            <h2 style="font-size: 1.8rem; margin-bottom: 20px;">{{ $class->className }} - Lessons</h2>
-            <div class="card" style="overflow-x: auto;">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                             <th>#</th>
-                <th>Lesson Name</th>
-                <th>Description</th>
-                <th>Link</th>
-                <th>File</th>
-                <th>Notice</th>
-                <th>Version</th>
-                            
-
-                        </tr>
-                    </thead>
-                   <tbody>
-            @forelse($class->lessons as $index => $lesson)
-                <tr>
-                    <td>{{ $index + 1 }}</td>
-
-                    <td>{{ $lesson->name }}</td>
-
-                    <td>{{ $lesson->description }}</td>
-
-                    <td>
-                        @if($lesson->link)
-                            <a href="{{ $lesson->link }}" target="_blank">Open</a>
-                        @else
-                            -
-                        @endif
-                    </td>
-
-                    <td>
-                        @if($lesson->file_path)
-                            <a href="{{ asset('storage/' . $lesson->file_path) }}" target="_blank">
-                                Download
-                            </a>
-                        @else
-                            -
-                        @endif
-                    </td>
-
-                    <td>
-                        {{ $lesson->notice ? $lesson->notice : '-' }}
-                    </td>
-
-                    <td>
-                        {{ $lesson->is_paid ? 'Paid' : 'Free' }}
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="7" style="text-align:center; color:gray;">
-                        No lessons found for this class.
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-
-                </table>
-            </div>
-        </section>
-@endforeach
 
     </div>
+</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

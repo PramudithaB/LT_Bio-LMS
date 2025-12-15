@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\ClassModel;
 use App\Models\User;
 use App\Models\Package;
+use App\Models\Checkout;
 
 
 class adminController extends Controller
@@ -66,20 +67,35 @@ public function checkoutSubmit(Request $request)
 {
     $request->validate([
         'student_name' => 'required|string|max:255',
-        'class_name' => 'required|string',
-        'class_id' => 'required|string',
-        'remark' => 'nullable|string',
-        'file' => 'required|mimes:jpg,png,pdf|max:2048',
+        'class_name'   => 'required|string',
+        'class_id'     => 'required|string',
+        'remark'       => 'nullable|string',
+        'file'         => 'nullable|mimes:jpg,png,pdf|max:2048',
     ]);
 
-    // 🌟 File upload
-    $path = $request->file('file')->store('checkout_files', 'public');
+    // File Upload
+    $filePath = null;
+    if ($request->hasFile('file')) {
+        $filePath = $request->file('file')->store('checkout_files', 'public');
+    }
 
-    // Save to database if needed (Optional)
-    // Checkout::create([...]);
+    // Save to DB
+    Checkout::create([
+        'student_name' => $request->student_name,
+        'class_name'   => $request->class_name,
+        'class_id'     => $request->class_id,
+        'remark'       => $request->remark,
+        'file_path'    => $filePath,
+    ]);
 
     return redirect()->route('dashboard')->with('success', 'Checkout completed successfully!');
 }
+public function paymentmanage()
+{
+    $checkouts = Checkout::orderBy('created_at', 'desc')->get();
+
+    return view('admin.paymentmanage', compact('checkouts'));
 
 
+}
 }
