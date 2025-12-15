@@ -24,6 +24,35 @@ class adminController extends Controller
 {
     $lesson = \App\Models\Lesson::findOrFail($lessonId);
 
+    // If lesson is paid, require an approved payment for this user's purchase of the class
+    if ($lesson->is_paid) {
+        // require authentication first
+        if (! auth()->check()) {
+            // send user to login (so middleware won't block checkout page) with intended message
+            return redirect()->route('login')->with('error', 'Please login and submit payment to access this paid lesson.');
+        }
+
+        $userId = auth()->id();
+        $userName = auth()->user()->name ?? null;
+        $classId = $lesson->class_id;
+
+        // Use exact-match pattern to avoid partial matches (e.g. "1" matching "10")
+        // Check approved checkouts where either user_id matches OR student_name matches signed-in user
+        $hasApproved = Checkout::where('status', 'approved')
+            ->whereRaw("CONCAT(',', REPLACE(class_id, ' ', ''), ',') LIKE ?", ['%,' . $classId . ',%'])
+            ->where(function($q) use ($userId, $userName) {
+                $q->where('user_id', $userId);
+                if ($userName) {
+                    $q->orWhere('student_name', $userName);
+                }
+            })
+            ->exists();
+
+        if (! $hasApproved) {
+            return redirect()->route('checkout.page')->with('error', 'Your payment for this class is not approved yet. Please submit payment or wait for approval.');
+        }
+    }
+
     return view('classvideo', compact('lesson'));
 }
 
@@ -36,8 +65,11 @@ public function classview($id)
 
 public function createPackage()
 {
-    return view('admin.package-create');
+    // pass available classes so admin selects one when creating a package
+    $classes = ClassModel::orderBy('className')->get();
+    return view('admin.package-create', compact('classes'));
 }
+
 public function buyclass()
 {
     $packages = Package::orderBy('id','desc')->get();
@@ -49,14 +81,22 @@ public function buyclass()
 public function storePackage(Request $request)
 {
     $request->validate([
-        'package_name' => 'required|string|max:255',
+        'class_id' => 'required|exists:class_models,id|unique:packages,class_id',
         'description' => 'nullable|string',
         'monthly_fee' => 'required|integer|min:0',
     ]);
 
-    Package::create($request->all());
+    // set package_name from the selected className
+    $class = ClassModel::findOrFail($request->class_id);
 
-    return redirect()->route('admindashboard')->with('success', 'Package created successfully!');
+    Package::create([
+        'package_name' => $class->className,
+        'description' => $request->description,
+        'monthly_fee' => $request->monthly_fee,
+        'class_id' => $request->class_id,
+    ]);
+
+    return redirect()->route('admindashboard')->with('success', 'Package created and linked to class successfully!');
 }
 public function checkoutPage()
 {
@@ -79,13 +119,18 @@ public function checkoutSubmit(Request $request)
         $filePath = $request->file('file')->store('checkout_files', 'public');
     }
 
-    // Save to DB
+    // Normalize class_id: remove spaces and ensure comma-separated list like "1,2,3"
+    $normalizedClassId = implode(',', array_filter(array_map('trim', explode(',', $request->class_id))));
+
+    // Save to DB, record the user who submitted
     Checkout::create([
         'student_name' => $request->student_name,
         'class_name'   => $request->class_name,
-        'class_id'     => $request->class_id,
+        'class_id'     => $normalizedClassId,
         'remark'       => $request->remark,
         'file_path'    => $filePath,
+        'status'       => 'pending',
+        'user_id'      => auth()->id(), // record submitting user
     ]);
 
     return redirect()->route('dashboard')->with('success', 'Checkout completed successfully!');
@@ -97,5 +142,29 @@ public function paymentmanage()
     return view('admin.paymentmanage', compact('checkouts'));
 
 
+}
+
+public function paymentApprove($id)
+{
+    $checkout = Checkout::find($id);
+    if (!$checkout) {
+        return back()->with('error', 'Payment not found.');
+    }
+    $checkout->status = 'approved';
+    $checkout->save();
+
+    return back()->with('success', 'Payment approved.');
+}
+
+public function paymentReject($id)
+{
+    $checkout = Checkout::find($id);
+    if (!$checkout) {
+        return back()->with('error', 'Payment not found.');
+    }
+    $checkout->status = 'rejected';
+    $checkout->save();
+
+    return back()->with('success', 'Payment rejected.');
 }
 }

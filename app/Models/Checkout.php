@@ -12,5 +12,7 @@ class Checkout extends Model
         'class_id',
         'remark',
         'file_path',
+        'status',
+        'user_id', // added so controller can save current user
     ];
 }
