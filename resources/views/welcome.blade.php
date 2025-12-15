@@ -227,7 +227,7 @@
     <div class="container">
       <a class="logo" href="#">
         <img src="{{ asset('images/logo1.jpeg') }}" alt="LTBio.lk Logo" />
-        <span>LTBio.lk</span>
+        <span>LTbio.lk</span>
       </a>
 
       <ul>
@@ -325,7 +325,7 @@
           <p style="font-weight:700; color:var(--muted)">BSc (UG)Biochemistry & Molecular Biology — University Of Colombo</p>
         </div>
         <div class="feature-card fadeInUp">
-          <h3 style="margin-bottom:6px">වසර දෙකක පළපුරුද්ද</h3>
+          <h3 style="margin-bottom:6px">වසර ගනනාවක පළපුරුද්ද</h3>
           <p style="font-weight:700; color:var(--muted)">2022 සිට ගණන් A සාමාර්ථයන් නිෂ්පාදනය</p>
         </div>
         <div class="feature-card fadeInUp">
