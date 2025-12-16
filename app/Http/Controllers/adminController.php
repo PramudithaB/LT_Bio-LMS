@@ -167,4 +167,43 @@ public function paymentReject($id)
 
     return back()->with('success', 'Payment rejected.');
 }
+
+// Edit Package
+public function packageedit($id)
+{
+    $package = Package::findOrFail($id);
+    $classes = ClassModel::orderBy('className')->get();
+    return view('admin.package-edit', compact('package', 'classes'));
+}
+
+// Update Package
+public function packageupdate(Request $request, $id)
+{
+    $request->validate([
+        'class_id' => 'required|exists:class_models,id',
+        'description' => 'nullable|string',
+        'monthly_fee' => 'required|integer|min:0',
+    ]);
+
+    $package = Package::findOrFail($id);
+    $class = ClassModel::findOrFail($request->class_id);
+
+    $package->update([
+        'package_name' => $class->className,
+        'description' => $request->description,
+        'monthly_fee' => $request->monthly_fee,
+        'class_id' => $request->class_id,
+    ]);
+
+    return redirect()->route('admindashboard')->with('success', 'Package updated successfully!');
+}
+
+// Delete Package
+public function packagedelete($id)
+{
+    $package = Package::findOrFail($id);
+    $package->delete();
+
+    return redirect()->route('admindashboard')->with('success', 'Package deleted successfully!');
+}
 }
