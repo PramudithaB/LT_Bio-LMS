@@ -35,15 +35,28 @@ Route::put('/feedback/approve/{id}', [StudentFeedbackController::class, 'feedbac
 
 Route::delete('/feedback/delete/{id}', [StudentFeedbackController::class, 'feedbackdelete'])->name('feedbackdelete');
 
+// Classes
+Route::get('/admin/class/edit/{id}', [ClassController::class, 'classedit'])->name('class.edit')->middleware(['auth', 'admin']);
+Route::put('/admin/class/update/{id}', [ClassController::class, 'classupdate'])->name('class.update')->middleware(['auth', 'admin']);
+Route::delete('/admin/class/delete/{id}', [ClassController::class, 'classdelete'])->name('class.delete')->middleware(['auth', 'admin']);
+
 // Lessons
 Route::get('/admin/lesson/create', [ClassController::class, 'lessoncreate'])->name('lesson.lessoncreate');
 Route::post('/admin/lesson/store', [ClassController::class, 'lessonstore'])->name('lesson.lessonstore');
+Route::get('/admin/lesson/edit/{id}', [ClassController::class, 'lessonedit'])->name('lesson.edit')->middleware(['auth', 'admin']);
+Route::put('/admin/lesson/update/{id}', [ClassController::class, 'lessonupdate'])->name('lesson.update')->middleware(['auth', 'admin']);
+Route::delete('/admin/lesson/delete/{id}', [ClassController::class, 'lessondelete'])->name('lesson.delete')->middleware(['auth', 'admin']);
 
 // Class Lessons Page
 Route::get('/admin/class/{id}/lessons', [ClassController::class, 'showClassLessons'])
         ->name('class.lessons');
+
+// Packages
 Route::get('/admin/package/create', [adminController::class, 'createPackage'])->name('package.create');
 Route::post('/admin/package/store', [adminController::class, 'storePackage'])->name('package.store');
+Route::get('/admin/package/edit/{id}', [adminController::class, 'packageedit'])->name('package.edit')->middleware(['auth', 'admin']);
+Route::put('/admin/package/update/{id}', [adminController::class, 'packageupdate'])->name('package.update')->middleware(['auth', 'admin']);
+Route::delete('/admin/package/delete/{id}', [adminController::class, 'packagedelete'])->name('package.delete')->middleware(['auth', 'admin']);
 Route::get('/buyclass', [adminController::class, 'buyclass'])->name('buyclass');
 Route::get('/cart', function () {return view('cart');})->name('cart.view');
 Route::get('/checkout', [adminController::class, 'checkoutPage'])->name('checkout.page')->middleware('auth');

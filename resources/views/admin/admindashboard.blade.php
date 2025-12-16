@@ -298,7 +298,18 @@
             </div>
         </header>
 
-      
+        <!-- Success/Error Messages -->
+        @if(session('success'))
+            <div style="background-color: #d4edda; color: #155724; padding: 15px; margin: 20px 0; border-radius: 8px; border: 1px solid #c3e6cb;">
+                <i class="fas fa-check-circle"></i> {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div style="background-color: #f8d7da; color: #721c24; padding: 15px; margin: 20px 0; border-radius: 8px; border: 1px solid #f5c6cb;">
+                <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+            </div>
+        @endif
 
         <!-- Section: Recent Content Activity -->
         <section id="content-activity" style="padding-top: 40px;">
@@ -313,24 +324,33 @@
                             <th>Class Time</th>
                             <th>All sessions</th>
                             <th>Month</th>
-                            
-
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($classes as $c)
                             <tr>
-
                                 <td>{{ $c->className }}</td>
                                 <td>{{ $c->description }}</td>
                                 <td>{{ $c->teacherName }}</td>
                                 <td>{{ $c->classTime }}</td>
                                 <td>{{ $c->sessionCount }}</td>
                                 <td>{{ $c->month }}</td>
-                                
+                                <td>
+                                    <a href="{{ route('class.edit', $c->id) }}" style="background: #4f46e5; color: white; padding: 6px 12px; border-radius: 4px; margin-right: 5px; display: inline-block; text-decoration: none;">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <form action="{{ route('class.delete', $c->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Are you sure you want to delete this class?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" style="background: #dc2626; color: white; padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer;">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
                         @endforeach
                     </tbody>
-
                 </table>
             </div>
         </section>
@@ -363,7 +383,57 @@
             </div>
         </section>
 
-      
+        <!-- Section: Packages Management -->
+        <section id="packages" style="padding-top: 40px;">
+            <h2 style="font-size: 1.8rem; margin-bottom: 20px;">All Packages</h2>
+            <div class="card" style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Package Name</th>
+                            <th>Description</th>
+                            <th>Monthly Fee</th>
+                            <th>Linked Class</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($packages as $package)
+                            <tr>
+                                <td>{{ $package->package_name }}</td>
+                                <td>{{ $package->description ?? '-' }}</td>
+                                <td>LKR {{ number_format($package->monthly_fee) }}</td>
+                                <td>
+                                    @if($package->classModel)
+                                        {{ $package->classModel->className }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td>
+                                    <a href="{{ route('package.edit', $package->id) }}" style="background: #4f46e5; color: white; padding: 6px 12px; border-radius: 4px; margin-right: 5px; display: inline-block; text-decoration: none;">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <form action="{{ route('package.delete', $package->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Are you sure you want to delete this package?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" style="background: #dc2626; color: white; padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer;">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" style="text-align:center; color:gray;">
+                                    No packages found.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
 <div class="overflow-x-auto">
    
@@ -382,8 +452,7 @@
                 <th>File</th>
                 <th>Notice</th>
                 <th>Version</th>
-                            
-
+                <th>Actions</th>
                         </tr>
                     </thead>
                    <tbody>
@@ -420,10 +489,23 @@
                     <td>
                         {{ $lesson->is_paid ? 'Paid' : 'Free' }}
                     </td>
+
+                    <td>
+                        <a href="{{ route('lesson.edit', $lesson->id) }}" style="background: #4f46e5; color: white; padding: 6px 12px; border-radius: 4px; margin-right: 5px; display: inline-block; text-decoration: none;">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <form action="{{ route('lesson.delete', $lesson->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Are you sure you want to delete this lesson?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" style="background: #dc2626; color: white; padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer;">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </form>
+                    </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7" style="text-align:center; color:gray;">
+                    <td colspan="8" style="text-align:center; color:gray;">
                         No lessons found for this class.
                     </td>
                 </tr>
