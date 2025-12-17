@@ -7,6 +7,8 @@ use App\Models\ClassModel;
 use App\Models\User;
 use App\Models\Package;
 use App\Models\Checkout;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Log;
 
 
 class adminController extends Controller
@@ -137,6 +139,15 @@ public function checkoutSubmit(Request $request)
 }
 public function paymentmanage()
 {
+    // If migrations haven't been run the table may be missing — handle gracefully.
+    if (! Schema::hasTable('checkouts')) {
+        Log::error('paymentmanage: checkouts table does not exist.');
+        $checkouts = collect(); // empty collection so view still renders
+        // Pass an error message to the view to instruct admin/deployer to run migrations
+        return view('admin.paymentmanage', compact('checkouts'))
+            ->with('error', 'Payments table not found. Run: php artisan migrate');
+    }
+
     $checkouts = Checkout::orderBy('created_at', 'desc')->get();
 
     return view('admin.paymentmanage', compact('checkouts'));
