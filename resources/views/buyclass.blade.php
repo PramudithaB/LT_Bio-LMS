@@ -88,6 +88,12 @@
                         <i data-lucide="bell" class="w-6 h-6"></i>
                     </button>
 
+                    <!-- Mobile Cart Icon (visible only on small screens) -->
+                    <a href="{{ route('cart.view') }}" class="sm:hidden inline-flex items-center mr-2 mobile-cart z-50">
+                        <i data-lucide="shopping-cart" class="w-6 h-6 text-gray-600 hover:text-primary-purple"></i>
+                        <span id="cart-count-mobile" class="ml-2 bg-primary-purple text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">0</span>
+                    </a>
+
                     <!-- Profile -->
                     <div class="relative">
                         <button id="profile-menu-button"
@@ -138,6 +144,7 @@
             <i data-lucide="shopping-cart" class="w-7 h-7 text-primary-purple mr-2"></i>
             Available Packages
         </h1>
+        
 
         <!-- 🎁 MODERN PACKAGE CARDS -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -204,16 +211,18 @@
 
     function updateCartBadge() {
         const count = cart.length;
-        document.getElementById("cart-count").textContent = count;
+        const desktop = document.getElementById("cart-count");
+        const mobile = document.getElementById("cart-count-mobile");
+        if (desktop) desktop.textContent = count;
+        if (mobile) mobile.textContent = count;
     }
 
-    // Cart animation
+    // Cart animation (affects both badges if present)
     function animateCart() {
-        const badge = document.getElementById("cart-count");
-        badge.classList.add("scale-125");
-
+        const badges = [document.getElementById("cart-count"), document.getElementById("cart-count-mobile")].filter(Boolean);
+        badges.forEach(b => b.classList.add("scale-125"));
         setTimeout(() => {
-            badge.classList.remove("scale-125");
+            badges.forEach(b => b.classList.remove("scale-125"));
         }, 300);
     }
 </script>
