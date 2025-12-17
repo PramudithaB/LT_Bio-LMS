@@ -61,8 +61,32 @@
     nav ul li a:hover{background:linear-gradient(90deg, rgba(23,162,184,0.06), rgba(245,48,3,0.06)); transform:translateY(-3px); box-shadow:var(--shadow-sm)}
 
     /* Mobile nav fallback */
+    .nav-toggle{display:none; background:none; border:0; padding:8px; cursor:pointer}
+    .nav-toggle svg{display:block}
+
     @media (max-width:880px){
-      nav ul{display:none}
+      nav{left:12px; transform:none; width:calc(100% - 24px); padding:10px}
+      nav .container{gap:8px}
+      nav ul{display:none} /* hidden by default on small screens */
+      .nav-toggle{display:flex; align-items:center; justify-content:center}
+
+      /* when nav has .open show vertical menu */
+      nav.open ul{
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+        align-items:stretch;
+        position:absolute;
+        left:12px;
+        right:12px;
+        top:calc(100% + 8px);
+        background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.95));
+        padding:12px;
+        border-radius:12px;
+        box-shadow:var(--shadow-sm);
+        border: 1px solid rgba(11,12,16,0.04);
+      }
+      nav.open ul li a{display:block; padding:12px; border-radius:10px}
     }
 
     /* ---------------- Hero (3D stage) ---------------- */
@@ -230,10 +254,17 @@
         <span>LTbio.lk</span>
       </a>
 
-      <ul>
+      <!-- Mobile toggle (visible on small screens) -->
+      <button class="nav-toggle" aria-label="Toggle navigation" id="navToggle" type="button">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <ul id="mainNav">
         <li><a href="#home">Home</a></li>
         <li><a href="#about">About</a></li>
-        <li><a href="#institutes">Institutes</a></li>
+        <li><a href="#institutes">Feedback</a></li>
         <li><a href="{{ route('login') }}">Login</a></li>
       </ul>
     </div>
@@ -630,6 +661,42 @@
         { transform: el.style.transform }
       ], { duration: 4200, iterations: 1 });
     }, 5200);
+
+    // Mobile nav toggle: open/close, close when clicking outside, close on link click
+    (function(){
+      const nav = document.querySelector('nav');
+      const toggle = document.getElementById('navToggle');
+      const navList = document.getElementById('mainNav');
+
+      if (!nav || !toggle) return;
+
+      toggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        nav.classList.toggle('open');
+        // toggle aria-expanded for accessibility
+        const expanded = nav.classList.contains('open');
+        toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      });
+
+      // Close when clicking a nav link (mobile)
+      navList.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          if (nav.classList.contains('open')) nav.classList.remove('open');
+        });
+      });
+
+      // Click outside to close
+      document.addEventListener('click', (e) => {
+        if (!nav.contains(e.target) && nav.classList.contains('open')) {
+          nav.classList.remove('open');
+        }
+      });
+
+      // Close on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && nav.classList.contains('open')) nav.classList.remove('open');
+      });
+    })();
   </script>
 </body>
 

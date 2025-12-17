@@ -54,67 +54,70 @@
 
 <body class="antialiased">
 
-    <!-- Top Navigation Bar -->
-    <nav class="bg-white shadow-md sticky top-0 z-20">
+    <!-- Top Navigation Bar (responsive) -->
+    <nav class="bg-white shadow-md fixed top-0 left-0 right-0 z-50" role="navigation" aria-label="Main navigation">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <!-- Branding (LTBio) -->
-                <div class="flex-shrink-0">
+                <!-- Branding -->
+                <div class="flex items-center gap-3">
                     <span class="text-2xl font-extrabold text-primary-purple tracking-tighter">LTBio</span>
-                    <span class="text-xs font-light text-gray-600 block leading-none">Online Education</span>
-                </div>
-                
-                <!-- Desktop Menu Items -->
-                <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-4 text-gray-600 font-medium">
-                    <a href="" class="hover:text-primary-purple transition duration-150 flex items-center"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-1"></i> Dashboard</a>
-                    <a href="{{ route('buyclass') }}" class="hover:text-primary-purple transition duration-150 flex items-center"><i data-lucide="book-open-text" class="w-5 h-5 mr-1"></i> Buy Class</a>
-                    <a href="#" class="hover:text-primary-purple transition duration-150 flex items-center"><i data-lucide="download" class="w-5 h-5 mr-1"></i> Study Materials</a>
+                    <span class="text-xs font-light text-gray-600 hidden sm:block">Online Education</span>
                 </div>
 
-                <!-- Profile Dropdown -->
-                <div class="flex items-center space-x-4">
-                    <!-- Notification Button -->
-                    <button class="text-gray-400 hover:text-primary-purple transition duration-150">
-                         <i data-lucide="bell" class="w-6 h-6"></i>
+                <!-- Desktop Menu -->
+                <div class="hidden sm:flex sm:items-center sm:space-x-4 text-gray-600 font-medium">
+                    <a href="#home" class="hover:text-primary-purple transition duration-150 flex items-center"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-1"></i> Dashboard</a>
+                    <a href="{{ route('buyclass') }}" class="hover:text-primary-purple transition duration-150 flex items-center"><i data-lucide="book-open-text" class="w-5 h-5 mr-1"></i> Buy Class</a>
+                    <a href="#materials" class="hover:text-primary-purple transition duration-150 flex items-center"><i data-lucide="download" class="w-5 h-5 mr-1"></i> Study Materials</a>
+                </div>
+
+                <!-- Right: profile / mobile toggle -->
+                <div class="flex items-center gap-3">
+                    <button class="text-gray-400 hover:text-primary-purple transition duration-150 mr-1">
+                        <i data-lucide="bell" class="w-6 h-6"></i>
                     </button>
-                    
-                    <!-- Dropdown Container -->
-                    <div class="relative">
-                        <!-- Button/Trigger -->
+
+                    <div class="hidden sm:block relative">
                         <button id="profile-menu-button" class="flex items-center space-x-2 border-l pl-4 focus:outline-none transition duration-150 hover:bg-gray-50 p-2 -my-2 rounded-lg">
-                            <!-- Auth Blade Syntax Maintained -->
-                            <span class="font-medium text-sm text-gray-700 hidden sm:block">{{ Auth::user()->name }}</span>
+                            <span class="font-medium text-sm text-gray-700">{{ Auth::user()->name }}</span>
                             <div class="w-10 h-10 rounded-full bg-primary-purple flex items-center justify-center text-white font-bold">JD</div>
                             <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
                         </button>
-
-                        <!-- Dropdown Menu Content -->
                         <div id="profile-dropdown" class="absolute right-0 mt-3 w-48 bg-white border border-gray-200 rounded-lg shadow-xl py-1 z-30 hidden origin-top-right">
-                            
-                            <!-- Profile Link -->
-                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-100">
-                                {{ __('Profile') }}
-                            </a>
-
-                            <!-- Logout Form (Authentication and Submission Logic Maintained) -->
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <a href="{{ route('logout') }}"
-                                    onclick="event.preventDefault(); this.closest('form').submit();"
-                                    class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition duration-100">
-                                    {{ __('Log Out') }}
-                                </a>
+                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                            <form method="POST" action="{{ route('logout') }}">@csrf
+                                <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Log Out</a>
                             </form>
-
                         </div>
                     </div>
+
+                    <!-- Mobile hamburger -->
+                    <div class="sm:hidden">
+                        <button id="mobileMenuButton" aria-label="Toggle menu" aria-expanded="false" class="p-2 rounded-md text-gray-600 hover:text-primary-purple hover:bg-gray-100 focus:outline-none">
+                            <svg id="mobileMenuIconOpen" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                            <svg id="mobileMenuIconClose" class="h-6 w-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div id="mobileMenu" class="hidden sm:hidden absolute left-4 right-4 top-full mt-2 bg-white shadow-md rounded-md p-3 z-40">
+            <div class="flex flex-col gap-2">
+                <a href="#home" class="px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-gray-50">Home</a>
+                <a href="#about" class="px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-gray-50">About</a>
+                <a href="#institutes" class="px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-gray-50">Feedback</a>
+                <a href="{{ route('buyclass') }}" class="px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-gray-50">Buy Class</a>
+                <a href="#materials" class="px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-gray-50">Study Materials</a>
+                <a href="{{ route('login') }}" class="px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-gray-50">Login</a>
             </div>
         </div>
     </nav>
 
     <!-- Main Content Area -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Add top padding to offset fixed nav (adjust px value if you customize nav height) -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style="padding-top:88px; padding-bottom:32px;">
 
         <!-- Welcome Banner / Class Advertisement Bar (Biology Enrollment) -->
         <div class="bg-white p-6 rounded-xl shadow-lg mb-8 border-l-4 border-accent-yellow">
@@ -199,6 +202,46 @@
             });
         });
     </script>
+
+<!-- Mobile menu toggle -->
+<script>
+  (function(){
+    const mobileBtn = document.getElementById('mobileMenuButton');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const iconOpen = document.getElementById('mobileMenuIconOpen');
+    const iconClose = document.getElementById('mobileMenuIconClose');
+
+    if (!mobileBtn || !mobileMenu) return;
+
+    function setExpanded(open){
+      mobileBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if(open){
+        mobileMenu.classList.remove('hidden');
+        iconOpen.classList.add('hidden');
+        iconClose.classList.remove('hidden');
+      } else {
+        mobileMenu.classList.add('hidden');
+        iconOpen.classList.remove('hidden');
+        iconClose.classList.add('hidden');
+      }
+    }
+
+    mobileBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      setExpanded(mobileMenu.classList.contains('hidden'));
+    });
+
+    // close on outside click
+    document.addEventListener('click', function(e){
+      if (!mobileMenu.contains(e.target) && !mobileBtn.contains(e.target)) {
+        setExpanded(false);
+      }
+    });
+
+    // close on link click
+    mobileMenu.querySelectorAll('a, button').forEach(el => el.addEventListener('click', () => setExpanded(false)));
+  })();
+</script>
 
 </body>
 </html>
