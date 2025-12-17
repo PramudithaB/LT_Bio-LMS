@@ -44,7 +44,7 @@
     </script>
     <div class="mt-8">
     <a href="{{ route('checkout.page') }}"
-       class="bg-primary-purple text-white px-6 py-3 rounded-lg font-semibold hover:bg-dark-purple transition">
+       class="bg-primary-purple text-red px-6 py-3 rounded-lg font-semibold hover:bg-dark-purple transition">
         Proceed to Checkout
     </a>
 </div>

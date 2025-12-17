@@ -238,7 +238,7 @@
                 @if($lesson->file_path)
                     <div class="current-file">
                         <i class="fas fa-file"></i> Current file: 
-                        <a href="{{ asset('storage/' . $lesson->file_path) }}" target="_blank" style="color: #667eea;">View File</a>
+                        <a href="{{ route('storage.file', ['encoded' => base64_encode($lesson->file_path)]) }}" target="_blank" style="color: #667eea;">View File</a>
                         <small style="color: #666;"> (Upload new file to replace)</small>
                     </div>
                 @endif

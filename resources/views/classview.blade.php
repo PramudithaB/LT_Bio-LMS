@@ -44,17 +44,15 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Back Button -->
-                <a href="student_dashboard.html" class="flex items-center text-gray-600 hover:text-primary-purple transition duration-150 font-medium">
-                    <i data-lucide="arrow-left" class="w-5 h-5 mr-2"></i> Back to Dashboard
-                </a>
+              
                 
                 <!-- Branding -->
                 <div class="flex-shrink-0">
-                    <span class="text-2xl font-extrabold text-primary-purple tracking-tighter">LTBio</span>
+                    <span class="text-2xl font-extrabold text-primary-purple tracking-tighter">LTbio</span>
                 </div>
                 
                 <!-- Profile Placeholder -->
-                <div class="w-10 h-10 rounded-full bg-primary-purple flex items-center justify-center text-white font-bold">JD</div>
+                <div class="w-10 h-10 rounded-full bg-primary-purple flex items-center justify-center text-white font-bold">name</div>
             </div>
         </div>
     </nav>
@@ -64,24 +62,24 @@
 
         <!-- CLASS HEADER / DETAILS -->
         <div class="bg-white p-8 rounded-xl shadow-xl mb-8 border-l-8 border-primary-purple">
-            <h1 class="text-4xl font-extrabold text-gray-900">2026 Theory Class: Cellular Respiration</h1>
-            <p class="text-lg text-gray-600 mt-2">Current Module: Module 4</p>
+            <h1 class="text-4xl font-extrabold text-gray-900">LTbio.lk</h1>
+            <p class="text-lg text-gray-600 mt-2">Lakshitha Thennakoon</p>
             
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 text-sm">
                 <!-- Class -->
                 <div class="p-3 bg-fuchsia-50 rounded-lg border border-fuchsia-100">
                     <p class="font-bold text-fuchsia-700 uppercase">Class Type</p>
-                    <p class="text-gray-800 font-semibold">2026 Theory</p>
+                    <p class="text-gray-800 font-semibold">ltbio</p>
                 </div>
                 <!-- Time -->
                 <div class="p-3 bg-cyan-50 rounded-lg border border-cyan-100">
                     <p class="font-bold text-cyan-700 uppercase">Time</p>
-                    <p class="text-gray-800 font-semibold">Tuesdays, 7:00 PM IST</p>
+                    <p class="text-gray-800 font-semibold"></p>
                 </div>
                 <!-- Teacher -->
                 <div class="p-3 bg-amber-50 rounded-lg border border-amber-100">
                     <p class="font-bold text-amber-700 uppercase">Teacher</p>
-                    <p class="text-gray-800 font-semibold">Dr. A. S. Perera</p>
+                    <p class="text-gray-800 font-semibold">Lakshitha</p>
                 </div>
                 <!-- Month -->
                 <div class="p-3 bg-green-50 rounded-lg border border-green-100">

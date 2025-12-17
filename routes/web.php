@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\adminController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\StudentFeedbackController;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Response;
 
 Route::get('/', function () {
     return view('welcome');
@@ -64,6 +66,28 @@ Route::post('/checkout/submit', [adminController::class, 'checkoutSubmit'])->nam
 Route::get('/paymentmanage', [adminController::class, 'paymentmanage'])->name('paymentmanage');
 Route::put('/payment/approve/{id}', [adminController::class, 'paymentApprove'])->name('payment.approve');
 Route::put('/payment/reject/{id}', [adminController::class, 'paymentReject'])->name('payment.reject');
+
+// Serve storage files through Laravel to avoid direct webserver 403/permission issues.
+// Usage in Blade: route('storage.file', ['encoded' => base64_encode($path)])
+Route::get('/storage-file/{encoded}', function ($encoded) {
+    $path = base64_decode($encoded);
+    if (! $path) {
+        abort(404);
+    }
+
+    $disk = Storage::disk('public');
+    if (! $disk->exists($path)) {
+        abort(404);
+    }
+
+    $fullPath = $disk->path($path);
+    if (! is_readable($fullPath)) {
+        abort(403);
+    }
+
+    $mime = mime_content_type($fullPath) ?: 'application/octet-stream';
+    return response()->file($fullPath, ['Content-Type' => $mime]);
+})->where('encoded', '.*')->name('storage.file');
 
 
 

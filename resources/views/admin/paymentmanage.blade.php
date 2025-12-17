@@ -306,7 +306,7 @@
 
                     <td style="padding: 10px;">
                         @if($checkout->file_path)
-                            <a href="{{ asset('storage/' . $checkout->file_path) }}" 
+                            <a href="{{ route('storage.file', ['encoded' => base64_encode($checkout->file_path)]) }}" 
                                style="color:#60a5fa;" target="_blank">View File</a>
                         @else
                             <span style="color:#9ca3af;">No File</span>

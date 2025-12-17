@@ -474,7 +474,7 @@
 
                     <td>
                         @if($lesson->file_path)
-                            <a href="{{ asset('storage/' . $lesson->file_path) }}" target="_blank">
+                            <a href="{{ route('storage.file', ['encoded' => base64_encode($lesson->file_path)]) }}" target="_blank">
                                 Download
                             </a>
                         @else
