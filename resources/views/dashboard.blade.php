@@ -60,7 +60,7 @@
             <div class="flex justify-between items-center h-16">
                 <!-- Branding -->
                 <div class="flex items-center gap-3">
-                    <span class="text-2xl font-extrabold text-primary-purple tracking-tighter">LTBio</span>
+                    <span class="text-2xl font-extrabold text-primary-purple tracking-tighter">LTbio</span>
                     <span class="text-xs font-light text-gray-600 hidden sm:block">Online Education</span>
                 </div>
 
@@ -68,7 +68,6 @@
                 <div class="hidden sm:flex sm:items-center sm:space-x-4 text-gray-600 font-medium">
                     <a href="#home" class="hover:text-primary-purple transition duration-150 flex items-center"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-1"></i> Dashboard</a>
                     <a href="{{ route('buyclass') }}" class="hover:text-primary-purple transition duration-150 flex items-center"><i data-lucide="book-open-text" class="w-5 h-5 mr-1"></i> Buy Class</a>
-                    <a href="#materials" class="hover:text-primary-purple transition duration-150 flex items-center"><i data-lucide="download" class="w-5 h-5 mr-1"></i> Study Materials</a>
                 </div>
 
                 <!-- Right: profile / mobile toggle -->
@@ -106,10 +105,7 @@
         <div id="mobileMenu" class="hidden sm:hidden absolute left-4 right-4 top-full mt-2 bg-white shadow-md rounded-md p-3 z-40">
             <div class="flex flex-col gap-2">
                 <a href="#home" class="px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-gray-50">Home</a>
-                <a href="#about" class="px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-gray-50">About</a>
-                <a href="#institutes" class="px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-gray-50">Feedback</a>
                 <a href="{{ route('buyclass') }}" class="px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-gray-50">Buy Class</a>
-                <a href="#materials" class="px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-gray-50">Study Materials</a>
                 <a href="{{ route('login') }}" class="px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-gray-50">Login</a>
             </div>
         </div>
@@ -132,7 +128,7 @@
                 <div class="mt-4 md:mt-0 bg-primary-purple/10 text-primary-purple p-3 rounded-lg flex items-center space-x-3 text-sm font-semibold border border-primary-purple/30 text-center md:text-left">
                     <i data-lucide="megaphone" class="w-5 h-5 flex-shrink-0"></i>
                     <span class="flex-grow">
-                        New Course: <span class="text-dark-purple font-extrabold">Advanced Biology</span> - Enrollment for January & July Sessions Now Open! 
+                        Notice: <span class="text-dark-purple font-extrabold">LTbio.lk</span> - LTbio new web site launched!
                         <a href='#' class='underline ml-1 hover:text-dark-purple'>View Details</a>
                     </span>
                 </div>
@@ -144,7 +140,7 @@
 
     <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
         <i data-lucide="book-open-text" class="w-6 h-6 mr-2 text-primary-purple"></i>
-        Current Registered Classes
+        All Classes
     </h3>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
