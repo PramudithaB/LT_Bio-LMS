@@ -34,7 +34,7 @@ class StudentFeedbackController extends Controller
     }
 
 
-    public function feedbackstore(Request $request)
+    // public function feedbackstore(Request $request)
     // {
 
     //     $request->validate([
@@ -54,15 +54,38 @@ class StudentFeedbackController extends Controller
     //     return redirect()->back()->with('success', 'Feedback submitted successfully!');
     // }
 
+    public function feedbackstore(Request $request)
     {
+        // Basic validation
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone_number' => 'required|string|max:50',
+            'message' => 'required|string|max:2000',
+        ]);
+
+        // If a feedback with the same email exists, update it instead of inserting a duplicate
+        $existing = Feedback::where('email', $data['email'])->first();
+
+        if ($existing) {
+            $existing->name = $data['name'];
+            $existing->phone_number = $data['phone_number'];
+            $existing->message = $data['message'];
+            $existing->status = 'pending';
+            $existing->save();
+
+            return back()->with('success', 'Your feedback was updated and is awaiting approval.');
+        }
+
+        // Create new feedback
         Feedback::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone_number' => $request->phone_number,
-            'message' => $request->message,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone_number' => $data['phone_number'],
+            'message' => $data['message'],
             'status' => 'pending'
         ]);
 
-        return back()->with('success', 'Your feedback has been submitted and awaiting approval.');
+        return back()->with('success', 'Your feedback has been submitted and is awaiting approval.');
     }
 }
