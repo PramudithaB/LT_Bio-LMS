@@ -79,7 +79,7 @@
                 <!-- Teacher -->
                 <div class="p-3 bg-amber-50 rounded-lg border border-amber-100">
                     <p class="font-bold text-amber-700 uppercase">Teacher</p>
-                    <p class="text-gray-800 font-semibold">Lakshitha</p>
+                    <p class="text-gray-800 font-semibold">Lakshitha Thennakoon</p>
                 </div>
                 <!-- Month -->
                 <div class="p-3 bg-green-50 rounded-lg border border-green-100">

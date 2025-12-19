@@ -51,9 +51,9 @@
             <div class="flex justify-between items-center h-16">
 
                 <!-- Brand -->
-                <div class="flex-shrink-0">
-                    <span class="text-2xl font-extrabold text-primary-purple tracking-tighter">LTBio</span>
-                    <span class="text-xs font-light text-gray-600 block">Online Education</span>
+               <div class="flex items-center gap-3">
+                    <span class="text-2xl font-extrabold text-primary-purple tracking-tighter">LTbio</span>
+                    <span class="text-xs font-light text-gray-600 hidden sm:block">Online Education</span>
                 </div>
 
                 <!-- Menu -->
@@ -66,9 +66,7 @@
                         <i data-lucide="book-open-text" class="w-5 h-5 mr-1"></i> Buy Class
                     </a>
 
-                    <a href="#" class="hover:text-primary-purple flex items-center">
-                        <i data-lucide="download" class="w-5 h-5 mr-1"></i> Study Materials
-                    </a>
+               
                     <!-- Cart Icon -->
 <a href="{{ route('cart.view') }}" class="relative">
     <i data-lucide="shopping-cart" class="w-7 h-7 text-gray-600 hover:text-primary-purple"></i>
