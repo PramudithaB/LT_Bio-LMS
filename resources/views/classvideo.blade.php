@@ -86,7 +86,7 @@
                         </div>
 
                         <!-- Player controls: Play/Pause, Speed -, Speed label, Speed +, Quality select -->
-                        <div id="player-controls" style="position:absolute; left:18px; bottom:18px; z-index:13; pointer-events:auto; display:flex; gap:8px; align-items:center;">
+                        <div id="player-controls" style="position:absolute; left:18px; bottom:18px; z-index:13; pointer-events:auto; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
                             <button id="playPauseBtn" aria-pressed="false"
                                 style="background:rgba(0,0,0,0.6); color:#fff; border:none; padding:8px 12px; border-radius:8px; font-weight:700; cursor:pointer;">
                                 Pause
@@ -108,6 +108,20 @@
                                     style="background:rgba(0,0,0,0.45); color:#fff; border:none; padding:6px 8px; border-radius:8px; font-weight:700;">
                                 <option value="">Quality</option>
                             </select>
+
+                            <!-- Seek bar and timing -->
+                            <div style="display:flex; align-items:center; gap:8px; margin-left:8px;">
+                                <span id="currentTime" style="color:#fff; font-size:12px; min-width:48px; text-align:center;">0:00</span>
+                                <input id="seekBar" type="range" min="0" max="100" value="0"
+                                       style="width:360px; accent-color:#fff; appearance:none; height:6px; background:rgba(255,255,255,0.12); border-radius:6px;">
+                                <span id="durationTime" style="color:#fff; font-size:12px; min-width:48px; text-align:center;">0:00</span>
+                            </div>
+
+                            <!-- Fullscreen -->
+                            <button id="fullscreenBtn" title="Fullscreen"
+                                style="background:rgba(0,0,0,0.45); color:#fff; border:none; padding:6px 10px; border-radius:8px; font-weight:700; cursor:pointer;">
+                                ⛶
+                            </button>
                         </div>
 
                      @else
@@ -177,6 +191,9 @@
     const iframe = document.getElementById('lessonIframe');
     if (!iframe) return;
 
+    // container used for fullscreen
+    const embedContainer = document.getElementById('video-embed-container');
+
     // Load YT API if not already present
     if (!window.YT) {
         var tag = document.createElement('script');
@@ -186,6 +203,9 @@
     }
 
     let player;
+    let seekTimer = null;
+    let isUserSeeking = false;
+
     window.onYouTubeIframeAPIReady = function() {
         try {
             player = new YT.Player('lessonIframe', {
@@ -265,6 +285,9 @@
         } catch(err){
             console.warn('populate rates/quality failed', err);
         }
+
+        // Setup seek bar and timers
+        setupSeekBar();
 
         // update play/pause button initial label based on state
         updatePlayPauseButton();
@@ -405,6 +428,110 @@
             console.warn('setQuality failed', e);
         }
     }
+
+    // SEEK BAR IMPLEMENTATION
+    function setupSeekBar() {
+        const seekBar = document.getElementById('seekBar');
+        const currentTimeEl = document.getElementById('currentTime');
+        const durationEl = document.getElementById('durationTime');
+        if (!seekBar || !window.lessonPlayer) return;
+
+        // set duration once available
+        try {
+            const dur = window.lessonPlayer.getDuration();
+            if (dur && isFinite(dur) && dur > 0) {
+                seekBar.max = Math.floor(dur);
+                durationEl.textContent = formatTime(dur);
+            } else {
+                // poll duration for a short while if not ready
+                setTimeout(() => {
+                    const d2 = window.lessonPlayer.getDuration();
+                    if (d2 && isFinite(d2) && d2 > 0) {
+                        seekBar.max = Math.floor(d2);
+                        durationEl.textContent = formatTime(d2);
+                    }
+                }, 800);
+            }
+        } catch(e){}
+
+        // update seek periodically
+        if (seekTimer) clearInterval(seekTimer);
+        seekTimer = setInterval(() => {
+            if (!window.lessonPlayer || isUserSeeking) return;
+            try {
+                const t = window.lessonPlayer.getCurrentTime();
+                const dur = window.lessonPlayer.getDuration();
+                if (isFinite(t) && dur && isFinite(dur)) {
+                    seekBar.value = Math.floor(t);
+                    currentTimeEl.textContent = formatTime(t);
+                    durationEl.textContent = formatTime(dur);
+                }
+            } catch(e){}
+        }, 500);
+
+        // User interactions
+        let hold = false;
+        seekBar.addEventListener('input', function(e){
+            // show preview time while dragging
+            isUserSeeking = true;
+            const val = parseFloat(this.value);
+            currentTimeEl.textContent = formatTime(val);
+        }, { passive:true });
+
+        seekBar.addEventListener('change', function(e){
+            // commit seek
+            const val = parseFloat(this.value);
+            try {
+                window.lessonPlayer.seekTo(val, true);
+            } catch(err){ console.warn('seekTo failed', err); }
+            isUserSeeking = false;
+        });
+    }
+
+    function formatTime(seconds) {
+        if (!isFinite(seconds) || seconds < 0) return '0:00';
+        seconds = Math.floor(seconds);
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return m + ':' + (s < 10 ? '0' + s : s);
+    }
+
+    // FULLSCREEN HELPERS
+    function toggleFullscreen() {
+        if (!embedContainer) return;
+        const el = embedContainer;
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+            if (el.requestFullscreen) {
+                el.requestFullscreen();
+            } else if (el.webkitRequestFullscreen) {
+                el.webkitRequestFullscreen();
+            } else if (el.msRequestFullscreen) {
+                el.msRequestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+    }
+
+    // Wire fullscreen button
+    const fsBtn = document.getElementById('fullscreenBtn');
+    if (fsBtn) {
+        fsBtn.addEventListener('click', function(e){
+            e.stopPropagation();
+            toggleFullscreen();
+        });
+    }
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', function(){
+        if (seekTimer) clearInterval(seekTimer);
+    });
 
     // Attach handlers to buttons and select
     const ppBtn = document.getElementById('playPauseBtn');
