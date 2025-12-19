@@ -531,8 +531,8 @@
 
       <div class="footer-section">
         <h3>Contact Us</h3>
-        <p>📞 +94 XX XXX XXXX</p>
-        <p>✉️ info@chemistry.lk</p>
+        <p>📞 +94 74 287 7640</p>
+        <p>✉️ info@ltbio.edu.lk</p>
         <p>🌐 www.ltbio.edu.lk</p>
       </div>
 
@@ -546,8 +546,16 @@
     </div>
 
     <div class="footer-bottom" style="margin-top:18px;">
-      <p>&copy; 2025 ltbio.edu.lk - All Rights Reserved | Designed with Pixelwave IT Solutions</p>
-    </div>
+  <p>
+    &copy; 2025 ltbio.edu.lk - All Rights Reserved | Designed with 
+    <a href="https://www.facebook.com/share/1DdkZfRCep/?mibextid=wwXIfr" 
+       target="_blank" 
+       style="color: inherit; text-decoration: underline;">
+       Pixelwave IT Solutions
+    </a>
+  </p>
+</div>
+
   </footer>
 
   <!-- WhatsApp floating button -->

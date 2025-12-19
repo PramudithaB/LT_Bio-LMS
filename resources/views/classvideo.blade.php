@@ -85,13 +85,31 @@
                             </button>
                         </div>
 
-                        <!-- Play/Pause control (visible overlay) -->
-                        <div id="playPauseOverlay" style="position:absolute; left:18px; bottom:18px; z-index:13; pointer-events:auto;">
+                        <!-- Player controls: Play/Pause, Speed -, Speed label, Speed +, Quality select -->
+                        <div id="player-controls" style="position:absolute; left:18px; bottom:18px; z-index:13; pointer-events:auto; display:flex; gap:8px; align-items:center;">
                             <button id="playPauseBtn" aria-pressed="false"
                                 style="background:rgba(0,0,0,0.6); color:#fff; border:none; padding:8px 12px; border-radius:8px; font-weight:700; cursor:pointer;">
                                 Pause
                             </button>
+
+                            <button id="speedDownBtn" title="Slower"
+                                style="background:rgba(0,0,0,0.45); color:#fff; border:none; padding:6px 10px; border-radius:8px; font-weight:700; cursor:pointer;">
+                                - 
+                            </button>
+
+                            <span id="speedLabel" style="min-width:44px; text-align:center; color:#fff; font-weight:700; background:rgba(0,0,0,0.25); padding:6px 8px; border-radius:8px;">1x</span>
+
+                            <button id="speedUpBtn" title="Faster"
+                                style="background:rgba(0,0,0,0.45); color:#fff; border:none; padding:6px 10px; border-radius:8px; font-weight:700; cursor:pointer;">
+                                +
+                            </button>
+
+                            <select id="qualitySelect" aria-label="Playback quality"
+                                    style="background:rgba(0,0,0,0.45); color:#fff; border:none; padding:6px 8px; border-radius:8px; font-weight:700;">
+                                <option value="">Quality</option>
+                            </select>
                         </div>
+
                      @else
                          <p style="color: white; padding: 20px;">No playable YouTube link found. If this is an external video, open it in a new tab.</p>
                      @endif
@@ -208,6 +226,46 @@
             }
         }, 600);
 
+        // Populate playback rates & quality options if available
+        try {
+            // Playback rates
+            const rates = (typeof event.target.getAvailablePlaybackRates === 'function')
+                ? event.target.getAvailablePlaybackRates()
+                : [];
+            // store availableRates on window for later use
+            window._availableRates = Array.isArray(rates) && rates.length ? rates : [0.25,0.5,0.75,1,1.25,1.5,1.75,2];
+
+            // Update speed label
+            updateSpeedLabel();
+
+            // Quality levels
+            const qLevels = (typeof event.target.getAvailableQualityLevels === 'function')
+                ? event.target.getAvailableQualityLevels()
+                : [];
+            const qualitySelect = document.getElementById('qualitySelect');
+            if (qualitySelect) {
+                // clear existing options but keep placeholder
+                qualitySelect.innerHTML = '<option value="">Quality</option>';
+                const unique = Array.isArray(qLevels) && qLevels.length ? qLevels : ['small','medium','large','hd720','hd1080','highres','default'];
+                // Map known codes to readable labels
+                const labelMap = { small:'144p', medium:'360p', large:'480p', hd720:'720p', hd1080:'1080p', highres:'High', default:'Auto' };
+                unique.forEach(q => {
+                    const opt = document.createElement('option');
+                    opt.value = q;
+                    opt.textContent = labelMap[q] || q;
+                    qualitySelect.appendChild(opt);
+                });
+
+                // set current quality if possible
+                try { 
+                    const current = event.target.getPlaybackQuality && event.target.getPlaybackQuality();
+                    if (current) qualitySelect.value = current;
+                } catch(e){ /* ignore */ }
+            }
+        } catch(err){
+            console.warn('populate rates/quality failed', err);
+        }
+
         // update play/pause button initial label based on state
         updatePlayPauseButton();
     }
@@ -290,7 +348,65 @@
         }
     }
 
-    // Attach handlers to Play/Pause button
+    // --- New: Playback speed helpers ---
+    function getCurrentRate() {
+        try {
+            if (window.lessonPlayer && typeof window.lessonPlayer.getPlaybackRate === 'function') {
+                return parseFloat(window.lessonPlayer.getPlaybackRate()) || 1;
+            }
+        } catch(e){}
+        return 1;
+    }
+
+    function setPlaybackRate(rate) {
+        try {
+            if (window.lessonPlayer && typeof window.lessonPlayer.setPlaybackRate === 'function') {
+                window.lessonPlayer.setPlaybackRate(rate);
+            }
+        } catch(e){
+            console.warn('setPlaybackRate failed', e);
+        }
+        updateSpeedLabel();
+    }
+
+    function updateSpeedLabel() {
+        const lbl = document.getElementById('speedLabel');
+        if (!lbl) return;
+        const r = getCurrentRate();
+        lbl.textContent = (Math.round(r * 100) / 100) + 'x';
+    }
+
+    function changeSpeed(delta) {
+        let rates = window._availableRates || [0.25,0.5,0.75,1,1.25,1.5,1.75,2];
+        rates = Array.from(new Set(rates)).sort((a,b)=>a-b);
+        const curr = getCurrentRate();
+        // find nearest index
+        let idx = rates.findIndex(v => v >= curr - 1e-6);
+        if (idx === -1) idx = rates.length - 1;
+        let newIdx = idx;
+        if (delta > 0) {
+            newIdx = Math.min(rates.length - 1, idx + 1);
+        } else {
+            newIdx = Math.max(0, idx - 1);
+        }
+        const newRate = rates[newIdx] || curr;
+        setPlaybackRate(newRate);
+    }
+
+    // --- New: Quality change helper ---
+    function setQuality(q) {
+        try {
+            if (window.lessonPlayer && typeof window.lessonPlayer.setPlaybackQuality === 'function') {
+                window.lessonPlayer.setPlaybackQuality(q);
+            } else {
+                console.warn('setPlaybackQuality not available on this player');
+            }
+        } catch(e){
+            console.warn('setQuality failed', e);
+        }
+    }
+
+    // Attach handlers to buttons and select
     const ppBtn = document.getElementById('playPauseBtn');
     if (ppBtn) {
         ppBtn.addEventListener('click', function(e){
@@ -299,26 +415,20 @@
         });
     }
 
-    // user gesture to unmute
-    const unmuteBtn = document.getElementById('unmuteBtn');
-    if (unmuteBtn) {
-        unmuteBtn.addEventListener('click', function(){
-            if (window.lessonPlayer) {
-                try {
-                    window.lessonPlayer.unMute();
-                    window.lessonPlayer.setVolume(100);
-                    window.lessonPlayer.playVideo();
-                } catch(e){
-                    const iframe = document.getElementById('lessonIframe');
-                    if (iframe) {
-                        var src = iframe.src.replace(/([&?])mute=1(&|$)/, '$1mute=0$2');
-                        iframe.src = src;
-                    }
-                }
-            }
-            hideOverlay();
-            updatePlayPauseButton();
-        }, { once: true });
+    const speedUpBtn = document.getElementById('speedUpBtn');
+    if (speedUpBtn) speedUpBtn.addEventListener('click', function(e){ e.stopPropagation(); changeSpeed(1); });
+
+    const speedDownBtn = document.getElementById('speedDownBtn');
+    if (speedDownBtn) speedDownBtn.addEventListener('click', function(e){ e.stopPropagation(); changeSpeed(-1); });
+
+    const qualitySelect = document.getElementById('qualitySelect');
+    if (qualitySelect) {
+        qualitySelect.addEventListener('change', function(){
+            const q = this.value;
+            if (!q) return;
+            setQuality(q);
+            // reflect selection visually
+        });
     }
 
     // Keyboard: Space toggles play/pause when page has focus
