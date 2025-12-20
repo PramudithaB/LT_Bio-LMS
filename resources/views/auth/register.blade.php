@@ -133,6 +133,8 @@
                                name="whatsapp_number"
                                value="{{ old('whatsapp_number') }}"
                                placeholder="e.g. +94712345678"
+                               required
+                               aria-required="true"
                         />
                     </div>
 
@@ -145,6 +147,8 @@
                                name="id_number"
                                value="{{ old('id_number') }}"
                                placeholder="National/Student ID"
+                               required
+                               aria-required="true"
                         />
                     </div>
 
@@ -155,7 +159,9 @@
                                   class="form-input-styled block w-full h-auto py-2"
                                   name="address"
                                   placeholder="Your address"
-                                  rows="2">{{ old('address') }}</textarea>
+                                  rows="2"
+                                  required
+                                  aria-required="true">{{ old('address') }}</textarea>
                     </div>
 
                     <!-- Exam Year -->
@@ -167,6 +173,8 @@
                                name="exam_year"
                                value="{{ old('exam_year') }}"
                                placeholder="e.g. 2026" min="1900" max="2100"
+                               required
+                               aria-required="true"
                         />
                     </div>
 
