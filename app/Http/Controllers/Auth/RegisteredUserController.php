@@ -35,11 +35,11 @@ class RegisteredUserController extends Controller
             // require minimum 8 chars, at least one uppercase, one number and one symbol
             'password' => ['required', 'confirmed', Rules\Password::min(8)->mixedCase()->numbers()->symbols()],
 
-            // new fields validation
-            'whatsapp_number' => ['nullable','string','max:50'],
-            'id_number' => ['nullable','string','max:100'],
-            'address' => ['nullable','string','max:1000'],
-            'exam_year' => ['nullable','integer','digits:4'],
+            // new fields validation — made required
+            'whatsapp_number' => ['required','string','max:50'],
+            'id_number' => ['required','string','max:100'],
+            'address' => ['required','string','max:1000'],
+            'exam_year' => ['required','integer','digits:4'],
         ]);
 
         $user = User::create([
