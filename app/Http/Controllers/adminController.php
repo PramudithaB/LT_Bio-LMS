@@ -217,4 +217,8 @@ public function packagedelete($id)
 
     return redirect()->route('admindashboard')->with('success', 'Package deleted successfully!');
 }
-}
+public function usermanagement()
+{
+    $users = User::orderBy('id', 'desc')->get();
+    return view('admin.usermanagement', compact('users'));
+}}

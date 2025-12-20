@@ -254,7 +254,7 @@
         <a href="#overview" class="active">
             <i class="fas fa-tachometer-alt"></i> Dashboard
         </a>
-        <a href="#users">
+        <a href="{{ route('usermanagement') }}">
             <i class="fas fa-users"></i> User Management
         </a>
         <a href="{{ route('classmanage') }}">
