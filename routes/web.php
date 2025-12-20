@@ -66,6 +66,8 @@ Route::post('/checkout/submit', [adminController::class, 'checkoutSubmit'])->nam
 Route::get('/paymentmanage', [adminController::class, 'paymentmanage'])->name('paymentmanage');
 Route::put('/payment/approve/{id}', [adminController::class, 'paymentApprove'])->name('payment.approve');
 Route::put('/payment/reject/{id}', [adminController::class, 'paymentReject'])->name('payment.reject');
+Route::get('/usermanagement', [adminController::class, 'usermanagement'])->name('usermanagement');
+
 
 // Serve storage files through Laravel to avoid direct webserver 403/permission issues.
 // Usage in Blade: route('storage.file', ['encoded' => base64_encode($path)])
