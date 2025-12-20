@@ -32,13 +32,26 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            // require minimum 8 chars, at least one uppercase, one number and one symbol
+            'password' => ['required', 'confirmed', Rules\Password::min(8)->mixedCase()->numbers()->symbols()],
+
+            // new fields validation
+            'whatsapp_number' => ['nullable','string','max:50'],
+            'id_number' => ['nullable','string','max:100'],
+            'address' => ['nullable','string','max:1000'],
+            'exam_year' => ['nullable','integer','digits:4'],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+
+            // persist new fields
+            'whatsapp_number' => $request->whatsapp_number,
+            'id_number' => $request->id_number,
+            'address' => $request->address,
+            'exam_year' => $request->exam_year,
         ]);
 
         event(new Registered($user));

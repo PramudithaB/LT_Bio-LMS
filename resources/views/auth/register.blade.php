@@ -31,7 +31,8 @@
 
         /* Input field styling */
         .form-input-styled {
-            height: 52px; 
+            height: 60px; /* increased height for larger feel */
+            font-size: 1.01rem; /* slightly larger text */
             transition: all 0.2s;
             border-color: #e5e7eb;
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); 
@@ -80,10 +81,11 @@
 
     <!-- RIGHT PANEL: Registration Form -->
     <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
-        <div class="w-full max-w-md bg-white py-12 px-8 sm:px-10 rounded-xl shadow-lg border border-gray-100">
+        <!-- increased max width and padding for a larger form -->
+        <div class="w-full max-w-2xl bg-white py-16 px-10 sm:px-12 rounded-xl shadow-lg border border-gray-100">
             
             <div class="text-left mb-10">
-                <h2 class="text-5xl font-extrabold text-gray-900 tracking-tight">Register</h2>
+                <h2 class="text-6xl font-extrabold text-gray-900 tracking-tight">Sign Up</h2>
                 <p class="text-gray-600 text-lg mt-1">Create an account to get started</p>
             </div>
             
@@ -91,73 +93,122 @@
             <form method="POST" action="{{ route('register') }}">
                 @csrf
 
-                <!-- Name -->
-                <div class="mb-5">
-                    <label for="name" class="block text-base font-medium text-gray-700 mb-2">{{ __('Name') }}</label>
-                    <input id="name" 
-                           class="form-input-styled block w-full" 
-                           type="text" 
-                           name="name" 
-                           value="{{ old('name') }}" 
-                           required 
-                           autofocus 
-                           autocomplete="name" 
-                           placeholder="Enter your full name"
-                    />
-                    <!-- <x-input-error :messages="$errors->get('name')" class="mt-2" /> -->
-                </div>
+                <!-- Grid: 2 columns on sm+, 1 column on xs -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Name -->
+                    <div class="mb-0">
+                        <label for="name" class="block text-base font-medium text-gray-700 mb-2">{{ __('Name') }}</label>
+                        <input id="name"
+                               class="form-input-styled block w-full"
+                               type="text"
+                               name="name"
+                               value="{{ old('name') }}"
+                               required
+                               autofocus
+                               autocomplete="name"
+                               placeholder="Enter your full name"
+                        />
+                    </div>
 
-                <!-- Email Address -->
-                <div class="mb-5">
-                    <label for="email" class="block text-base font-medium text-gray-700 mb-2">{{ __('Email') }}</label>
-                    <input id="email" 
-                           class="form-input-styled block w-full" 
-                           type="email" 
-                           name="email" 
-                           value="{{ old('email') }}" 
-                           required 
-                           autocomplete="username" 
-                           placeholder="Enter your email address"
-                    />
-                    <!-- <x-input-error :messages="$errors->get('email')" class="mt-2" /> -->
-                </div>
+                    <!-- Email -->
+                    <div class="mb-0">
+                        <label for="email" class="block text-base font-medium text-gray-700 mb-2">{{ __('Email') }}</label>
+                        <input id="email"
+                               class="form-input-styled block w-full"
+                               type="email"
+                               name="email"
+                               value="{{ old('email') }}"
+                               required
+                               autocomplete="username"
+                               placeholder="Enter your email address"
+                        />
+                    </div>
 
-                <!-- Password -->
-                <div class="mb-5">
-                    <label for="password" class="block text-base font-medium text-gray-700 mb-2">{{ __('Password') }}</label>
-                    <input id="password" 
-                           class="form-input-styled block w-full"
-                           type="password"
-                           name="password"
-                           required 
-                           autocomplete="new-password" 
-                           placeholder="Create a password"
-                    />
-                    <!-- <x-input-error :messages="$errors->get('password')" class="mt-2" /> -->
-                </div>
+                    <!-- WhatsApp -->
+                    <div class="mb-0">
+                        <label for="whatsapp_number" class="block text-base font-medium text-gray-700 mb-2">WhatsApp Number</label>
+                        <input id="whatsapp_number"
+                               class="form-input-styled block w-full"
+                               type="text"
+                               name="whatsapp_number"
+                               value="{{ old('whatsapp_number') }}"
+                               placeholder="e.g. +94712345678"
+                        />
+                    </div>
 
-                <!-- Confirm Password -->
-                <div class="mb-8">
-                    <label for="password_confirmation" class="block text-base font-medium text-gray-700 mb-2">{{ __('Confirm Password') }}</label>
-                    <input id="password_confirmation" 
-                           class="form-input-styled block w-full"
-                           type="password"
-                           name="password_confirmation" 
-                           required 
-                           autocomplete="new-password" 
-                           placeholder="Confirm your password"
-                    />
-                    <!-- <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" /> -->
-                </div>
+                    <!-- ID Number -->
+                    <div class="mb-0">
+                        <label for="id_number" class="block text-base font-medium text-gray-700 mb-2">ID Number</label>
+                        <input id="id_number"
+                               class="form-input-styled block w-full"
+                               type="text"
+                               name="id_number"
+                               value="{{ old('id_number') }}"
+                               placeholder="National/Student ID"
+                        />
+                    </div>
 
-                <div class="flex items-center justify-end mt-4">
+                    <!-- Address (full width) -->
+                    <div class="sm:col-span-2 mb-0">
+                        <label for="address" class="block text-base font-medium text-gray-700 mb-2">Address</label>
+                        <textarea id="address"
+                                  class="form-input-styled block w-full h-auto py-2"
+                                  name="address"
+                                  placeholder="Your address"
+                                  rows="2">{{ old('address') }}</textarea>
+                    </div>
+
+                    <!-- Exam Year -->
+                    <div class="mb-0">
+                        <label for="exam_year" class="block text-base font-medium text-gray-700 mb-2">Exam Year</label>
+                        <input id="exam_year"
+                               class="form-input-styled block w-full"
+                               type="number"
+                               name="exam_year"
+                               value="{{ old('exam_year') }}"
+                               placeholder="e.g. 2026" min="1900" max="2100"
+                        />
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-0">
+                        <label for="password" class="block text-base font-medium text-gray-700 mb-2">{{ __('Password') }}</label>
+                        <input id="password"
+                               class="form-input-styled block w-full"
+                               type="password"
+                               name="password"
+                               required
+                               autocomplete="new-password"
+                               placeholder="Create a password"
+                               pattern="(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}"
+                               title="Minimum 8 characters, at least one uppercase letter, one number and one symbol"
+                        />
+                        <p class="text-xs text-gray-400 mt-2">Password must be at least 8 characters and include one uppercase letter, one number and one symbol.</p>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="mb-0">
+                        <label for="password_confirmation" class="block text-base font-medium text-gray-700 mb-2">{{ __('Confirm Password') }}</label>
+                        <input id="password_confirmation"
+                               class="form-input-styled block w-full"
+                               type="password"
+                               name="password_confirmation"
+                               required
+                               autocomplete="new-password"
+                               placeholder="Confirm your password"
+                        />
+                    </div>
+                </div>
+                 
+
+                 <div class="flex items-center justify-end mt-4">
                     <!-- Already Registered Link -->
                     <a class="text-sm font-medium text-gray-600 hover:text-gray-900 transition duration-150" href="{{ route('login') }}">
                         {{ __('Already registered?') }}
                     </a>
 
                     <!-- Register Button (Styled like the Sign In button) -->
-                    <button type="submit" class="ms-4 h-14 px-8 bg-primary-purple text-white font-semibold rounded-lg shadow-xl shadow-primary-purple/30 hover:bg-dark-purple transition duration-200 focus:outline-none focus:ring-2 focus:ring-dark-purple focus:ring-offset-2 text-lg uppercase tracking-wider">
+                    <button type="submit" class="ms-4 h-16 px-10 bg-primary-purple text-white font-semibold rounded-lg shadow-xl shadow-primary-purple/30 hover:bg-dark-purple transition duration-200 focus:outline-none focus:ring-2 focus:ring-dark-purple focus:ring-offset-2 text-lg uppercase tracking-wider">
                         {{ __('Register') }}
                     </button>
                 </div>

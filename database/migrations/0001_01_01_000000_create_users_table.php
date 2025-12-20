@@ -16,6 +16,13 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('usertype')->default('user');
+
+            // new fields for registration
+            $table->string('whatsapp_number')->nullable();
+            $table->string('id_number')->nullable();
+            $table->text('address')->nullable();
+            $table->string('exam_year')->nullable();
+
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

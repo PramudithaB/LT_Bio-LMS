@@ -23,6 +23,10 @@ class User extends Authenticatable
         'password',
         'otp',
         'otp_expires_at',
+        'whatsapp_number',
+        'id_number',
+        'address',
+        'exam_year',
     ];
 
     /**
