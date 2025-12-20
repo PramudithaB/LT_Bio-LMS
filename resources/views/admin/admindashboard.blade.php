@@ -355,33 +355,7 @@
             </div>
         </section>
 
-          <section id="content-activity" style="padding-top: 40px;">
-            <h2 style="font-size: 1.8rem; margin-bottom: 20px;">User Management</h2>
-            <div class="card" style="overflow-x: auto;">
-                <table class="data-table">
-                    <thead>
-                       <tr>
-                <th class="p-3">ID</th>
-                <th class="p-3">Name</th>
-                <th class="p-3">Email</th>
-                <th class="p-3">Registered Date</th>
-            </tr>
-        </thead>
-                    </thead>
-                   <tbody>
-            @foreach($users as $user)
-                <tr class="border-t">
-                    <td class="p-3">{{ $user->id }}</td>
-                    <td class="p-3">{{ $user->name }}</td>
-                    <td class="p-3">{{ $user->email }}</td>
-                    <td class="p-3">{{ $user->created_at->format('Y-m-d') }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-
-                </table>
-            </div>
-        </section>
+         
 
         <!-- Section: Packages Management -->
         <section id="packages" style="padding-top: 40px;">
