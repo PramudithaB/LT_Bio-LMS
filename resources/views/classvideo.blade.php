@@ -12,6 +12,72 @@
         #video-embed-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         #video-shield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; background: rgba(0,0,0,0.001); }
         @media (min-width: 1024px) { #app > div { flex-direction: row !important; } }
+
+        /* ====== SEEK BAR STYLES (custom red theme) ====== */
+        #seekBar {
+            width: 360px;
+            height: 6px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.12);
+            -webkit-appearance: none;
+            appearance: none;
+            overflow: hidden;
+            vertical-align: middle;
+        }
+
+        /* WebKit track + thumb */
+        #seekBar::-webkit-slider-runnable-track {
+            height: 6px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.12);
+        }
+        #seekBar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #F53003; /* brand red */
+            margin-top: -4px; /* center thumb on track */
+            box-shadow: 0 3px 8px rgba(245,48,3,0.28);
+            border: 2px solid rgba(255,255,255,0.9);
+        }
+
+        /* Firefox */
+        #seekBar::-moz-range-track {
+            height: 6px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.12);
+        }
+        #seekBar::-moz-range-progress {
+            height: 6px;
+            background: #F53003;
+            border-radius: 6px;
+        }
+        #seekBar::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #F53003;
+            border: none;
+            box-shadow: 0 3px 8px rgba(245,48,3,0.28);
+        }
+
+        /* IE/Edge fallback */
+        #seekBar::-ms-track {
+            height: 6px;
+            background: transparent;
+            border-color: transparent;
+            color: transparent;
+        }
+        #seekBar::-ms-fill-lower {
+            background: #F53003;
+            border-radius: 6px;
+        }
+        #seekBar::-ms-fill-upper {
+            background: rgba(255,255,255,0.12);
+            border-radius: 6px;
+        }
     </style>
 </head>
 
@@ -436,6 +502,19 @@
         const durationEl = document.getElementById('durationTime');
         if (!seekBar || !window.lessonPlayer) return;
 
+        // helper: set background gradient to show filled portion
+        function updateSeekBackground() {
+            try {
+                const max = parseFloat(seekBar.max) || 1;
+                const val = parseFloat(seekBar.value) || 0;
+                const pct = Math.max(0, Math.min(100, (val / max) * 100));
+                // gradient: filled = red, rest = subtle track color
+                seekBar.style.background = `linear-gradient(90deg, #F53003 ${pct}%, rgba(255,255,255,0.12) ${pct}%)`;
+            } catch(e) {
+                // ignore
+            }
+        }
+
         // set duration once available
         try {
             const dur = window.lessonPlayer.getDuration();
@@ -449,10 +528,14 @@
                     if (d2 && isFinite(d2) && d2 > 0) {
                         seekBar.max = Math.floor(d2);
                         durationEl.textContent = formatTime(d2);
+                        updateSeekBackground();
                     }
                 }, 800);
             }
         } catch(e){}
+
+        // initial background update
+        updateSeekBackground();
 
         // update seek periodically
         if (seekTimer) clearInterval(seekTimer);
@@ -465,6 +548,7 @@
                     seekBar.value = Math.floor(t);
                     currentTimeEl.textContent = formatTime(t);
                     durationEl.textContent = formatTime(dur);
+                    updateSeekBackground(); // <-- reflect progress visually
                 }
             } catch(e){}
         }, 500);
@@ -476,6 +560,7 @@
             isUserSeeking = true;
             const val = parseFloat(this.value);
             currentTimeEl.textContent = formatTime(val);
+            updateSeekBackground(); // <-- update while dragging
         }, { passive:true });
 
         seekBar.addEventListener('change', function(e){
@@ -485,6 +570,7 @@
                 window.lessonPlayer.seekTo(val, true);
             } catch(err){ console.warn('seekTo failed', err); }
             isUserSeeking = false;
+            updateSeekBackground(); // ensure background matches final value
         });
     }
 
