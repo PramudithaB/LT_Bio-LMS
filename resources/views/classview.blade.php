@@ -143,7 +143,7 @@
                     <i data-lucide="youtube" class="w-5 h-5 mr-2"></i> Go to Video
                 </a>
             @else
-                <a href="{{ $checkoutRoute }}"
+                <a href="{{ route('buyclass') }}"
                    class="w-full flex items-center justify-center py-2 bg-yellow-500 text-white font-semibold text-sm rounded-lg hover:brightness-95 transition duration-150">
                     <i data-lucide="credit-card" class="w-5 h-5 mr-2"></i> Pay / Checkout
                 </a>
