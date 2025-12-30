@@ -134,6 +134,7 @@ public function checkoutSubmit(Request $request)
         'status'       => 'pending',
         'user_id'      => auth()->id(), // record submitting user
     ]);
+    $classIds = explode(',', $request->class_id);
 
     return redirect()->route('dashboard')->with('success', 'Checkout completed successfully!');
 }

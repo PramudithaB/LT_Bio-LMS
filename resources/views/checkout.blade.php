@@ -37,15 +37,26 @@
             <input type="text" name="student_name" class="w-full border p-3 rounded" required>
         </div>
 
-        <div>
-            <label class="font-semibold">Class Name</label>
-            <input type="text" id="class_name" name="class_name" class="w-full border p-3 rounded" required>
-        </div>
+      <div>
+    <label class="font-semibold">Class Name</label>
 
-        <div>
-            <label class="font-semibold">Class ID</label>
-            <input type="text" id="class_id" name="class_id" class="w-full border p-3 rounded" disabled>
-        </div>
+    <!-- visible but locked -->
+    <input
+        type="text"
+        id="class_name_display"
+        class="w-full border p-3 rounded bg-gray-100 cursor-not-allowed"
+        disabled
+    >
+
+    <!-- hidden value -->
+    <input type="hidden" id="class_name" name="class_name">
+</div>
+
+       <div>
+    <label class="font-semibold">Class ID</label>
+    <input type="hidden" id="class_id" name="class_id">
+</div>
+
 
         <div>
             <label class="font-semibold">Remark (Optional)</label>
