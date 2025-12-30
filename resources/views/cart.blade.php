@@ -43,11 +43,19 @@
         }
     </script>
     <div class="mt-8">
-    <a href="{{ route('checkout.page') }}"
+         <a href=""
        class="bg-primary-purple text-red px-6 py-3 rounded-lg font-semibold hover:bg-dark-purple transition">
+        2026 Revision හා Paper Class දෙකටම මුදල් ගෙවීමේදී 5600 මුදලක් පෙන්වූවද නියමිත ගාස්තුව පමනක් බැර කරන්න
+    </a>
+   
+    <a href="{{ route('checkout.page') }}"
+       class="bg-red-600 text-white px-6 py-3 rounded-lg font-semibold
+              hover:bg-red-400 transition">
         Proceed to Checkout
     </a>
 </div>
+
+    </div>
 
 
 </body>
