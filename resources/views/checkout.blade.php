@@ -44,7 +44,7 @@
 
         <div>
             <label class="font-semibold">Class ID</label>
-            <input type="text" id="class_id" name="class_id" class="w-full border p-3 rounded" required>
+            <input type="text" id="class_id" name="class_id" class="w-full border p-3 rounded" disabled>
         </div>
 
         <div>
