@@ -33,7 +33,7 @@
         @csrf
 
         <div>
-            <label class="font-semibold">Student Name</label>
+            <label class="font-semibold">Student Name ( WebSite එකට Register වුන නම පමනක් ඇතුලත් කරන්න.) </label>
             <input type="text" name="student_name" class="w-full border p-3 rounded" required>
         </div>
 
