@@ -45,7 +45,7 @@
     <div class="mt-8">
          <a href=""
        class="bg-primary-purple text-red px-6 py-3 rounded-lg font-semibold hover:bg-dark-purple transition">
-        2026 Revision හා Paper Class දෙකටම මුදල් ගෙවීමේදී 5600 මුදලක් පෙන්වූවද නියමිත ගාස්තුව පමනක් බැර කරන්න
+        2026 Revision හා Paper Class දෙකටම මුදල් ගෙවීමේදී 5600 මුදලක් පෙන්වූවද 5000 පමනක් බැර කරන්න.
     </a>
    
     <a href="{{ route('checkout.page') }}"
