@@ -254,8 +254,7 @@
         <a href="{{ route('admindashboard') }}">
             <i class="fas fa-tachometer-alt"></i> Dashboard
         </a>
-        <a href="{{ route('dashboard') }}">
-            <i class="fas fa-users"></i> User Management
+  <a href="{{ route('usermanagement') }}">            <i class="fas fa-users"></i> User Management
         </a>
         <a href="{{ route('classmanage') }}">
             <i class="fas fa-book-open"></i> Courses & Lectures
