@@ -10,7 +10,7 @@
         body { font-family: 'Inter', sans-serif; margin: 0; background-color: #f4f7fa; color: #333; }
         #video-embed-container { position: relative; width: 100%; padding-top: 56.25%; }
         #video-embed-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        #video-shield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; background: rgba(0,0,0,0.001); }
+        #video-shield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; background: rgba(0,0,0,0.001); pointer-events: none; } /* allow touches to reach iframe (fix fullscreen on mobile) */
         @media (min-width: 1024px) { #app > div { flex-direction: row !important; } }
 
         /* ====== SEEK BAR STYLES (custom red theme) ====== */
@@ -78,6 +78,39 @@
             background: rgba(255,255,255,0.12);
             border-radius: 6px;
         }
+
+        /* Double-tap overlay areas */
+        .double-tap-area {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            z-index: 11; /* above shield, below controls (controls z-index:13) */
+            background: transparent;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            display: block;
+            pointer-events: auto; /* explicitly capture taps for detection */
+        }
+        .double-tap-area.left { left: 0; }
+        .double-tap-area.right { right: 0; }
+
+        /* Visual feedback for skip */
+        .dt-feedback {
+            position: absolute;
+            z-index: 14;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+            pointer-events: none;
+            color: #fff;
+            font-weight: 800;
+            font-size: 34px;
+            text-shadow: 0 6px 22px rgba(0,0,0,0.6);
+            opacity: 0;
+            transition: opacity .28s ease, transform .28s ease;
+        }
+        .dt-feedback.show { opacity: 1; transform: translate(-50%,-70%); }
     </style>
 </head>
 
@@ -141,8 +174,17 @@
                             src="https://www.youtube.com/embed/{{ $videoId }}?rel=0&modestbranding=1&enablejsapi=1&autoplay=1&mute=1&playsinline=1&origin={{ $origin }}"
                             frameborder="0"
                             allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-                            allowfullscreen>
+                            allowfullscreen
+                            webkitallowfullscreen
+                            mozallowfullscreen>
                         </iframe>
+
+                        <!-- Double-tap areas (left = back 10s, right = forward 10s) -->
+                        <div class="double-tap-area left" data-side="left" aria-hidden="true"></div>
+                        <div class="double-tap-area right" data-side="right" aria-hidden="true"></div>
+
+                        <!-- feedback element -->
+                        <div id="dtFeedback" class="dt-feedback" aria-hidden="true"></div>
 
                         <!-- Unmute overlay (shown if programmatic unmute is blocked) -->
                         <div id="unmuteOverlay" style="display:none; position:absolute; inset:0; z-index:12; display:flex; align-items:center; justify-content:center; pointer-events:auto;">
@@ -662,6 +704,99 @@
             showOverlay();
         }
     }, 3000);
+
+    // --- Double-tap / double-click skip (±10s) ---
+    function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+
+    function showDTFeedback(text){
+        const fb = document.getElementById('dtFeedback');
+        if (!fb) return;
+        fb.textContent = text;
+        fb.classList.add('show');
+        clearTimeout(fb._t);
+        fb._t = setTimeout(()=> fb.classList.remove('show'), 650);
+    }
+
+    function seekBy(delta){
+        try {
+            if (!window.lessonPlayer || typeof window.lessonPlayer.getCurrentTime !== 'function') return;
+            const dur = window.lessonPlayer.getDuration() || 0;
+            const curr = window.lessonPlayer.getCurrentTime() || 0;
+            const target = clamp(curr + delta, 0, dur || Number.MAX_SAFE_INTEGER);
+            window.lessonPlayer.seekTo(target, true);
+            showDTFeedback((delta > 0 ? '+' : '') + Math.floor(delta) + 's');
+        } catch(e){
+            console.warn('seekBy failed', e);
+        }
+    }
+
+    function attachDoubleTapAreas(){
+        const areas = document.querySelectorAll('.double-tap-area');
+        if (!areas || !areas.length) return;
+
+        areas.forEach(area => {
+            // Desktop dblclick
+            area.addEventListener('dblclick', (ev)=>{
+                const side = area.dataset.side;
+                seekBy(side === 'right' ? 10 : -10);
+            });
+
+            // Mobile: custom double-tap detection
+            let lastTouch = 0;
+            let lastX = 0, lastY = 0;
+            area.addEventListener('touchend', function(e){
+                const t = Date.now();
+                const touch = (e.changedTouches && e.changedTouches[0]) || {};
+                const dx = Math.abs((touch.clientX || 0) - lastX);
+                const dy = Math.abs((touch.clientY || 0) - lastY);
+                const tapInterval = t - lastTouch;
+                // consider it a double-tap if within 300ms and movement small
+                if (tapInterval > 0 && tapInterval < 330 && dx < 30 && dy < 30) {
+                    const side = area.dataset.side;
+                    seekBy(side === 'right' ? 10 : -10);
+                    lastTouch = 0; // reset
+                } else {
+                    lastTouch = t;
+                    lastX = touch.clientX || 0;
+                    lastY = touch.clientY || 0;
+                }
+            }, {passive:true});
+        });
+    }
+
+    // expose a handler for unmute button so overlay works on mobile
+    const unmuteBtn = document.getElementById('unmuteBtn');
+    if (unmuteBtn) {
+        unmuteBtn.addEventListener('click', function(){
+            try {
+                if (window.lessonPlayer && typeof window.lessonPlayer.unMute === 'function') {
+                    window.lessonPlayer.unMute();
+                    window.lessonPlayer.setVolume && window.lessonPlayer.setVolume(100);
+                    window.lessonPlayer.playVideo && window.lessonPlayer.playVideo();
+                } else {
+                    // fallback: reload iframe with autoplay=1&mute=0 (best-effort)
+                    const iframe = document.getElementById('lessonIframe');
+                    if (iframe) {
+                        const src = new URL(iframe.src);
+                        src.searchParams.set('autoplay', '1');
+                        src.searchParams.set('mute', '0');
+                        iframe.src = src.toString();
+                    }
+                }
+            } catch(e){ console.warn('unmuteBtn click failed', e); }
+            document.getElementById('unmuteOverlay') && (document.getElementById('unmuteOverlay').style.display = 'none');
+        });
+    }
+
+    // call attach once API ready; also attempt attach early for UI to be responsive
+    attachDoubleTapAreas();
+    // ensure it's present after player ready as well
+    const origOnReady = window.onYouTubeIframeAPIReady;
+    // existing onPlayerReady called by YT API will run attachDoubleTapAreas via onPlayerReady's setupSeekBar call
+    // but keep safe: run again after small delay
+    setTimeout(attachDoubleTapAreas, 800);
+
+    // ...existing code...
 })();
 </script>
 </body>
