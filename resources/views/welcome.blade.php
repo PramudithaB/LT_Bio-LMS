@@ -1,711 +1,887 @@
 <!DOCTYPE html>
-<html lang="si">
+<html lang="si" class="scroll-smooth">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LTBio - Lakshitha Thennakoon</title>
-  <link rel="icon" type="image/jpeg" href="{{ asset('images/logo1.jpeg') }}" />
-  <link rel="preconnect" href="https://fonts.bunny.net">
-  <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LTbio - Lakshitha Thennakoon | Advanced Level Biology</title>
+    <meta name="description"
+        content="Official learning platform for Advanced Level Biology by Lakshitha Thennakoon. Theory, Revision, Video Lectures, and Model Papers.">
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo1.jpeg') }}" />
 
-  <style>
-    /* ---------------- Design tokens (Hybrid Red + Teal) ---------------- */
-    :root{
-      --bg-1: #f8fbfc;
-      --bg-2: #f6f9fa;
-      --surface: rgba(255,255,255,0.7);
-      --glass: rgba(255,255,255,0.55);
-      --text: #0f1720;
-      --muted: #6b6f75;
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
 
-      --accent-primary: #F53003;     /* red - brand */
-      --accent-secondary: #17A2B8;   /* teal - bio vibe */
+    <!-- Scripts & Styles -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-      --shadow-sm: 0 6px 18px rgba(11,12,16,0.06);
-      --shadow-md: 0 16px 40px rgba(11,12,16,0.09);
-      --shadow-strong: 0 30px 80px rgba(11,12,16,0.14);
+    <style>
+        /* Custom visual enhancements */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
 
-      --radius-lg: 16px;
-      --radius-md: 10px;
-      --glass-blur: 10px;
-      --transition: 420ms cubic-bezier(.2,.9,.3,1);
-    }
+        .hero-stage {
+            perspective: 1200px;
+        }
 
-    /* ---------------- Global Reset ---------------- */
-    *{box-sizing:border-box; margin:0; padding:0; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
-    html,body{height:100%; font-family:'Instrument Sans', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:var(--text); background:linear-gradient(180deg,var(--bg-1),var(--bg-2));}
-    img{display:block; max-width:100%; height:auto;}
+        .preserve-3d {
+            transform-style: preserve-3d;
+        }
 
-    a{color:inherit; text-decoration:none}
-    button{font-family:inherit}
+        .fadeInUp {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1), transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-    /* ---------------- Page layout ---------------- */
-    nav{
-      position:fixed; top:12px; left:50%; transform:translateX(-50%); width:calc(100% - 48px);
-      max-width:1200px; z-index:1200;
-      border-radius:12px; padding:10px 18px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(255,255,255,0.5));
-      box-shadow:var(--shadow-sm);
-      backdrop-filter: blur(var(--glass-blur));
-      border: 1px solid rgba(11,12,16,0.04);
-    }
+        .in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-    nav .container{display:flex; align-items:center; justify-content:space-between; gap:12px;}
-    .logo{display:flex; align-items:center; gap:12px}
-    .logo img{width:46px; height:46px; object-fit:cover; border-radius:50%; border:2px solid rgba(255,255,255,0.6); box-shadow:0 6px 22px rgba(23,162,184,0.07)}
-    .logo span{font-weight:800; color:var(--accent-primary); font-size:1.05rem}
+        /* Custom hide scrollbar */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
 
-    nav ul{display:flex; gap:18px; align-items:center; list-style:none}
-    nav ul li a{padding:8px 12px; border-radius:10px; color:var(--text); font-weight:600}
-    nav ul li a:hover{background:linear-gradient(90deg, rgba(23,162,184,0.06), rgba(245,48,3,0.06)); transform:translateY(-3px); box-shadow:var(--shadow-sm)}
-
-    /* Mobile nav fallback */
-    .nav-toggle{display:none; background:none; border:0; padding:8px; cursor:pointer}
-    .nav-toggle svg{display:block}
-
-    @media (max-width:880px){
-      nav{left:12px; transform:none; width:calc(100% - 24px); padding:10px}
-      nav .container{gap:8px}
-      nav ul{display:none} /* hidden by default on small screens */
-      .nav-toggle{display:flex; align-items:center; justify-content:center}
-
-      /* when nav has .open show vertical menu */
-      nav.open ul{
-        display:flex;
-        flex-direction:column;
-        gap:10px;
-        align-items:stretch;
-        position:absolute;
-        left:12px;
-        right:12px;
-        top:calc(100% + 8px);
-        background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.95));
-        padding:12px;
-        border-radius:12px;
-        box-shadow:var(--shadow-sm);
-        border: 1px solid rgba(11,12,16,0.04);
-      }
-      nav.open ul li a{display:block; padding:12px; border-radius:10px}
-    }
-
-    /* ---------------- Hero (3D stage) ---------------- */
-    .hero{
-      margin-top:96px;
-      padding:56px 22px 36px;
-      max-width:1200px; margin-left:auto; margin-right:auto;
-      perspective:1400px;
-    }
-    .hero-inner{
-      display:grid; grid-template-columns: 1fr 520px; gap:28px; align-items:center;
-    }
-
-    /* Left card (content) */
-    .card-hero{
-      background: linear-gradient(180deg, rgba(255,255,255,0.82), rgba(255,255,255,0.7));
-      padding:34px; border-radius:var(--radius-lg);
-      box-shadow:var(--shadow-strong);
-      border:1px solid rgba(11,12,16,0.04);
-      transform-style:preserve-3d;
-      position:relative; overflow:visible;
-    }
-
-    .hero-subtitle{display:inline-block; font-weight:800; color:var(--accent-secondary); letter-spacing:0.12em; font-size:.78rem; margin-bottom:10px}
-    .hero-title{font-size:3.2rem; font-weight:900; color:var(--accent-primary); line-height:1; margin-bottom:6px}
-    .hero-name{font-size:2.1rem; font-weight:700; color:var(--text); margin-bottom:12px}
-    .hero-description{color:var(--muted); font-weight:600; font-size:1.02rem; margin-bottom:18px}
-
-    .badges{display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap}
-    .badge{background:linear-gradient(180deg, rgba(23,162,184,0.06), rgba(245,48,3,0.03)); padding:8px 12px; border-radius:999px; font-weight:700; color:var(--text); box-shadow:0 10px 30px rgba(23,162,184,0.03)}
-
-    .hero-actions{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
-    .btn{display:inline-flex; align-items:center; gap:10px; padding:12px 16px; border-radius:12px; font-weight:800; cursor:pointer; box-shadow:var(--shadow-md)}
-    .btn-primary{background:linear-gradient(90deg,var(--accent-primary), #c21402); color:white; border: none}
-    .btn-ghost{background:linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.68)); border:1px solid rgba(11,12,16,0.06); color:var(--text)}
-
-    /* Right stage */
-    .hero-stage{
-      position:relative; border-radius:var(--radius-lg); overflow:visible;
-      height:460px; display:flex; align-items:center; justify-content:center;
-      background: linear-gradient(135deg, rgba(23,162,184,0.02), rgba(245,48,3,0.02));
-      transform-style: preserve-3d;
-      border:1px solid rgba(11,12,16,0.03);
-      box-shadow: var(--shadow-md);
-    }
-
-    /* floating DNA stripe (decorative) */
-    .dna-deco{
-      position:absolute; left:-40px; top:20px; width:120px; height:420px; opacity:0.14; z-index:2;
-      transform: translateZ(-80px) rotateZ(-6deg);
-      pointer-events:none;
-    }
-
-    .hero-image-wrap{position:relative; width:420px; max-width:92%; transform-style:preserve-3d; z-index:10}
-    .hero-image{
-      border-radius:18px; overflow:hidden; border:6px solid rgba(255,255,255,0.6);
-      box-shadow: 0 40px 120px rgba(11,12,16,0.16);
-      transform: translateZ(60px);
-      will-change:transform;
-      background: linear-gradient(180deg,#fff,#fff5f5);
-    }
-    .hero-image img{display:block; width:100%; height:auto; object-fit:cover}
-
-    .hero-bg-number{
-      position:absolute; bottom:18px; left:20px; font-size:96px; font-weight:900; color:rgba(17,17,17,0.04);
-      transform:translateZ(-160px);
-      user-select:none;
-    }
-
-    .stats-badge{
-      position:absolute; right:18px; bottom:18px; z-index:20; text-align:center;
-      transform: translateZ(30px);
-    }
-    .stats-badge .icon{
-      width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-      background:linear-gradient(180deg,var(--accent-primary), #b51a01); color:white; font-weight:900; box-shadow:0 18px 46px rgba(245,48,3,0.16);
-    }
-    .stats-badge p{color:white; margin-top:8px; font-weight:700}
-
-    /* ---------------- Sections & cards ---------------- */
-    section{max-width:1200px; margin:0 auto; padding:56px 22px}
-    .section-subtitle{color:var(--accent-secondary); font-weight:800; letter-spacing:.12em; margin-bottom:8px; display:inline-block}
-    .section-title{font-size:2.2rem; font-weight:900; color:var(--text); margin-bottom:16px}
-
-    .about-content{display:grid; grid-template-columns: 1fr 420px; gap:28px; align-items:start}
-    .about-text{background:linear-gradient(180deg, rgba(255,255,255,0.88), rgba(255,255,255,0.78)); padding:22px; border-radius:14px; box-shadow:var(--shadow-md); line-height:1.7; color:var(--text)}
-    .about-features{display:grid; gap:14px}
-
-    .feature-card{padding:18px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.75)); box-shadow:var(--shadow-sm); border-left:6px solid rgba(245,48,3,0.12); font-weight:700}
-
-    /* institutes grid */
-    .institutes-grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:20px}
-    .institute-card{background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85)); padding:16px; border-radius:14px; box-shadow:var(--shadow-md); transition:transform var(--transition), box-shadow var(--transition); transform-style:preserve-3d}
-    .institute-card:hover{transform: translateY(-14px) rotateX(2deg); box-shadow:var(--shadow-strong)}
-    .institute-image{height:160px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:52px; color:var(--accent-primary); background: linear-gradient(135deg, rgba(245,48,3,0.03), rgba(23,162,184,0.02))}
-
-    /* results banner */
-    .results-banner{background: linear-gradient(135deg,var(--accent-primary), #b71a01); color:white; padding:28px; border-radius:14px; box-shadow:0 28px 80px rgba(245,48,3,0.12); text-align:center; margin-bottom:18px}
-    .results-stats{display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:18px}
-    .stat-card{background:white; padding:20px; border-radius:12px; text-align:center; box-shadow:var(--shadow-sm); transform: translateZ(20px)}
-
-    .stat-number{font-size:2.2rem; font-weight:900; color:var(--accent-primary)}
-    .stat-label{color:var(--muted); font-weight:700}
-
-    /* gallery horizontal scroll */
-    .gallery-grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:14px}
-    .gallery-item{background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.8)); border-radius:12px; padding:12px; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-sm); cursor:pointer; transition:transform var(--transition)}
-    .gallery-item:hover{transform:translateY(-8px) rotateX(4deg)}
-
-    /* feedback form */
-    .feedback-panel{background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85)); padding:18px; border-radius:12px; box-shadow:var(--shadow-md)}
-    .feedback-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
-    .feedback-grid input, .feedback-grid textarea{padding:12px; border-radius:10px; border:1px solid rgba(11,12,16,0.06); background:transparent; font-weight:700}
-    .feedback-grid textarea{grid-column:span 2; min-height:120px;}
-    .feedback-grid button{grid-column:span 2; padding:12px; border-radius:10px; border:none; background:linear-gradient(90deg,var(--accent-primary), #b71a01); color:white; font-weight:900; cursor:pointer}
-
-    /* footer */
-    footer{background:linear-gradient(180deg,#0b0f12, #0f1417); color:rgba(255,255,255,0.9); padding:36px 22px}
-    .footer-content{display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:18px}
-    .footer-section h3{color:var(--accent-primary); margin-bottom:8px}
-    .footer-bottom{margin-top:18px; color:rgba(255,255,255,0.6); text-align:center}
-
-    /* floating whatsapp */
-    .float-wa{
-      position:fixed; right:22px; bottom:22px; z-index:1400;
-      width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-      background:linear-gradient(180deg,#25D366,#128C7E); box-shadow:0 20px 60px rgba(18,140,126,0.16);
-      border:4px solid rgba(255,255,255,0.85);
-      transition: transform 260ms ease;
-    }
-    .float-wa:hover{transform:translateY(-8px) scale(1.03)}
-
-    /* reveal util */
-    .fadeInUp{opacity:0; transform:translateY(20px) scale(.995)}
-    .in-view{opacity:1; transform:translateY(0) scale(1); transition:opacity 600ms, transform 600ms}
-
-    /* small screens */
-    @media (max-width:980px){
-      .hero-inner{grid-template-columns:1fr; gap:18px}
-      .about-content{grid-template-columns:1fr}
-      .hero-stage{height:420px}
-      .hero-image-wrap{width:360px}
-    }
-    @media (max-width:560px){
-      nav{left:0; transform:none; width:100%; padding:10px}
-      .hero-stage{height:360px}
-      .hero-image-wrap{width:100%}
-      .feedback-grid{grid-template-columns:1fr}
-      .feedback-grid textarea{grid-column:span 1}
-    }
-
-    /* reduce motion */
-    @media (prefers-reduced-motion: reduce){
-      *{transition:none!important; animation:none!important}
-    }
-  </style>
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
 </head>
 
-<body>
-  <!-- NAVIGATION -->
-  <nav>
-    <div class="container">
-      <a class="logo" href="#">
-        <img src="{{ asset('images/logo1.jpeg') }}" alt="LTBio.lk Logo" />
-        <span>LTbio.lk</span>
-      </a>
+<body
+    class="font-sans antialiased text-slate-800 bg-slate-50 selection:bg-brand-500 selection:text-white overflow-x-hidden">
 
-      <!-- Mobile toggle (visible on small screens) -->
-      <button class="nav-toggle" aria-label="Toggle navigation" id="navToggle" type="button">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- TOP NAVIGATION BAR -->
+    <nav class="fixed top-0 inset-x-0 z-50 glass-nav border-b border-slate-200/80 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+
+                <!-- Brand Logo -->
+                <a href="#home" class="flex items-center gap-3 group">
+                    <img src="{{ asset('images/logo1.jpeg') }}" alt="LTbio.lk Logo"
+                        class="w-11 h-11 rounded-xl object-cover shadow-sm border-2 border-brand-500/20 group-hover:scale-105 transition-transform" />
+                    <div>
+                        <div class="text-2xl font-black tracking-tight text-slate-900 leading-none">
+                            LT<span class="text-brand-500">bio</span><span
+                                class="text-xs font-bold text-bio-500 ml-0.5">.lk</span>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Lakshitha
+                            Thennakoon</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav Links -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#home"
+                        class="text-sm font-semibold text-slate-600 hover:text-brand-600 transition-colors">Home</a>
+                    <a href="#about"
+                        class="text-sm font-semibold text-slate-600 hover:text-brand-600 transition-colors">About</a>
+                    <a href="#institutes"
+                        class="text-sm font-semibold text-slate-600 hover:text-brand-600 transition-colors">Feedback &
+                        Community</a>
+                    <a href="#gallery"
+                        class="text-sm font-semibold text-slate-600 hover:text-brand-600 transition-colors">Gallery</a>
+                    <a href="{{ route('buyclass') }}"
+                        class="text-sm font-semibold text-slate-600 hover:text-brand-600 transition-colors">Course
+                        Packages</a>
+                </div>
+
+                <!-- Desktop Auth Actions -->
+                <div class="hidden md:flex items-center gap-3">
+                    @auth
+                        @if(Auth::user()->usertype === 'admin')
+                            <a href="{{ route('admindashboard') }}"
+                                class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-sm hover:shadow transition-all flex items-center gap-2">
+                                <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <span>Admin Panel</span>
+                            </a>
+                        @else
+                            <a href="{{ route('dashboard') }}"
+                                class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-600 text-white font-bold text-xs shadow-md shadow-brand-500/20 hover:shadow-brand-500/30 transition-all flex items-center gap-2">
+                                <span>My Dashboard</span>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </a>
+                        @endif
+                    @else
+                        <a href="{{ route('login') }}"
+                            class="px-4 py-2.5 rounded-xl text-slate-700 hover:text-brand-600 hover:bg-slate-100 font-bold text-xs transition-colors">
+                            Sign In
+                        </a>
+                        <a href="{{ route('register') }}"
+                            class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-600 text-white font-bold text-xs shadow-md shadow-brand-500/20 hover:shadow-brand-500/30 hover:-translate-y-0.5 transition-all">
+                            Student Register
+                        </a>
+                    @endauth
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="flex md:hidden items-center">
+                    <button id="navToggle" type="button" aria-label="Toggle navigation"
+                        class="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path id="navIconOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                            <path id="navIconClose" class="hidden" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown Drawer -->
+        <div id="mobileMenu"
+            class="hidden md:hidden border-t border-slate-200 bg-white/95 backdrop-blur-xl px-4 pt-3 pb-6 space-y-3 shadow-xl">
+            <div class="flex flex-col space-y-2">
+                <a href="#home"
+                    class="mobile-nav-link px-3 py-2 rounded-lg font-semibold text-slate-700 hover:bg-slate-50 hover:text-brand-600">Home</a>
+                <a href="#about"
+                    class="mobile-nav-link px-3 py-2 rounded-lg font-semibold text-slate-700 hover:bg-slate-50 hover:text-brand-600">About</a>
+                <a href="#institutes"
+                    class="mobile-nav-link px-3 py-2 rounded-lg font-semibold text-slate-700 hover:bg-slate-50 hover:text-brand-600">Feedback
+                    & Community</a>
+                <a href="#gallery"
+                    class="mobile-nav-link px-3 py-2 rounded-lg font-semibold text-slate-700 hover:bg-slate-50 hover:text-brand-600">Gallery</a>
+                <a href="{{ route('buyclass') }}"
+                    class="mobile-nav-link px-3 py-2 rounded-lg font-semibold text-slate-700 hover:bg-slate-50 hover:text-brand-600">Course
+                    Packages</a>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
+                @auth
+                    @if(Auth::user()->usertype === 'admin')
+                        <a href="{{ route('admindashboard') }}"
+                            class="w-full text-center py-2.5 rounded-xl bg-slate-900 text-white font-bold text-sm">Admin
+                            Panel</a>
+                    @else
+                        <a href="{{ route('dashboard') }}"
+                            class="w-full text-center py-2.5 rounded-xl bg-brand-600 text-white font-bold text-sm">My
+                            Dashboard</a>
+                    @endif
+                @else
+                    <a href="{{ route('login') }}"
+                        class="w-full text-center py-2.5 rounded-xl border border-slate-200 text-slate-800 font-bold text-sm">Sign
+                        In</a>
+                    <a href="{{ route('register') }}"
+                        class="w-full text-center py-2.5 rounded-xl bg-brand-600 text-white font-bold text-sm">Student
+                        Register</a>
+                @endauth
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <main class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden" id="home">
+        <!-- Ambient Background Glows -->
+        <div
+            class="absolute top-20 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-tr from-brand-500/10 via-bio-500/5 to-transparent rounded-full blur-3xl pointer-events-none -z-10">
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+
+                <!-- Left Content Column (7 cols) -->
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <!-- Pill Tagline -->
+                    <div
+                        class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 border border-brand-200/80 text-brand-600 text-xs font-extrabold uppercase tracking-wider shadow-xs">
+                        <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                        ADVANCED LEVEL Biology | 2026 & 2027 A/L
+                    </div>
+
+                    <!-- Title & Name -->
+                    <div>
+                        <h1 class="text-4xl sm:text-6xl font-black text-slate-900 tracking-tight leading-none mb-2">
+                            Lakshitha <span
+                                class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-brand-500 to-rose-500">Thennakoon</span>
+                        </h1>
+                        <p class="text-base sm:text-lg font-bold text-bio-600 mt-2">
+                            BSc (UG) Biochemistry & Molecular Biology — University Of Colombo
+                        </p>
+                    </div>
+
+                    <!-- Sinhala Focus Description -->
+                    <p
+                        class="text-slate-600 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto lg:mx-0 font-medium">
+                        කට්ටපාඩම් සංස්කෘතියෙන් බැහැරව, සංකල්පීය අවබෝධය හා තාර්කික කෙටි ක්‍රම ඔස්සේ ජීව විද්‍යාව ඉහළම
+                        සාමාර්ථයක් දක්වා මෙහෙයවන ශ්‍රී ලංකාවේ නවීනතම Digital පන්ති කාමරය.
+                    </p>
+
+                    <!-- Feature Badges -->
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 pt-1">
+                        <span
+                            class="px-3.5 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 shadow-xs flex items-center gap-1.5">
+                            <span class="text-brand-500">✓</span> Online පන්තිය
+                        </span>
+                        <span
+                            class="px-3.5 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 shadow-xs flex items-center gap-1.5">
+                            <span class="text-bio-500">✓</span> Theory & Revision
+                        </span>
+                        <span
+                            class="px-3.5 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 shadow-xs flex items-center gap-1.5">
+                            <span class="text-emerald-500">✓</span> HD Video Lectures
+                        </span>
+                        <span
+                            class="px-3.5 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 shadow-xs flex items-center gap-1.5">
+                            <span class="text-amber-500">★</span> 837+ Island Ranks
+                        </span>
+                    </div>
+
+                    <!-- Call To Action Buttons -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-3">
+                        @auth
+                            <a href="{{ Auth::user()->usertype === 'admin' ? route('admindashboard') : route('dashboard') }}"
+                                class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-600 text-white font-extrabold text-sm shadow-xl shadow-brand-500/25 hover:shadow-brand-500/35 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
+                                <span>Go to LMS Portal</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}"
+                                class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-600 text-white font-extrabold text-sm shadow-xl shadow-brand-500/25 hover:shadow-brand-500/35 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
+                                <span>Student Login</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </a>
+                        @endauth
+
+                        <a href="{{ route('buyclass') }}"
+                            class="w-full sm:w-auto px-7 py-4 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 font-extrabold text-sm shadow-sm hover:shadow transition-all flex items-center justify-center gap-2">
+                            <span>Explore Classes & Packages</span>
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right Visual Stage Column (5 cols) -->
+                <div class="lg:col-span-5 flex justify-center hero-stage">
+                    <div class="relative w-full max-w-sm sm:max-w-md preserve-3d" id="heroImageCard">
+
+                        <!-- Decorative Double Helix Vector -->
+                        <svg class="absolute -left-12 -top-8 w-28 h-80 opacity-20 pointer-events-none -z-10"
+                            viewBox="0 0 120 420" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="dnaGrad" x1="0" x2="1">
+                                    <stop offset="0" stop-color="#17A2B8" />
+                                    <stop offset="1" stop-color="#F53003" />
+                                </linearGradient>
+                            </defs>
+                            <g fill="none" stroke="url(#dnaGrad)" stroke-width="3" stroke-linecap="round">
+                                <path d="M20 10 C40 40, 80 70, 20 100" />
+                                <path d="M20 70 C40 100, 80 130, 20 160" />
+                                <path d="M20 130 C40 160, 80 190, 20 220" />
+                                <path d="M20 190 C40 220, 80 250, 20 280" />
+                                <path d="M20 250 C40 280, 80 310, 20 340" />
+                                <path d="M20 310 C40 340, 80 370, 20 400" />
+                            </g>
+                        </svg>
+
+                        <!-- Main Photo Frame -->
+                        <div
+                            class="relative rounded-3xl p-3 bg-white/90 shadow-2xl border border-white/60 backdrop-blur-sm transition-transform duration-200">
+                            <div class="rounded-2xl overflow-hidden aspect-[4/5] bg-slate-100 relative">
+                                <img src="{{ asset('images/profile1.jpeg') }}" alt="Lakshitha Thennakoon"
+                                    class="w-full h-full object-cover object-top" />
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent">
+                                </div>
+                                <div class="absolute bottom-4 left-4 text-white">
+                                    <div class="text-xs font-bold uppercase tracking-wider text-brand-400">Chief Biology
+                                        Mentor</div>
+                                    <div class="text-lg font-black">Lakshitha Thennakoon</div>
+                                </div>
+                            </div>
+
+                            <!-- Floating Achievement Pill -->
+                            <div
+                                class="absolute -bottom-5 -right-5 bg-gradient-to-br from-brand-600 to-brand-500 text-white p-4 rounded-2xl shadow-xl shadow-brand-500/30 flex items-center gap-3.5 border-2 border-white">
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center font-black text-xl">
+                                    10+
+                                </div>
+                                <div class="text-left pr-1">
+                                    <div class="text-xs font-extrabold uppercase tracking-wider text-brand-100">Top
+                                        Honors</div>
+                                    <div class="text-sm font-black leading-tight">District Ranks</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- ABOUT SECTION -->
+    <section class="py-20 bg-white border-y border-slate-200/80" id="about">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="max-w-3xl mb-12">
+                <span class="text-xs font-extrabold text-bio-600 uppercase tracking-widest">WHO WE ARE</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-1">
+                    About Lakshitha Thennakoon
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+                <!-- Text Narrative (7 cols) -->
+                <div
+                    class="lg:col-span-7 bg-slate-50 p-8 sm:p-10 rounded-2xl border border-slate-200/80 shadow-xs space-y-5 text-slate-700 leading-relaxed font-medium fadeInUp">
+                    <p>
+                        කැකිරාව මධ්‍ය විද්‍යාලයෙන් සිප් සතර හදාරා අ.පො.ස. උසස් පෙළ විශිෂ්ට ප්‍රතිඵල ලබා ගනිමින් කොළඹ
+                        විශ්වවිද්‍යාලයට ඇතුළත් වීමට වරම් ලැබූ ලක්ෂිත තෙන්නකෝන්, ජීව රසායනය හා අනුක ජීව විද්‍යාව පිළිබඳ
+                        උපාධිය හදාරමින් සිටි අතර වසර දෙකක් පුරා ගුරු භූමිකාවට පණ පොවූ විට, කට්ටපාඩම් සංස්කෘතියෙන් බැහැර
+                        වූ නවීන හා කෙටි ක්‍රම මගින් සාම්ප්‍රදායික ජීව විද්‍යා ගුරුවරුන්ට ඉහළ අභියෝගයක් වෙමිනි.
+                    </p>
+                    <p>
+                        සිය ගුරු භූමිකාව තුළ තමන්ගේ දරු පරම්පරාව වෙත ලබා දිය හැකි දැනුම හුදු පන්ති කාමරයට පමණක් සීමා
+                        නොකර ඔවුන්ගේ ජීවිත සාර්ථක කිරීමට අවශ්‍ය මගපෙන්වීම ද සිදු කරන්නේ සාම්ප්‍රදායික අධ්‍යාපන රටාවට
+                        අභියෝග කරමින් ය.
+                    </p>
+                </div>
+
+                <!-- 3 Pillars Cards (5 cols) -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div
+                        class="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:shadow-md hover:border-brand-500/40 transition-all fadeInUp">
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center shrink-0 font-bold">
+                                🎓
+                            </div>
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900 mb-1">විශිෂ්ට අධ්‍යාපන පදනම</h3>
+                                <p class="text-xs text-slate-500 leading-relaxed font-semibold">BSc (UG) Biochemistry &
+                                    Molecular Biology — University Of Colombo</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:shadow-md hover:border-bio-500/40 transition-all fadeInUp">
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-bio-50 text-bio-600 flex items-center justify-center shrink-0 font-bold">
+                                📈
+                            </div>
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900 mb-1">වසර ගණනාවක පළපුරුද්ද</h3>
+                                <p class="text-xs text-slate-500 leading-relaxed font-semibold">2022 සිට දිවයිනේ ඉහළම A
+                                    සාමාර්ථයන් නිරන්තරයෙන් නිෂ්පාදනය කිරීම.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:shadow-md hover:border-emerald-500/40 transition-all fadeInUp">
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 font-bold">
+                                💻
+                            </div>
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900 mb-1">නවීන Digital පහසුකම්</h3>
+                                <p class="text-xs text-slate-500 leading-relaxed font-semibold">Online පන්ති,
+                                    Interactive වීඩියෝ පාඩම්, Digital tutes & model papers.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- COMMUNITY, TELEGRAM & FEEDBACK SECTION -->
+    <section class="py-20 bg-slate-50" id="institutes">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- Section Header & Telegram Channels -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                <div>
+                    <span class="text-xs font-extrabold text-brand-600 uppercase tracking-widest">CONNECT WITH US</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-1">
+                        Student Feedback & Study Groups
+                    </h2>
+                </div>
+
+                <!-- Telegram Links -->
+                <div class="flex flex-wrap gap-3">
+                    <a href="https://t.me/LTbio26" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center gap-2.5 px-4 py-3 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 font-bold text-xs shadow-xs hover:shadow transition-all group">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram"
+                            class="w-5 h-5 group-hover:scale-110 transition-transform" />
+                        <span>2026 Biology Revision</span>
+                    </a>
+                    <a href="https://t.me/LTbio26" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center gap-2.5 px-4 py-3 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 font-bold text-xs shadow-xs hover:shadow transition-all group">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram"
+                            class="w-5 h-5 group-hover:scale-110 transition-transform" />
+                        <span>2027 Theory Biology</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
+
+                <!-- FEEDBACK FORM (5 cols) -->
+                <div class="lg:col-span-5 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="mb-5">
+                        <h3 class="text-xl font-black text-slate-900">Submit Your Feedback</h3>
+                        <p class="text-xs text-slate-500 mt-1">Share your thoughts, suggestions, or learning experience
+                            with us.</p>
+                    </div>
+
+                    <!-- Flash Message -->
+                    @if (session('success'))
+                        <div
+                            class="mb-4 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2">
+                            <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span>{{ session('success') }}</span>
+                        </div>
+                    @endif
+
+                    @if (isset($errors) && $errors->any())
+                        <div
+                            class="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold">
+                            <ul class="list-disc list-inside space-y-0.5">
+                                @foreach($errors->all() as $err)
+                                    <li>{{ $err }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <!-- FORM -->
+                    <form action="{{ route('feedbackstore') }}" method="POST" class="space-y-4">
+                        @csrf
+
+                        <div>
+                            <label for="name"
+                                class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Your
+                                Name</label>
+                            <input id="name" type="text" name="name" required placeholder="Kasun Perera"
+                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all" />
+                        </div>
+
+                        <div>
+                            <label for="email"
+                                class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Email
+                                Address</label>
+                            <input id="email" type="email" name="email" required placeholder="student@example.com"
+                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all" />
+                        </div>
+
+                        <div>
+                            <label for="phone_number"
+                                class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Phone
+                                Number</label>
+                            <input id="phone_number" type="text" name="phone_number" required placeholder="0712345678"
+                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all" />
+                        </div>
+
+                        <div>
+                            <label for="message"
+                                class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Your
+                                Message</label>
+                            <textarea id="message" name="message" rows="3" required
+                                placeholder="Write your review or question..."
+                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all resize-none"></textarea>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-600 text-white font-bold text-xs shadow-md shadow-brand-500/25 hover:shadow-brand-500/35 transition-all flex items-center justify-center gap-2">
+                            <span>Submit Feedback</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- PHOTO SHOWCASE CAROUSEL (7 cols) -->
+                <div class="lg:col-span-7">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-extrabold text-slate-900">Classroom Moments & Testimonials</h3>
+                        <span class="text-xs text-slate-400 font-semibold">Scroll horizontally →</span>
+                    </div>
+
+                    <div id="scrollBox"
+                        class="flex gap-4 overflow-x-auto pb-4 no-scrollbar snap-x snap-mandatory cursor-grab active:cursor-grabbing">
+                        <div
+                            class="flex-none w-64 sm:w-72 snap-start rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-xs group">
+                            <div class="aspect-[4/5] overflow-hidden bg-slate-100">
+                                <img src="{{ asset('images/feed1.jpeg') }}" alt="Student Feedback 1"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                            </div>
+                        </div>
+                        <div
+                            class="flex-none w-64 sm:w-72 snap-start rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-xs group">
+                            <div class="aspect-[4/5] overflow-hidden bg-slate-100">
+                                <img src="{{ asset('images/feed2.jpeg') }}" alt="Student Feedback 2"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                            </div>
+                        </div>
+                        <div
+                            class="flex-none w-64 sm:w-72 snap-start rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-xs group">
+                            <div class="aspect-[4/5] overflow-hidden bg-slate-100">
+                                <img src="{{ asset('images/feed3.jpeg') }}" alt="Student Feedback 3"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                            </div>
+                        </div>
+                        <div
+                            class="flex-none w-64 sm:w-72 snap-start rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-xs group">
+                            <div class="aspect-[4/5] overflow-hidden bg-slate-100">
+                                <img src="{{ asset('images/feed4.jpeg') }}" alt="Student Feedback 4"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- OUTSTANDING RESULTS METRICS -->
+            <div>
+                <div class="text-center max-w-xl mx-auto mb-8">
+                    <span class="text-xs font-extrabold text-bio-600 uppercase tracking-widest">PROVEN TRACK
+                        RECORD</span>
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">Outstanding
+                        Results</h3>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+                    <div
+                        class="p-6 rounded-2xl bg-white border border-slate-200 text-center shadow-xs hover:shadow-md transition-all">
+                        <div class="text-3xl sm:text-4xl font-black text-brand-500">4500+</div>
+                        <div class="text-xs font-bold text-slate-500 mt-1">A සාමාර්ථ (2015-2023)</div>
+                    </div>
+                    <div
+                        class="p-6 rounded-2xl bg-white border border-slate-200 text-center shadow-xs hover:shadow-md transition-all">
+                        <div class="text-3xl sm:text-4xl font-black text-slate-900">837</div>
+                        <div class="text-xs font-bold text-slate-500 mt-1">Island Ranks</div>
+                    </div>
+                    <div
+                        class="p-6 rounded-2xl bg-white border border-slate-200 text-center shadow-xs hover:shadow-md transition-all">
+                        <div class="text-3xl sm:text-4xl font-black text-bio-600">20+</div>
+                        <div class="text-xs font-bold text-slate-500 mt-1">Years Legacy</div>
+                    </div>
+                    <div
+                        class="p-6 rounded-2xl bg-white border border-slate-200 text-center shadow-xs hover:shadow-md transition-all">
+                        <div class="text-3xl sm:text-4xl font-black text-slate-900">15+</div>
+                        <div class="text-xs font-bold text-slate-500 mt-1">Institute Locations</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- GALLERY SECTION -->
+    <section class="py-20 bg-white border-t border-slate-200" id="gallery">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-3xl mb-12">
+                <span class="text-xs font-extrabold text-brand-600 uppercase tracking-widest">SEE OUR WORK</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-1">
+                    Activity & Seminar Gallery
+                </h2>
+                <p class="text-sm text-slate-500 mt-1">Moments from practical workshops, exam seminars, and revision
+                    sessions.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 shadow-xs group">
+                    <div class="aspect-video sm:aspect-square overflow-hidden bg-slate-200 relative">
+                        <img src="{{ asset('images/feed1.jpeg') }}" alt="Gallery Feed 1"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                            <span class="text-xs font-bold text-white">Seminar Discussion</span>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-white">
+                        <h4 class="text-sm font-bold text-slate-900">Revision Seminar</h4>
+                        <p class="text-xs text-slate-400 mt-0.5">Comprehensive paper discussions</p>
+                    </div>
+                </div>
+
+                <div class="rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 shadow-xs group">
+                    <div class="aspect-video sm:aspect-square overflow-hidden bg-slate-200 relative">
+                        <img src="{{ asset('images/feed2.jpeg') }}" alt="Gallery Feed 2"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                            <span class="text-xs font-bold text-white">Laboratory Insights</span>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-white">
+                        <h4 class="text-sm font-bold text-slate-900">Theory Masterclass</h4>
+                        <p class="text-xs text-slate-400 mt-0.5">Biochemistry & cell biology</p>
+                    </div>
+                </div>
+
+                <div class="rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 shadow-xs group">
+                    <div class="aspect-video sm:aspect-square overflow-hidden bg-slate-200 relative">
+                        <img src="{{ asset('images/feed3.jpeg') }}" alt="Gallery Feed 3"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                            <span class="text-xs font-bold text-white">Model Paper Test</span>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-white">
+                        <h4 class="text-sm font-bold text-slate-900">Time-Trial Exams</h4>
+                        <p class="text-xs text-slate-400 mt-0.5">Simulated exam conditions</p>
+                    </div>
+                </div>
+
+                <div class="rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 shadow-xs group">
+                    <div class="aspect-video sm:aspect-square overflow-hidden bg-slate-200 relative">
+                        <img src="{{ asset('images/feed4.jpeg') }}" alt="Gallery Feed 4"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                            <span class="text-xs font-bold text-white">Interactive Session</span>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-white">
+                        <h4 class="text-sm font-bold text-slate-900">Q&A Workshop</h4>
+                        <p class="text-xs text-slate-400 mt-0.5">Individual doubt clearance</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 text-slate-400 pt-16 pb-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-slate-800/80">
+
+                <!-- Col 1: Instructor Identity -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <img src="{{ asset('images/logo1.jpeg') }}" alt="LTbio Logo"
+                            class="w-10 h-10 rounded-xl object-cover border border-white/20" />
+                        <span class="text-xl font-black text-white">LT<span class="text-brand-500">bio</span><span
+                                class="text-bio-500 text-xs font-bold ml-1">.lk</span></span>
+                    </div>
+                    <p class="text-xs leading-relaxed text-slate-400 font-medium">
+                        Lakshitha Thennakoon — BSc (UG) Biochemistry & Molecular Biology, University Of Colombo.
+                        Advanced Level Biology education reimagined for maximum student achievement.
+                    </p>
+                </div>
+
+                <!-- Col 2: Quick Links -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-widest text-white mb-4">Quick Links</h4>
+                    <ul class="space-y-2.5 text-xs font-semibold">
+                        <li><a href="#home" class="hover:text-brand-400 transition-colors">Home</a></li>
+                        <li><a href="#about" class="hover:text-brand-400 transition-colors">About Instructor</a></li>
+                        <li><a href="#institutes" class="hover:text-brand-400 transition-colors">Feedback & Groups</a>
+                        </li>
+                        <li><a href="#gallery" class="hover:text-brand-400 transition-colors">Activity Gallery</a></li>
+                        <li><a href="{{ route('buyclass') }}" class="hover:text-brand-400 transition-colors">Course
+                                Packages</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Contact Details -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-widest text-white mb-4">Contact Info</h4>
+                    <ul class="space-y-2.5 text-xs font-medium">
+                        <li class="flex items-center gap-2">
+                            <span>📞</span>
+                            <a href="tel:+94742877640" class="hover:text-white transition-colors">+94 74 287 7640</a>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span>✉️</span>
+                            <a href="mailto:info@ltbio.edu.lk"
+                                class="hover:text-white transition-colors">info@ltbio.edu.lk</a>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span>🌐</span>
+                            <span class="text-slate-300">www.ltbio.edu.lk</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Community & Social Links -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-widest text-white mb-4">Follow Us</h4>
+                    <div class="flex flex-wrap gap-2 text-xs font-semibold">
+                        <a href="https://t.me/LTbio26" target="_blank" rel="noopener noreferrer"
+                            class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-brand-600 hover:text-white text-slate-300 transition-colors">Telegram</a>
+                        <a href="https://wa.me/94742877640" target="_blank" rel="noopener noreferrer"
+                            class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-emerald-600 hover:text-white text-slate-300 transition-colors">WhatsApp</a>
+                        <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer"
+                            class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-blue-600 hover:text-white text-slate-300 transition-colors">Facebook</a>
+                        <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer"
+                            class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-red-600 hover:text-white text-slate-300 transition-colors">YouTube</a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Copyright & Credit -->
+            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+                <p>&copy; {{ date('Y') }} ltbio.edu.lk - All Rights Reserved.</p>
+                <p>
+                    Designed with
+                    <a href="https://www.facebook.com/sachintha.bandara.9277/" target="_blank" rel="noopener noreferrer"
+                        class="text-slate-400 hover:text-white underline underline-offset-2">
+                        Pramuditha Bandara
+                    </a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- FLOATING WHATSAPP BUTTON -->
+    <a href="https://wa.me/94742877640" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp"
+        class="fixed right-6 bottom-6 z-40 w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-xl shadow-emerald-500/30 flex items-center justify-center border-2 border-white hover:scale-105 active:scale-95 transition-transform duration-200">
+        <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M21.8 4.2a11.9 11.9 0 0 0-17 0 11.9 11.9 0 0 0 0 17L2 22l3-2.1A11.9 11.9 0 0 0 21.8 4.2z"
+                fill="white" />
+            <path
+                d="M17 14.2c-.5 1.4-2 2.5-3.1 2.7-.9.2-1.5.3-4.1-1.1-3.2-1.9-5.2-6.6-2.4-9.6 1.8-1.9 4.5-1.5 5.2-1.4.8.2 2 .6 2.9 1.6.8.9 1.2 1.9 1.3 2.6.1.6-.1 1.6-.8 2.2z"
+                fill="#22c55e" />
         </svg>
-      </button>
-
-      <ul id="mainNav">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#institutes">Feedback</a></li>
-        <li><a href="{{ route('login') }}">Login</a></li>
-      </ul>
-    </div>
-  </nav>
-
-  <!-- HERO -->
-  <main class="hero" id="home">
-    <div class="hero-inner">
-      <!-- Left: content -->
-      <div class="card-hero">
-        <div class="hero-subtitle">ADVANCED LEVEL Biology</div>
-
-        <h1 class="hero-title">Lakshitha</h1>
-        <h2 class="hero-name">Thennakoon</h2>
-        <p class="hero-description">BSc (UG) Biochemistry & Molecular Biology — University Of Colombo</p>
-
-        <div class="badges" aria-hidden="true">
-          <div class="badge">Online පන්තිය</div>
-          
-        </div>
-
-        <div class="hero-actions" style="margin-top:8px;">
-          <!-- Keep the routes/links intact -->
-          <!-- Example primary CTA (if you want a different link, keep your href) -->
-                    <a href="{{ route('login') }}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Login →</a>
-
-        </div>
-
-       
-      </div>
-
-      <!-- Right: 3D stage -->
-      <div class="hero-stage" aria-hidden="true">
-        <!-- decorative DNA SVG -->
-        <svg class="dna-deco" viewBox="0 0 120 420" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="g1" x1="0" x2="1">
-              <stop offset="0" stop-color="#17A2B8"/>
-              <stop offset="1" stop-color="#F53003"/>
-            </linearGradient>
-          </defs>
-          <g fill="none" stroke="url(#g1)" stroke-width="2" stroke-linecap="round">
-            <!-- only for decoration: a soft double-helix curve repetition -->
-            <path d="M20 10 C40 40, 80 70, 20 100" opacity="0.9"/>
-            <path d="M20 40 C40 70, 80 100, 20 130" opacity="0.8"/>
-            <path d="M20 70 C40 100, 80 130, 20 160" opacity="0.7"/>
-            <path d="M20 100 C40 130, 80 160, 20 190" opacity="0.6"/>
-            <path d="M20 130 C40 160, 80 190, 20 220" opacity="0.5"/>
-            <path d="M20 160 C40 190, 80 220, 20 250" opacity="0.45"/>
-            <path d="M20 190 C40 220, 80 250, 20 280" opacity="0.4"/>
-            <path d="M20 220 C40 250, 80 280, 20 310" opacity="0.35"/>
-            <path d="M20 250 C40 280, 80 310, 20 340" opacity="0.3"/>
-            <path d="M20 280 C40 310, 80 340, 20 370" opacity="0.25"/>
-          </g>
-        </svg>
-
-        <div class="hero-image-wrap">
-          <div class="hero-image" id="heroImageCard">
-            <div class="hero-bg-number">837</div>
-            <img src="{{ asset('images/profile1.jpeg') }}" alt="Lakshitha Thennakoon" />
-          </div>
-
-          <div class="stats-badge" role="status" aria-live="polite">
-            <div class="icon">10+</div>
-            <p style="font-size:13px">Distric Ranks</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- ABOUT -->
-  <section id="about">
-    <div class="section-subtitle">WHO WE ARE</div>
-    <h2 class="section-title">About Lakshitha Thennakoon</h2>
-
-    <div class="about-content" style="margin-top:18px;">
-      <div class="about-text fadeInUp">
-        <p>කැකිරාව මධ්‍ය විද්‍යාලයෙන් සිප් සතර හදාරා අ.පො.ස. උසස් පෙළ විශිෂ්ට ප්‍රතිඵල ලබා ගනිමින් කොළඹ විශ්වවිද්‍යාලයට ඇතුළත් වීමට වරම් ලැබූ ලක්ෂිත තෙන්නකෝන්, ජීව රසායනය හා අනුක ජීව විද්‍යාව පිළිබඳ උපාධිය හදාරමින් සිටි අතර වසර දෙකක් පුරා ගුරු භූමිකාවට පණ පොවූ විට, කට්ටපාඩම් සංස්කෘතියෙන් බැහැර වූ නවීන හා කෙටි ක්‍රම මගින් සාම්ප්‍රදායික ජීව විද්‍යා ගුරුවරුන්ට ඉහළ අභියෝගයක් වෙමිනි.</p>
-        <br>
-        <p>සිය ගුරු භූමිකාව තුළ තමන්ගේ දරු පරම්පරාව වෙත ලබා දිය හැකි දැනුම හුදු පන්ති කාමරයට පමණක් සීමා නොකර
-          ඔවුන්ගේ ජීවිත සාර්ථක කිරීමට අවශ්‍ය මගපෙන්වීම ද සිදු කරන්නේ සාම්ප්‍රදායික අධ්‍යාපන රටාවට අභියෝග
-          කරමින් ය.</p>
-      </div>
-
-      <div style="display:flex; flex-direction:column; gap:12px;">
-        <div class="feature-card fadeInUp">
-          <h3 style="margin-bottom:6px">විශිෂ්ට අධ්‍යාපන</h3>
-          <p style="font-weight:700; color:var(--muted)">BSc (UG)Biochemistry & Molecular Biology — University Of Colombo</p>
-        </div>
-        <div class="feature-card fadeInUp">
-          <h3 style="margin-bottom:6px">වසර ගනනාවක පළපුරුද්ද</h3>
-          <p style="font-weight:700; color:var(--muted)">2022 සිට ගණන් A සාමාර්ථයන් නිෂ්පාදනය</p>
-        </div>
-        <div class="feature-card fadeInUp">
-          <h3 style="margin-bottom:6px">නවීන පහසුකම්</h3>
-          <p style="font-weight:700; color:var(--muted)">Online පන්ති, Interactive පාඩම්, Digital සම්පත්</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TELEGRAM CARDS & HORIZONTAL GALLERY -->
-  <section id="institutes">
-    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
-      <div>
-        <div class="section-subtitle">WHERE WE TEACH</div>
-        <h2 class="section-title">Student's Feedback</h2>
-      </div>
-
-      <div style="display:flex; gap:12px; align-items:center;">
-        <!-- Telegram card examples (links preserved) -->
-        <a href="https://t.me/LTbio26" target="_blank" rel="noopener noreferrer" style="text-decoration:none">
-          <div style="display:flex; align-items:center; gap:12px; padding:12px 16px; background:linear-gradient(90deg, rgba(245,48,3,0.06), rgba(23,162,184,0.04)); border-radius:12px; box-shadow:var(--shadow-sm)">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" width="34" alt="tg" />
-            <div style="font-weight:900; color:var(--accent-primary)">2026 Biology Revision</div>
-          </div>
-        </a>
-
-        <a href="https://t.me/LTbio26" target="_blank" rel="noopener noreferrer" style="text-decoration:none">
-          <div style="display:flex; align-items:center; gap:12px; padding:12px 16px; background:linear-gradient(90deg, rgba(245,48,3,0.06), rgba(23,162,184,0.04)); border-radius:12px; box-shadow:var(--shadow-sm)">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" width="34" alt="tg" />
-            <div style="font-weight:900; color:var(--accent-primary)">2027 Theory Biology</div>
-          </div>
-        </a>
-      </div>
-    </div>
-
-    <!-- feedback form -->
-<!-- feedback form -->
-<div style="margin-top:18px; width:100%;">
-    @if (session('success'))
-        <div style="padding:10px; background:#d1fae5; color:#065f46; border-radius:8px; margin-bottom:15px;">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <form action="{{ route('feedbackstore') }}" method="POST" aria-label="Feedback form"
-          style="background:#fff; padding:18px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.08); width:100%; box-sizing:border-box;">
-        @csrf
-        <h3 style="margin-bottom:12px;">Submit Your Feedback</h3>
-
-        <div class="feedback-grid" 
-             style="display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%;">
-
-            <input id="name" type="text" name="name" placeholder="Your Name" required
-                   style="padding:12px; border:1px solid #ddd; border-radius:6px; font-size:15px; width:100%; box-sizing:border-box;" />
-
-            <input id="email" type="email" name="email" placeholder="Email" required
-                   style="padding:12px; border:1px solid #ddd; border-radius:6px; font-size:15px; width:100%; box-sizing:border-box;" />
-
-            <input id="phone_number" type="text" name="phone_number" placeholder="Phone Number" required
-                   style="padding:12px; border:1px solid #ddd; border-radius:6px; font-size:15px; width:100%; box-sizing:border-box;" />
-
-            <textarea id="message" name="message" placeholder="Write your message..." required
-                      style="padding:12px; border:1px solid #ddd; border-radius:6px; font-size:15px; width:100%; height:130px; box-sizing:border-box; grid-column:span 2; resize:none;"></textarea>
-
-            <button type="submit" onclick="return validateFeedbackForm()"
-                    style="padding:12px; background:#ff0000; color:white; border:none; border-radius:6px; font-size:16px; cursor:pointer; grid-column:span 2;">
-                Submit
-            </button>
-        </div>
-    </form>
-</div>
-
-<!-- Responsive media query (required for mobile) -->
-<style>
-@media (max-width: 640px) {
-    .feedback-grid {
-        grid-template-columns: 1fr !important;
-    }
-    .feedback-grid textarea,
-    .feedback-grid button {
-        grid-column: span 1 !important;
-    }
-}
-</style>
-
-
-    <!-- horizontal scrolling gallery -->
-    <div style="margin-top:18px;">
-      <div id="scrollBox" style="display:flex; gap:14px; overflow-x:auto; padding:10px; scroll-snap-type:x mandatory;">
-        <img src="{{ asset('images/feed1.jpeg') }}" style="width:330px; height:350px; object-fit:cover; border-radius:12px; scroll-snap-align:start; flex:0 0 auto;">
-        <img src="{{ asset('images/feed2.jpeg') }}" style="width:330px; height:350px; object-fit:cover; border-radius:12px; scroll-snap-align:start; flex:0 0 auto;">
-        <img src="{{ asset('images/feed3.jpeg') }}" style="width:330px; height:350px; object-fit:cover; border-radius:12px; scroll-snap-align:start; flex:0 0 auto;">
-        <img src="{{ asset('images/feed4.jpeg') }}" style="width:330px; height:350px; object-fit:cover; border-radius:12px; scroll-snap-align:start; flex:0 0 auto;">
-      </div>
-    </div>
-
-    <!-- institutes cards -->
-    <div style="margin-top:30px;">
-      <h2 class="section-title">Outstanding Results</h2>
-
-      <div class="results-stats" style="margin-top:14px;">
-        <div class="stat-card">
-          <div class="stat-number">4500+</div>
-          <div class="stat-label">A සාමාර්ථ (2015-2023)</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">837</div>
-          <div class="stat-label">Island Ranks</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">20+</div>
-          <div class="stat-label">Years Experience</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">15+</div>
-          <div class="stat-label">Institute Locations</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
- <section id="gallery">
-    <div class="section-subtitle">SEE OUR WORK</div>
-    <h2 class="section-title">Gallery</h2>
-
-    <div class="gallery-grid" style="margin-top:16px;">
-        <div class="gallery-item">Feed 1</div>
-        <div class="gallery-item">Feed 2</div>
-        <div class="gallery-item">Feed 3</div>
-        <div class="gallery-item">Feed 4</div>
-    </div>
-</section>
-
-<style>
-#gallery {
-  padding: 40px 0;
-}
-
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
-}
-
-.gallery-item {
-  background: #e9e9e9;
-  padding: 40px;
-  text-align: center;
-  border-radius: 10px;
-  font-weight: bold;
-}
-</style>
-
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-content">
-      <div class="footer-section">
-        <h3>Lakshitha Thennakoon</h3>
-        <p>BSc (UG)Biochemistry & Molecular Biology — University Of Colombo</p>
-      
-      </div>
-
-      <div class="footer-section">
-        <h3>Quick Links</h3>
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#institutes">Institutes</a>
-        <a href="#results">Results</a>
-      </div>
-
-      <div class="footer-section">
-        <h3>Contact Us</h3>
-        <p>📞 +94 74 287 7640</p>
-        <p>✉️ info@ltbio.edu.lk</p>
-        <p>🌐 www.ltbio.edu.lk</p>
-      </div>
-
-      <div class="footer-section">
-        <h3>Follow Us</h3>
-        <a href="#">Facebook</a>
-        <a href="#">YouTube</a>
-        <a href="#">Telegram</a>
-        <a href="#">WhatsApp</a>
-      </div>
-    </div>
-
-    <div class="footer-bottom" style="margin-top:18px;">
-  <p>
-    &copy; 2025 ltbio.edu.lk - All Rights Reserved | Designed with 
-    <a href="https://www.facebook.com/share/1DdkZfRCep/?mibextid=wwXIfr" 
-       target="_blank" 
-       style="color: inherit; text-decoration: underline;">
-       Pixelwave IT Solutions
     </a>
-  </p>
-</div>
 
-  </footer>
+    <!-- CLIENT INTERACTIVITY JAVASCRIPT -->
+    <script>
+        // Reveal on scroll (IntersectionObserver)
+        (function () {
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
 
-  <!-- WhatsApp floating button -->
-  <a class="float-wa" href="https://wa.me/94742877640" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M21.8 4.2a11.9 11.9 0 0 0-17 0 11.9 11.9 0 0 0 0 17L2 22l3-2.1A11.9 11.9 0 0 0 21.8 4.2z" fill="white"></path>
-      <path d="M17 14.2c-.5 1.4-2 2.5-3.1 2.7-.9.2-1.5.3-4.1-1.1-3.2-1.9-5.2-6.6-2.4-9.6 1.8-1.9 4.5-1.5 5.2-1.4.8.2 2 .6 2.9 1.6.8.9 1.2 1.9 1.3 2.6.1.6-.1 1.6-.8 2.2z" fill="#24C17B"></path>
-    </svg>
-  </a>
+            document.querySelectorAll('.fadeInUp').forEach(el => observer.observe(el));
+        })();
 
-  <!-- ------------- Scripts: Interactions & 3D effect ------------- -->
-  <script>
-    // Smooth anchor scrolling (keep existing behaviour)
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        // allow real routes (like route('login')) to behave normally; hash links we smooth-scroll
-        const href = this.getAttribute('href');
-        if (!href.startsWith('#')) return;
-        e.preventDefault();
-        const target = document.querySelector(href);
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    });
+        // Mobile Nav Drawer Toggle
+        (function () {
+            const toggle = document.getElementById('navToggle');
+            const menu = document.getElementById('mobileMenu');
+            const iconOpen = document.getElementById('navIconOpen');
+            const iconClose = document.getElementById('navIconClose');
 
-    // Reveal on scroll (simple)
-    (function(){
-      const io = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('in-view');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, {threshold: 0.12});
+            if (!toggle || !menu) return;
 
-      document.querySelectorAll('.fadeInUp').forEach(el => io.observe(el));
-      document.querySelectorAll('.feature-card, .institute-card, .stat-card, .gallery-item').forEach(el => el.classList.add('fadeInUp') && io.observe(el));
-    })();
+            toggle.addEventListener('click', () => {
+                const isOpen = !menu.classList.contains('hidden');
+                if (isOpen) {
+                    menu.classList.add('hidden');
+                    iconOpen.classList.remove('hidden');
+                    iconClose.classList.add('hidden');
+                } else {
+                    menu.classList.remove('hidden');
+                    iconOpen.classList.add('hidden');
+                    iconClose.classList.remove('hidden');
+                }
+            });
 
-    // Hero image tilt (3D) — lightweight
-    (function(){
-      const card = document.getElementById('heroImageCard');
-      if (!card) return;
-      const img = card.querySelector('img');
-      const bgNumber = card.querySelector('.hero-bg-number');
+            // Close when clicking link
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    menu.classList.add('hidden');
+                    iconOpen.classList.remove('hidden');
+                    iconClose.classList.add('hidden');
+                });
+            });
+        })();
 
-      function onMove(e){
-        const rect = card.getBoundingClientRect();
-        const cx = rect.left + rect.width/2;
-        const cy = rect.top + rect.height/2;
-        const dx = (e.clientX || (e.touches && e.touches[0].clientX)) - cx;
-        const dy = (e.clientY || (e.touches && e.touches[0].clientY)) - cy;
-        const rx = (dy / rect.height) * -8; // rotateX
-        const ry = (dx / rect.width) * 10; // rotateY
-        card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(20px)`;
-        img.style.transform = `translateZ(60px) rotateX(${rx*0.6}deg) rotateY(${ry*0.6}deg)`;
-        if (bgNumber) bgNumber.style.transform = `translateZ(-120px) translateX(${ry*2}px) translateY(${rx*1.2}px)`;
-      }
+        // 3D Hero Card Tilt Effect
+        (function () {
+            const card = document.getElementById('heroImageCard');
+            if (!card) return;
 
-      function reset(){
-        card.style.transform = `rotateX(0deg) rotateY(0deg) translateZ(0px)`;
-        img.style.transform = `translateZ(60px) rotateX(0deg) rotateY(0deg)`;
-        if (bgNumber) bgNumber.style.transform = `translateZ(-160px)`;
-      }
+            function onMove(e) {
+                const rect = card.getBoundingClientRect();
+                const cx = rect.left + rect.width / 2;
+                const cy = rect.top + rect.height / 2;
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                if (!clientX || !clientY) return;
 
-      card.addEventListener('mousemove', onMove);
-      card.addEventListener('mouseleave', reset);
-      card.addEventListener('touchmove', onMove, {passive:true});
-      card.addEventListener('touchend', reset);
-    })();
+                const rx = ((clientY - cy) / rect.height) * -10;
+                const ry = ((clientX - cx) / rect.width) * 12;
 
-    // Draggable horizontal scroll
-    (function(){
-      const scrollBox = document.getElementById('scrollBox');
-      if (!scrollBox) return;
-      let isDown = false, startX, scrollLeft;
-      scrollBox.addEventListener('mousedown', e => { isDown = true; startX = e.pageX - scrollBox.offsetLeft; scrollLeft = scrollBox.scrollLeft; });
-      window.addEventListener('mouseup', () => isDown = false);
-      scrollBox.addEventListener('mousemove', e => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - scrollBox.offsetLeft;
-        const walk = (x - startX) * 1.6;
-        scrollBox.scrollLeft = scrollLeft - walk;
-      });
-      scrollBox.addEventListener('wheel', e => {
-        if (Math.abs(e.deltaX) < Math.abs(e.deltaY)) { e.preventDefault(); scrollBox.scrollLeft += e.deltaY; }
-      }, {passive:false});
-    })();
+                card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(10px)`;
+            }
 
-    // Small client-side validation for feedback form
-    function validateFeedbackForm(){
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const phone = document.getElementById('phone_number').value.trim();
-      const message = document.getElementById('message').value.trim();
-      if (!name || !email || !phone || !message) {
-        alert('Please fill all fields!');
-        return false;
-      }
-      return true; // allow server submit
-    }
+            function reset() {
+                card.style.transform = 'rotateX(0deg) rotateY(0deg) translateZ(0px)';
+            }
 
-    // Subtle floating animation for hero image
-    setInterval(() => {
-      const el = document.querySelector('#heroImageCard img');
-      if (!el) return;
-      el.animate([
-        { transform: el.style.transform },
-        { transform: el.style.transform + ' translateY(-8px)' },
-        { transform: el.style.transform }
-      ], { duration: 4200, iterations: 1 });
-    }, 5200);
+            card.addEventListener('mousemove', onMove);
+            card.addEventListener('mouseleave', reset);
+            card.addEventListener('touchmove', onMove, { passive: true });
+            card.addEventListener('touchend', reset);
+        })();
 
-    // Mobile nav toggle: open/close, close when clicking outside, close on link click
-    (function(){
-      const nav = document.querySelector('nav');
-      const toggle = document.getElementById('navToggle');
-      const navList = document.getElementById('mainNav');
+        // Horizontal Drag to Scroll for Showcase
+        (function () {
+            const box = document.getElementById('scrollBox');
+            if (!box) return;
 
-      if (!nav || !toggle) return;
+            let isDown = false;
+            let startX, scrollLeft;
 
-      toggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        nav.classList.toggle('open');
-        // toggle aria-expanded for accessibility
-        const expanded = nav.classList.contains('open');
-        toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-      });
+            box.addEventListener('mousedown', (e) => {
+                isDown = true;
+                startX = e.pageX - box.offsetLeft;
+                scrollLeft = box.scrollLeft;
+            });
+            window.addEventListener('mouseup', () => isDown = false);
+            box.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - box.offsetLeft;
+                const walk = (x - startX) * 1.5;
+                box.scrollLeft = scrollLeft - walk;
+            });
+        })();
+    </script>
 
-      // Close when clicking a nav link (mobile)
-      navList.querySelectorAll('a').forEach(a => {
-        a.addEventListener('click', () => {
-          if (nav.classList.contains('open')) nav.classList.remove('open');
-        });
-      });
-
-      // Click outside to close
-      document.addEventListener('click', (e) => {
-        if (!nav.contains(e.target) && nav.classList.contains('open')) {
-          nav.classList.remove('open');
-        }
-      });
-
-      // Close on Escape
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && nav.classList.contains('open')) nav.classList.remove('open');
-      });
-    })();
-  </script>
 </body>
 
 </html>
