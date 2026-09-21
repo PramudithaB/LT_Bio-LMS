@@ -1,236 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Package</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<x-admin-layout title="Edit Package: {{ $package->package_name }}" subtitle="Update fee structure or course association">
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+    <div class="max-w-3xl mx-auto space-y-6">
 
-        .container {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            max-width: 800px;
-            width: 100%;
-            padding: 40px;
-        }
+        <!-- Header Back Bar -->
+        <div class="flex items-center justify-between">
+            <a href="{{ route('admindashboard') }}" 
+               class="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-brand-500 bg-white hover:bg-slate-50 border border-slate-200 px-4 py-2 rounded-xl transition shadow-xs">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                <span>Back to Dashboard</span>
+            </a>
 
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 2rem;
-        }
-
-        .breadcrumb {
-            margin-bottom: 30px;
-            color: #666;
-        }
-
-        .breadcrumb a {
-            color: #667eea;
-            text-decoration: none;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .info-box {
-            background: #e0e7ff;
-            border-left: 4px solid #667eea;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-
-        .info-box p {
-            color: #4338ca;
-            font-size: 14px;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 30px;
-        }
-
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-        }
-
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-        }
-
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-danger {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .alert-danger ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="breadcrumb">
-            <a href="{{ route('admindashboard') }}"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <span class="text-xs font-mono text-slate-400">Package ID #{{ $package->id }}</span>
         </div>
 
-        <h1><i class="fas fa-box"></i> Edit Package</h1>
-        <p style="color: #666; margin-bottom: 30px;">Update the package information below</p>
+        <!-- Form Card -->
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-xs">
+            <form action="{{ route('package.update', $package->id) }}" method="POST" class="space-y-5">
+                @csrf
+                @method('PUT')
 
-        @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
+                <!-- Class Selection -->
+                <div>
+                    <label for="class_id" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                        Linked Class <span class="text-red-500">*</span>
+                    </label>
+                    <select id="class_id" 
+                            name="class_id" 
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition bg-white" 
+                            required>
+                        @foreach($classes as $c)
+                            <option value="{{ $c->id }}" {{ old('class_id', $package->class_id) == $c->id ? 'selected' : '' }}>
+                                {{ $c->className }} @if($c->month) ({{ $c->month }}) @endif
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
-        @if($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+                <!-- Monthly Fee -->
+                <div>
+                    <label for="monthly_fee" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                        Monthly Fee (Rs.) <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3.5 text-xs font-bold text-slate-400">Rs.</span>
+                        <input type="number" 
+                               id="monthly_fee" 
+                               name="monthly_fee" 
+                               value="{{ old('monthly_fee', $package->monthly_fee) }}" 
+                               min="0" 
+                               class="w-full px-4 py-3 pl-11 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition font-bold" 
+                               required>
+                    </div>
+                </div>
 
-        <div class="info-box">
-            <p><i class="fas fa-info-circle"></i> <strong>Note:</strong> The package name will automatically be set based on the selected class.</p>
+                <!-- Description -->
+                <div>
+                    <label for="description" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                        Description
+                    </label>
+                    <textarea id="description" 
+                              name="description" 
+                              rows="3" 
+                              class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition">{{ old('description', $package->description) }}</textarea>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+                    <a href="{{ route('admindashboard') }}" 
+                       class="px-5 py-3 rounded-xl text-slate-600 hover:text-slate-900 font-semibold text-xs border border-slate-200 hover:bg-slate-50 transition">
+                        Cancel
+                    </a>
+
+                    <button type="submit" 
+                            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm text-white bg-amber-600 hover:bg-amber-700 active:scale-[0.99] shadow-md shadow-amber-600/20 transition duration-150">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span>Update Package</span>
+                    </button>
+                </div>
+
+            </form>
         </div>
 
-        <form action="{{ route('package.update', $package->id) }}" method="POST">
-            @csrf
-            @method('PUT')
-
-            <div class="form-group">
-                <label for="class_id">
-                    <i class="fas fa-chalkboard"></i> Select Class *
-                </label>
-                <select id="class_id" name="class_id" required>
-                    <option value="">Choose a class...</option>
-                    @foreach($classes as $class)
-                        <option value="{{ $class->id }}" {{ old('class_id', $package->class_id) == $class->id ? 'selected' : '' }}>
-                            {{ $class->className }}
-                        </option>
-                    @endforeach
-                </select>
-                <small style="color: #666; display: block; margin-top: 5px;">
-                    Current: {{ $package->classModel ? $package->classModel->className : 'Not linked' }}
-                </small>
-            </div>
-
-            <div class="form-group">
-                <label for="description">
-                    <i class="fas fa-align-left"></i> Description
-                </label>
-                <textarea id="description" name="description" placeholder="Enter package details...">{{ old('description', $package->description) }}</textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="monthly_fee">
-                    <i class="fas fa-dollar-sign"></i> Monthly Fee (LKR) *
-                </label>
-                <input type="number" id="monthly_fee" name="monthly_fee" value="{{ old('monthly_fee', $package->monthly_fee) }}" min="0" step="1" required placeholder="e.g., 5000">
-            </div>
-
-            <div class="btn-group">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Update Package
-                </button>
-                <a href="{{ route('admindashboard') }}" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Cancel
-                </a>
-            </div>
-        </form>
     </div>
-</body>
-</html>
+
+</x-admin-layout>

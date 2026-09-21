@@ -1,209 +1,93 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Package</title>
+<x-admin-layout title="Create Package" subtitle="Configure a monthly class fee package for student online purchase">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" 
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <div class="max-w-3xl mx-auto space-y-6">
 
-    <style>
-        /* ====== SAME CSS AS YOUR MAIN PAGE ====== */
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            background-color: #1f2937;
-            color: #f3f4f6;
-        }
-        h1, h2 {
-            margin: 0;
-            font-weight: 600;
-        }
-        a { color: #60a5fa; text-decoration: none; }
-        a:hover { color: #3b82f6; }
+        <!-- Header Bar -->
+        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-lg border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="space-y-1">
+                <span class="px-2.5 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider bg-amber-500 text-white">Pricing & Enrollment</span>
+                <h2 class="text-xl sm:text-2xl font-black text-white">Create New Package</h2>
+                <p class="text-xs text-slate-300">Link a monthly fee to an existing biology course for student checkout</p>
+            </div>
 
-        /* Sidebar */
-        #sidebar {
-            width: 250px;
-            background-color: #111827;
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100%;
-            padding-top: 20px;
-            box-sizing: border-box;
-        }
-        #sidebar a {
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            color: #d1d5db;
-            margin-bottom: 5px;
-            border-left: 3px solid transparent;
-            transition: 0.2s;
-        }
-        #sidebar a:hover, #sidebar a.active {
-            background-color: #374151;
-            color: #fff;
-            border-left-color: #4f46e5;
-        }
-
-        #sidebar a i {
-            margin-right: 12px;
-        }
-
-        /* Main content */
-        #main-content {
-            margin-left: 250px;
-            padding: 20px;
-        }
-
-        /* Topbar */
-        #topbar {
-            background-color: #1f2937;
-            padding: 10px 20px;
-            border-bottom: 1px solid #374151;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-        }
-
-        /* Card / Form Box */
-        .card {
-            background-color: #1f2937;
-            border: 1px solid #374151;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 12px;
-            background-color: #374151;
-            border: 1px solid #4b5563;
-            border-radius: 6px;
-            color: white;
-        }
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: #4f46e5;
-            box-shadow: 0 0 0 2px rgba(79,70,229,0.4);
-        }
-
-        button {
-            background-color: #4f46e5;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        button:hover {
-            background-color: #3b82f6;
-        }
-
-    </style>
-</head>
-
-<body>
-
-    <!-- ====================== SIDEBAR ====================== -->
-    <nav id="sidebar">
-        <div style="text-align: center; padding: 10px 0 30px 0;">
-            <h2 style="color:#4f46e5;">Admin Panel</h2>
-            <p style="color:#9ca3af;">Content Management</p>
-        </div>
-
-        <a href="{{ route('admindashboard') }}">
-            <i class="fas fa-tachometer-alt"></i> Dashboard
-        </a>
-
-        <a href="#">
-            <i class="fas fa-users"></i> User Management
-        </a>
-
-        <a href="{{ route('classmanage') }}">
-            <i class="fas fa-book"></i> Courses & Lectures
-        </a>
-
-        <a href="{{ route('feedbackmanage') }}">
-            <i class="fas fa-comment"></i> Feedback
-        </a>
-
-        <a href="{{ route('lesson.lessoncreate') }}">
-            <i class="fas fa-layer-group"></i> Lessons
-        </a>
-
-        <a href="{{ route('package.create') }}" class="active">
-            <i class="fas fa-box"></i> Packages
-        </a>
-
-        <div style="position: absolute; bottom: 20px; width: 100%; padding: 0 20px;">
-            <a href="#" style="background:#374151;border-radius:6px;">
-                <i class="fas fa-sign-out-alt"></i> Logout
+            <a href="{{ route('admindashboard') }}" 
+               class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition self-start sm:self-auto">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                <span>View Dashboard</span>
             </a>
         </div>
-    </nav>
 
-    <!-- ====================== MAIN CONTENT ====================== -->
-    <div id="main-content">
-
-        <!-- Top Bar -->
-        <header id="topbar">
-            <h1>Create Package</h1>
-            <div style="display:flex;align-items:center;">
-                <i class="fas fa-bell" style="margin-right:20px;color:#9ca3af;"></i>
-                <div style="
-                    width:32px;height:32px;
-                    background:#60a5fa;
-                    border-radius:50%;
-                    display:flex;align-items:center;justify-content:center;
-                    font-weight:bold;color:#111827;
-                ">AD</div>
-            </div>
-        </header>
-
-        <!-- Package Form -->
-        <div class="card">
-            <h2 style="margin-bottom:20px;">Add New Package</h2>
-
-            <form action="{{ route('package.store') }}" method="POST">
+        <!-- Form Card -->
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-xs">
+            <form action="{{ route('package.store') }}" method="POST" class="space-y-5">
                 @csrf
 
-                <div style="margin-bottom:15px;">
-                    <label>Select Class</label>
-                    <select name="class_id" required>
-                        <option value="" disabled selected>-- Select Class --</option>
+                <!-- Select Class -->
+                <div>
+                    <label for="class_id" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                        Link to Class / Course <span class="text-red-500">*</span>
+                    </label>
+                    <select id="class_id" 
+                            name="class_id" 
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition bg-white" 
+                            required>
+                        <option value="" disabled selected>-- Select Course to Link --</option>
                         @foreach($classes as $c)
-                            <option value="{{ $c->id }}">{{ $c->className }} @if($c->month) ({{ $c->month }}) @endif</option>
+                            <option value="{{ $c->id }}" {{ old('class_id') == $c->id ? 'selected' : '' }}>
+                                {{ $c->className }} @if($c->month) ({{ $c->month }}) @endif
+                            </option>
                         @endforeach
                     </select>
+                    <p class="text-[11px] text-slate-400 mt-1">Package name will automatically inherit the selected class title.</p>
                 </div>
 
-                <div style="margin-bottom:15px;">
-                    <label>Monthly Fee (Rs.)</label>
-                    <input type="number" name="monthly_fee" required>
+                <!-- Monthly Fee -->
+                <div>
+                    <label for="monthly_fee" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                        Monthly Fee in Sri Lankan Rupees (Rs.) <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3.5 text-xs font-bold text-slate-400">Rs.</span>
+                        <input type="number" 
+                               id="monthly_fee" 
+                               name="monthly_fee" 
+                               value="{{ old('monthly_fee') }}" 
+                               placeholder="e.g., 2500" 
+                               min="0" 
+                               class="w-full px-4 py-3 pl-11 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition font-bold" 
+                               required>
+                    </div>
                 </div>
 
-                <div style="margin-bottom:15px;">
-                    <label>Description</label>
-                    <textarea name="description" rows="4"></textarea>
+                <!-- Description -->
+                <div>
+                    <label for="description" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                        Package Description (Optional)
+                    </label>
+                    <textarea id="description" 
+                              name="description" 
+                              rows="3" 
+                              placeholder="Add special notes or perks included in this monthly package..." 
+                              class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition">{{ old('description') }}</textarea>
                 </div>
 
-                <button type="submit">
-                    <i class="fas fa-plus-circle" style="margin-right:8px;"></i>
-                    Create Package
-                </button>
+                <!-- Form Actions -->
+                <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+                    <a href="{{ route('admindashboard') }}" 
+                       class="px-5 py-3 rounded-xl text-slate-600 hover:text-slate-900 font-semibold text-xs border border-slate-200 hover:bg-slate-50 transition">
+                        Cancel
+                    </a>
+
+                    <button type="submit" 
+                            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm text-white bg-amber-600 hover:bg-amber-700 active:scale-[0.99] shadow-md shadow-amber-600/20 transition duration-150">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        <span>Create Package</span>
+                    </button>
+                </div>
+
             </form>
         </div>
 
     </div>
 
-</body>
-</html>
+</x-admin-layout>

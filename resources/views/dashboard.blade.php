@@ -1,243 +1,371 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-50">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard</title>
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load Lucide Icons for professional icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Student Dashboard - LTbio LMS</title>
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo1.jpeg') }}">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Vite Assets (or CDN fallback) -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     
-    <!-- Custom Tailwind Configuration -->
+    <!-- Alpine.js & Tailwind CDN for guaranteed styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        // Colors are now using your specified red values
-                        'primary-purple': '#ff0000', 
-                        'dark-purple': '#cc0000', // Adjusted dark shade for contrast/hover
-                        'light-purple': '#f0c0c0', 
-                        'accent-yellow': '#facc15',
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
                     },
+                    colors: {
+                        brand: {
+                            50: '#fff1ee',
+                            100: '#ffe4dd',
+                            200: '#ffccbe',
+                            300: '#ffa792',
+                            400: '#ff7355',
+                            500: '#F53003',
+                            600: '#dc2602',
+                            700: '#b81d00',
+                            800: '#941a04',
+                            900: '#7a1908',
+                            DEFAULT: '#F53003',
+                        },
+                        bio: {
+                            50: '#eefbfc',
+                            100: '#d5f5f7',
+                            500: '#17a2b8',
+                            600: '#117a8b',
+                            700: '#0c5c6a',
+                            DEFAULT: '#17a2b8',
+                        },
+                        'primary-purple': '#F53003',
+                        'dark-purple': '#dc2602',
+                    }
                 }
             }
         }
     </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-        }
+</head>
 
-        /* Styling for the main content section - Now single column on all sizes */
-        .dashboard-grid {
-            display: grid;
-            gap: 1.5rem;
-            grid-template-columns: 1fr;
-        }
+<body class="min-h-full flex flex-col font-sans text-slate-800 bg-slate-50 antialiased selection:bg-brand-500 selection:text-white">
 
-        @media (min-width: 1024px) {
-            .dashboard-grid {
-                /* Single column layout as requested (removed 2fr 1fr split) */
-                grid-template-columns: 1fr;
+    <!-- Top Navigation Component -->
+    <x-lms-navbar />
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- Flash Messages / Alerts -->
+        @if(session('success'))
+            <div x-data="{ show: true }" x-show="show" x-transition class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-between shadow-xs">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-emerald-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-sm font-semibold">{{ session('success') }}</span>
+                </div>
+                <button @click="show = false" class="text-emerald-500 hover:text-emerald-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div x-data="{ show: true }" x-show="show" x-transition class="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 flex items-center justify-between shadow-xs">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-sm font-semibold">{{ session('error') }}</span>
+                </div>
+                <button @click="show = false" class="text-red-500 hover:text-red-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+        @endif
+
+        @php
+            $userId = auth()->id();
+            $userName = auth()->user()->name ?? null;
+            $isAdmin = auth()->user()->usertype === 'admin';
+
+            // Fetch approved checkouts for the logged-in student to calculate enrolled classes accurately
+            $approvedClassIds = [];
+            if (auth()->check()) {
+                $approvedCheckouts = \App\Models\Checkout::where('status', 'approved')
+                    ->where(function($q) use ($userId, $userName) {
+                        $q->where('user_id', $userId);
+                        if ($userName) {
+                            $q->orWhere('student_name', $userName);
+                        }
+                    })
+                    ->pluck('class_id')
+                    ->toArray();
+
+                foreach ($approvedCheckouts as $cList) {
+                    $parts = array_filter(array_map('trim', explode(',', $cList)));
+                    foreach ($parts as $p) {
+                        $approvedClassIds[] = (int) $p;
+                    }
+                }
+                $approvedClassIds = array_unique($approvedClassIds);
             }
-        }
-    </style>
-</head><div class="container mt-4">
 
+            $enrolledCount = $isAdmin ? $classes->count() : $classes->filter(function($c) use ($approvedClassIds) {
+                return in_array($c->id, $approvedClassIds);
+            })->count();
 
+            $totalLessonsCount = $classes->reduce(function($carry, $c) {
+                return $carry + $c->lessons->count();
+            }, 0);
+        @endphp
 
-</div>
+        <!-- Welcome Hero Section -->
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white p-6 sm:p-8 md:p-10 shadow-xl border border-slate-700/50">
+            <!-- Decorative Subtle Accent Glow -->
+            <div class="absolute -right-20 -top-20 w-80 h-80 bg-brand-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute right-40 -bottom-20 w-60 h-60 bg-bio-500/15 rounded-full blur-2xl pointer-events-none"></div>
 
-<body class="antialiased">
-
-    <!-- Top Navigation Bar (responsive) -->
-    <nav class="bg-white shadow-md fixed top-0 left-0 right-0 z-50" role="navigation" aria-label="Main navigation">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Branding -->
-                <div class="flex items-center gap-3">
-                    <span class="text-2xl font-extrabold text-primary-purple tracking-tighter">LTbio</span>
-                    <span class="text-xs font-light text-gray-600 hidden sm:block">Online Education</span>
+            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div class="space-y-2 max-w-2xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/15 text-brand-400 border border-brand-500/30 text-xs font-semibold uppercase tracking-wider">
+                        <span class="w-1.5 h-1.5 rounded-full bg-brand-400 animate-pulse"></span>
+                        Student Portal
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
+                        Welcome Back, <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-orange-300">{{ Auth::user()->name }}</span> 👋
+                    </h1>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Access your biology lecture modules, watch assigned videos, and track your study materials.
+                    </p>
                 </div>
 
-                <!-- Desktop Menu -->
-                <div class="hidden sm:flex sm:items-center sm:space-x-4 text-gray-600 font-medium">
-                    <a href="#home" class="hover:text-primary-purple transition duration-150 flex items-center"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-1"></i> Dashboard</a>
-                    <a href="{{ route('buyclass') }}" class="hover:text-primary-purple transition duration-150 flex items-center"><i data-lucide="book-open-text" class="w-5 h-5 mr-1"></i> Buy Class</a>
+                <!-- Instructor Card Callout -->
+                <div class="flex items-center gap-4 bg-slate-800/80 backdrop-blur-md p-4 rounded-2xl border border-slate-700/80 shadow-inner flex-shrink-0">
+                    <img src="{{ asset('images/profile1.jpeg') }}" 
+                         alt="Lakshitha Thennakoon" 
+                         class="w-12 h-12 rounded-xl object-cover ring-2 ring-brand-500/40">
+                    <div class="text-left">
+                        <p class="text-xs font-medium text-slate-400">Chief Instructor</p>
+                        <p class="text-sm font-bold text-white">Lakshitha Thennakoon</p>
+                        <span class="inline-flex items-center gap-1 text-[11px] text-bio-400 font-medium">
+                            <span class="w-1.5 h-1.5 rounded-full bg-bio-400"></span>
+                            A/L Biology Specialist
+                        </span>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Right: profile / mobile toggle -->
-                <div class="flex items-center gap-3">
-                    <button class="text-gray-400 hover:text-primary-purple transition duration-150 mr-1">
-                        <i data-lucide="bell" class="w-6 h-6"></i>
-                    </button>
+            <!-- Stats Ribbon -->
+            <div class="mt-8 pt-6 border-t border-slate-700/70 grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div class="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/50">
+                    <p class="text-xs text-slate-400 font-medium">Available Courses</p>
+                    <p class="text-xl sm:text-2xl font-black text-white mt-1">{{ $classes->count() }}</p>
+                </div>
+                <div class="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/50">
+                    <p class="text-xs text-slate-400 font-medium">My Active Classes</p>
+                    <p class="text-xl sm:text-2xl font-black text-emerald-400 mt-1">{{ $enrolledCount }}</p>
+                </div>
+                <div class="col-span-2 sm:col-span-1 bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/50">
+                    <p class="text-xs text-slate-400 font-medium">Total Lesson Modules</p>
+                    <p class="text-xl sm:text-2xl font-black text-brand-400 mt-1">{{ $totalLessonsCount }}</p>
+                </div>
+            </div>
+        </div>
 
-                    <div class="hidden sm:block relative">
-                        <button id="profile-menu-button" class="flex items-center space-x-2 border-l pl-4 focus:outline-none transition duration-150 hover:bg-gray-50 p-2 -my-2 rounded-lg">
-                            <span class="font-medium text-sm text-gray-700">{{ Auth::user()->name }}</span>
-                            <div class="w-10 h-10 rounded-full bg-primary-purple flex items-center justify-center text-white font-bold">JD</div>
-                            <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
-                        </button>
-                        <div id="profile-dropdown" class="absolute right-0 mt-3 w-48 bg-white border border-gray-200 rounded-lg shadow-xl py-1 z-30 hidden origin-top-right">
-                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
-                            <form method="POST" action="{{ route('logout') }}">@csrf
-                                <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Log Out</a>
-                            </form>
+        <!-- Announcement Banner -->
+        <div class="flex items-center gap-3.5 p-4 rounded-2xl bg-amber-50/90 border border-amber-200/80 text-amber-900 shadow-xs">
+            <div class="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0 text-amber-700">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                </svg>
+            </div>
+            <div class="flex-grow text-xs sm:text-sm">
+                <span class="font-bold">Notice:</span> 
+                <span>New monthly video lectures and past paper materials are updated regularly. Submit your payment slips via <a href="{{ route('buyclass') }}" class="font-bold underline text-amber-800 hover:text-amber-950">Buy Class</a> for fast approval.</span>
+            </div>
+        </div>
+
+        <!-- Courses Section Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+            <div>
+                <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
+                    <span class="w-2.5 h-6 rounded-full bg-brand-500 inline-block"></span>
+                    My Courses & Classes
+                </h2>
+                <p class="text-sm text-slate-500 mt-0.5">Explore your enrolled classes and available study modules</p>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <a href="{{ route('buyclass') }}"
+                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-xs sm:text-sm shadow-xs transition duration-150">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Enroll in New Class
+                </a>
+            </div>
+        </div>
+
+        <!-- Class Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @forelse($classes as $class)
+                @php
+                    $isClassEnrolled = $isAdmin || in_array($class->id, $approvedClassIds);
+                    $lessonCount = $class->lessons->count();
+                @endphp
+
+                <div class="group flex flex-col bg-white rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-xl hover:border-brand-500/30 transition-all duration-200 overflow-hidden">
+                    
+                    <!-- Card Top Banner -->
+                    <div class="relative p-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+                        <div class="flex items-start justify-between gap-2 mb-3">
+                            <span class="px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase bg-white/10 text-white border border-white/10">
+                                {{ $class->month ?? 'All Year' }}
+                            </span>
+
+                            @if($isClassEnrolled)
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                    Enrolled
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                    Enrollment Required
+                                </span>
+                            @endif
                         </div>
+
+                        <h3 class="text-xl font-bold text-white group-hover:text-brand-400 transition duration-150">
+                            {{ $class->className }}
+                        </h3>
+
+                        @if($class->description)
+                            <p class="text-xs text-slate-300 line-clamp-2 mt-1.5">
+                                {{ $class->description }}
+                            </p>
+                        @endif
                     </div>
 
-                    <!-- Mobile hamburger -->
-                    <div class="sm:hidden">
-                        <button id="mobileMenuButton" aria-label="Toggle menu" aria-expanded="false" class="p-2 rounded-md text-gray-600 hover:text-primary-purple hover:bg-gray-100 focus:outline-none">
-                            <svg id="mobileMenuIconOpen" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                            <svg id="mobileMenuIconClose" class="h-6 w-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
+                    <!-- Card Body -->
+                    <div class="p-6 flex-grow flex flex-col justify-between space-y-5">
+                        
+                        <!-- Metadata Badges -->
+                        <div class="grid grid-cols-2 gap-3 text-xs">
+                            <div class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                                <div class="w-7 h-7 rounded-lg bg-bio-50 flex items-center justify-center text-bio-600 flex-shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </div>
+                                <div class="truncate">
+                                    <p class="text-[10px] text-slate-400 uppercase font-bold">Teacher</p>
+                                    <p class="font-semibold text-slate-800 truncate">{{ $class->teacherName ?? 'L. Thennakoon' }}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                                <div class="w-7 h-7 rounded-lg bg-brand-50 flex items-center justify-center text-brand-600 flex-shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <div class="truncate">
+                                    <p class="text-[10px] text-slate-400 uppercase font-bold">Lessons</p>
+                                    <p class="font-semibold text-slate-800">{{ $lessonCount }} Modules</p>
+                                </div>
+                            </div>
+
+                            @if($class->classTime)
+                                <div class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                                    <div class="w-7 h-7 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600 flex-shrink-0">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <div class="truncate">
+                                        <p class="text-[10px] text-slate-400 uppercase font-bold">Schedule</p>
+                                        <p class="font-semibold text-slate-800 truncate">{{ $class->classTime }}</p>
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if($class->sessionCount)
+                                <div class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                                    <div class="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600 flex-shrink-0">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <div class="truncate">
+                                        <p class="text-[10px] text-slate-400 uppercase font-bold">Sessions</p>
+                                        <p class="font-semibold text-slate-800">{{ $class->sessionCount }} Sessions</p>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Action Button -->
+                        <div class="pt-2">
+                            <a href="{{ route('classview', $class->id) }}"
+                               class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-sm text-white bg-brand-500 hover:bg-brand-600 active:scale-[0.99] shadow-xs transition duration-150">
+                                <span>Enter Class & Modules</span>
+                                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </a>
+                        </div>
+
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Mobile menu -->
-        <div id="mobileMenu" class="hidden sm:hidden absolute left-4 right-4 top-full mt-2 bg-white shadow-md rounded-md p-3 z-40">
-            <div class="flex flex-col gap-2">
-                <a href="#home" class="px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-gray-50">Home</a>
-                <a href="{{ route('buyclass') }}" class="px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-gray-50">Buy Class</a>
-                <a href="{{ route('login') }}" class="px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-gray-50">Login</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content Area -->
-    <!-- Add top padding to offset fixed nav (adjust px value if you customize nav height) -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style="padding-top:88px; padding-bottom:32px;">
-
-        <!-- Welcome Banner / Class Advertisement Bar (Biology Enrollment) -->
-        <div class="bg-white p-6 rounded-xl shadow-lg mb-8 border-l-4 border-accent-yellow">
-            <div class="flex flex-col md:flex-row items-start md:items-center justify-between">
-                <div>
-                    <!-- Auth Blade Syntax Maintained -->
-                    <h1 class="text-3xl font-bold text-gray-900">Welcome Back, {{ Auth::user()->name }}</h1>
-                    <p class="text-gray-600 mt-1">Ready for your next lesson?</p>
+            @empty
+                <!-- Empty State -->
+                <div class="col-span-full bg-white rounded-3xl border border-slate-200/80 p-12 text-center max-w-xl mx-auto shadow-xs">
+                    <div class="w-16 h-16 rounded-2xl bg-brand-50 text-brand-500 flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-1">No Classes Available Yet</h3>
+                    <p class="text-slate-500 text-sm mb-6">You haven't enrolled in any active courses yet or courses are currently being scheduled.</p>
+                    <a href="{{ route('buyclass') }}"
+                       class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm shadow-xs transition">
+                        Browse Course Catalog
+                    </a>
                 </div>
-                
-                <!-- Advertisement Bar Content: Biology Class, Enrollment Months, Details -->
-                <div class="mt-4 md:mt-0 bg-primary-purple/10 text-primary-purple p-3 rounded-lg flex items-center space-x-3 text-sm font-semibold border border-primary-purple/30 text-center md:text-left">
-                    <i data-lucide="megaphone" class="w-5 h-5 flex-shrink-0"></i>
-                    <span class="flex-grow">
-                        Notice: <span class="text-dark-purple font-extrabold">LTbio.lk</span> - LTbio new web site launched!
-                        <a href='#' class='underline ml-1 hover:text-dark-purple'>View Details</a>
-                    </span>
-                </div>
-            </div>
+            @endforelse
         </div>
 
-        <!-- Dashboard Grid Layout (Now single column) -->  
-      <div class="dashboard-grid">
+    </main>
 
-    <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-        <i data-lucide="book-open-text" class="w-6 h-6 mr-2 text-primary-purple"></i>
-        All Classes
-    </h3>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-
-        @foreach($classes as $class)
-        <!-- Class Card -->
-        <div class="bg-white p-6 rounded-xl shadow-lg border-t-8 border-primary-purple hover:shadow-xl transition duration-300">
-            
-            <div class="flex items-center space-x-3 mb-3">
-                <i data-lucide="graduation-cap" class="w-8 h-8 text-primary-purple"></i>
-                <h4 class="text-2xl font-extrabold text-gray-900">{{ $class->className }}</h4>
+    <!-- Simple Footer -->
+    <footer class="mt-auto border-t border-slate-200 bg-white py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <div class="flex items-center gap-2">
+                <span class="font-extrabold text-slate-800">LT<span class="text-brand-500">bio</span></span>
+                <span>&copy; {{ date('Y') }} Lakshitha Thennakoon. All rights reserved.</span>
             </div>
-
-            <p class="text-gray-600 mb-4 text-sm">{{ $class->description }}</p>
-
-            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
-                <div class="bg-primary-purple h-2.5 rounded-full" style="width: 65%"></div>
+            <div class="flex items-center gap-4">
+                <a href="{{ route('dashboard') }}" class="hover:text-brand-500 transition">Dashboard</a>
+                <a href="{{ route('buyclass') }}" class="hover:text-brand-500 transition">Courses</a>
+                <a href="{{ route('cart.view') }}" class="hover:text-brand-500 transition">Cart</a>
             </div>
-
-            <p class="text-right text-xs font-medium text-gray-500 mb-4">{{ $class->month }}</p>
-
-            <a href="{{ route('classview', $class->id) }}"
-               class="w-full flex items-center justify-center py-3 bg-primary-purple text-white font-semibold rounded-lg hover:bg-dark-purple transition duration-150">
-                <i data-lucide="arrow-right-circle" class="w-5 h-5 mr-2"></i>
-                Go to Class
-            </a>
         </div>
-        @endforeach
-
-    </div>
-
-</div>
-
-
-
-    <!-- Initialize Lucide Icons and Dropdown Logic -->
-    <script>
-        lucide.createIcons();
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const button = document.getElementById('profile-menu-button');
-            const dropdown = document.getElementById('profile-dropdown');
-
-            // Toggle dropdown visibility on click
-            button.addEventListener('click', (e) => {
-                e.stopPropagation();
-                dropdown.classList.toggle('hidden');
-            });
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!button.contains(e.target) && !dropdown.contains(e.target)) {
-                    dropdown.classList.add('hidden');
-                }
-            });
-        });
-    </script>
-
-<!-- Mobile menu toggle -->
-<script>
-  (function(){
-    const mobileBtn = document.getElementById('mobileMenuButton');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const iconOpen = document.getElementById('mobileMenuIconOpen');
-    const iconClose = document.getElementById('mobileMenuIconClose');
-
-    if (!mobileBtn || !mobileMenu) return;
-
-    function setExpanded(open){
-      mobileBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      if(open){
-        mobileMenu.classList.remove('hidden');
-        iconOpen.classList.add('hidden');
-        iconClose.classList.remove('hidden');
-      } else {
-        mobileMenu.classList.add('hidden');
-        iconOpen.classList.remove('hidden');
-        iconClose.classList.add('hidden');
-      }
-    }
-
-    mobileBtn.addEventListener('click', function(e){
-      e.stopPropagation();
-      setExpanded(mobileMenu.classList.contains('hidden'));
-    });
-
-    // close on outside click
-    document.addEventListener('click', function(e){
-      if (!mobileMenu.contains(e.target) && !mobileBtn.contains(e.target)) {
-        setExpanded(false);
-      }
-    });
-
-    // close on link click
-    mobileMenu.querySelectorAll('a, button').forEach(el => el.addEventListener('click', () => setExpanded(false)));
-  })();
-</script>
+    </footer>
 
 </body>
 </html>

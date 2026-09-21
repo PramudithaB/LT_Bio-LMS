@@ -1,803 +1,408 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-900">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $lesson->name }} - Lecture Viewer</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ $lesson->name }} - {{ $lesson->classModel->className ?? 'Lesson' }} | LTbio LMS</title>
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo1.jpeg') }}">
 
-    <style>
-        body { font-family: 'Inter', sans-serif; margin: 0; background-color: #f4f7fa; color: #333; }
-        #video-embed-container { position: relative; width: 100%; padding-top: 56.25%; }
-        #video-embed-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        #video-shield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; background: rgba(0,0,0,0.001); pointer-events: none; } /* allow touches to reach iframe (fix fullscreen on mobile) */
-        @media (min-width: 1024px) { #app > div { flex-direction: row !important; } }
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-        /* ====== SEEK BAR STYLES (custom red theme) ====== */
-        #seekBar {
-            width: 360px;
-            height: 6px;
-            border-radius: 6px;
-            background: rgba(255,255,255,0.12);
-            -webkit-appearance: none;
-            appearance: none;
-            overflow: hidden;
-            vertical-align: middle;
-        }
+    <!-- Tailwind & Alpine CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-        /* WebKit track + thumb */
-        #seekBar::-webkit-slider-runnable-track {
-            height: 6px;
-            border-radius: 6px;
-            background: rgba(255,255,255,0.12);
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fff1ee',
+                            100: '#ffe4dd',
+                            200: '#ffccbe',
+                            300: '#ffa792',
+                            400: '#ff7355',
+                            500: '#F53003',
+                            600: '#dc2602',
+                            700: '#b81d00',
+                            800: '#941a04',
+                            900: '#7a1908',
+                            DEFAULT: '#F53003',
+                        },
+                        bio: {
+                            50: '#eefbfc',
+                            100: '#d5f5f7',
+                            500: '#17a2b8',
+                            600: '#117a8b',
+                            700: '#0c5c6a',
+                            DEFAULT: '#17a2b8',
+                        },
+                        'primary-purple': '#F53003',
+                        'dark-purple': '#dc2602',
+                    }
+                }
+            }
         }
-        #seekBar::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #F53003; /* brand red */
-            margin-top: -4px; /* center thumb on track */
-            box-shadow: 0 3px 8px rgba(245,48,3,0.28);
-            border: 2px solid rgba(255,255,255,0.9);
-        }
-
-        /* Firefox */
-        #seekBar::-moz-range-track {
-            height: 6px;
-            border-radius: 6px;
-            background: rgba(255,255,255,0.12);
-        }
-        #seekBar::-moz-range-progress {
-            height: 6px;
-            background: #F53003;
-            border-radius: 6px;
-        }
-        #seekBar::-moz-range-thumb {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #F53003;
-            border: none;
-            box-shadow: 0 3px 8px rgba(245,48,3,0.28);
-        }
-
-        /* IE/Edge fallback */
-        #seekBar::-ms-track {
-            height: 6px;
-            background: transparent;
-            border-color: transparent;
-            color: transparent;
-        }
-        #seekBar::-ms-fill-lower {
-            background: #F53003;
-            border-radius: 6px;
-        }
-        #seekBar::-ms-fill-upper {
-            background: rgba(255,255,255,0.12);
-            border-radius: 6px;
-        }
-
-        /* Double-tap overlay areas */
-        .double-tap-area {
-            position: absolute;
-            top: 0;
-            height: 100%;
-            width: 50%;
-            z-index: 11; /* above shield, below controls (controls z-index:13) */
-            background: transparent;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-            display: block;
-            pointer-events: auto; /* explicitly capture taps for detection */
-        }
-        .double-tap-area.left { left: 0; }
-        .double-tap-area.right { right: 0; }
-
-        /* Visual feedback for skip */
-        .dt-feedback {
-            position: absolute;
-            z-index: 14;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%,-50%);
-            pointer-events: none;
-            color: #fff;
-            font-weight: 800;
-            font-size: 34px;
-            text-shadow: 0 6px 22px rgba(0,0,0,0.6);
-            opacity: 0;
-            transition: opacity .28s ease, transform .28s ease;
-        }
-        .dt-feedback.show { opacity: 1; transform: translate(-50%,-70%); }
-    </style>
+    </script>
 </head>
 
-<body>
+<body class="min-h-full flex flex-col font-sans text-slate-100 bg-slate-950 antialiased selection:bg-brand-500 selection:text-white">
 
-<div id="app" style="max-width: 1400px; margin: 0 auto; padding: 20px;">
+    <!-- Top Navigation -->
+    <x-lms-navbar />
 
-    <!-- Header -->
-    <header style="background-color: #ffffff; padding: 15px 30px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between;">
-        <h1 style="font-size: 1.5rem; font-weight: 700; color: #1e40af;">
-            {{ $lesson->classModel->className }} - {{ $lesson->name }}
-        </h1>
+    @php
+        $class = $lesson->classModel;
+        $allLessons = $class ? $class->lessons->sortBy('id')->values() : collect([$lesson]);
+        
+        $currentIndex = $allLessons->search(function($item) use ($lesson) {
+            return $item->id === $lesson->id;
+        });
+        
+        if ($currentIndex === false) {
+            $currentIndex = 0;
+        }
 
-      
-    </header>
+        $prevLesson = ($currentIndex > 0) ? $allLessons->get($currentIndex - 1) : null;
+        $nextLesson = ($currentIndex < $allLessons->count() - 1) ? $allLessons->get($currentIndex + 1) : null;
+        
+        // Student enrollment check for paid status
+        $userId = auth()->id();
+        $userName = auth()->user()->name ?? null;
+        $isAdmin = auth()->check() && auth()->user()->usertype === 'admin';
+    @endphp
 
-    <!-- Layout -->
-    <div style="display: flex; flex-direction: column; gap: 20px;">
-
-        <!-- LEFT SIDE -->
-        <div id="video-content" style="flex: 3 1 70%;">
-
-            <!-- Video Player -->
-            <div style="background-color: #1a202c; border-radius: 12px; overflow: hidden; position:relative;">
-                <div id="video-embed-container">
-
-                    @php
-                        // Improved YouTube ID extraction: supports v=, youtu.be/, /embed/
-                        function getYoutubeId($url) {
-                            if (! $url) return null;
-                            // If already an embed id
-                            if (preg_match('/^[A-Za-z0-9_-]{11}$/', $url)) {
-                                return $url;
-                            }
-                            // youtu.be/ID
-                            if (preg_match('#youtu\.be/([A-Za-z0-9_-]{11})#', $url, $m)) {
-                                return $m[1];
-                            }
-                            // v=ID in query
-                            if (preg_match('/[\\?&]v=([A-Za-z0-9_-]{11})/', $url, $m)) {
-                                return $m[1];
-                            }
-                            // /embed/ID
-                            if (preg_match('#/embed/([A-Za-z0-9_-]{11})#', $url, $m)) {
-                                return $m[1];
-                            }
-                            // last 11 chars fallback
-                            if (preg_match('/([A-Za-z0-9_-]{11})$/', $url, $m)) {
-                                return $m[1];
-                            }
-                            return null;
-                        }
-                        $videoId = getYoutubeId($lesson->link);
-                        $origin = urlencode(request()->getSchemeAndHttpHost());
-                    @endphp
-
-                    @if($videoId)
-                        {{-- iframe: include origin & playsinline; keep mute=1 so autoplay can start --}}
-                        <iframe
-                            id="lessonIframe"
-                            src="https://www.youtube.com/embed/{{ $videoId }}?rel=0&modestbranding=1&enablejsapi=1&autoplay=1&mute=1&playsinline=1&origin={{ $origin }}"
-                            frameborder="0"
-                            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-                            allowfullscreen
-                            webkitallowfullscreen
-                            mozallowfullscreen>
-                        </iframe>
-
-                        <!-- Double-tap areas (left = back 10s, right = forward 10s) -->
-                        <div class="double-tap-area left" data-side="left" aria-hidden="true"></div>
-                        <div class="double-tap-area right" data-side="right" aria-hidden="true"></div>
-
-                        <!-- feedback element -->
-                        <div id="dtFeedback" class="dt-feedback" aria-hidden="true"></div>
-
-                        <!-- Unmute overlay (shown if programmatic unmute is blocked) -->
-                        <div id="unmuteOverlay" style="display:none; position:absolute; inset:0; z-index:12; display:flex; align-items:center; justify-content:center; pointer-events:auto;">
-                            <button id="unmuteBtn" style="background:rgba(0,0,0,0.7); color:#fff; border:none; padding:12px 18px; border-radius:8px; font-weight:700; cursor:pointer;">
-                                Unmute & Play
-                            </button>
-                        </div>
-
-                        <!-- Player controls: Play/Pause, Speed -, Speed label, Speed +, Quality select -->
-                        <div id="player-controls" style="position:absolute; left:18px; bottom:18px; z-index:13; pointer-events:auto; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-                            <button id="playPauseBtn" aria-pressed="false"
-                                style="background:rgba(0,0,0,0.6); color:#fff; border:none; padding:8px 12px; border-radius:8px; font-weight:700; cursor:pointer;">
-                                Pause
-                            </button>
-
-                            <button id="speedDownBtn" title="Slower"
-                                style="background:rgba(0,0,0,0.45); color:#fff; border:none; padding:6px 10px; border-radius:8px; font-weight:700; cursor:pointer;">
-                                - 
-                            </button>
-
-                            <span id="speedLabel" style="min-width:44px; text-align:center; color:#fff; font-weight:700; background:rgba(0,0,0,0.25); padding:6px 8px; border-radius:8px;">1x</span>
-
-                            <button id="speedUpBtn" title="Faster"
-                                style="background:rgba(0,0,0,0.45); color:#fff; border:none; padding:6px 10px; border-radius:8px; font-weight:700; cursor:pointer;">
-                                +
-                            </button>
-
-                            <select id="qualitySelect" aria-label="Playback quality"
-                                    style="background:rgba(0,0,0,0.45); color:#fff; border:none; padding:6px 8px; border-radius:8px; font-weight:700;">
-                                <option value="">Quality</option>
-                            </select>
-
-                            <!-- Seek bar and timing -->
-                            <div style="display:flex; align-items:center; gap:8px; margin-left:8px;">
-                                <span id="currentTime" style="color:#fff; font-size:12px; min-width:48px; text-align:center;">0:00</span>
-                                <input id="seekBar" type="range" min="0" max="100" value="0"
-                                       style="width:360px; accent-color:#fff; appearance:none; height:6px; background:rgba(255,255,255,0.12); border-radius:6px;">
-                                <span id="durationTime" style="color:#fff; font-size:12px; min-width:48px; text-align:center;">0:00</span>
-                            </div>
-
-                            <!-- Fullscreen -->
-                            <button id="fullscreenBtn" title="Fullscreen"
-                                style="background:rgba(0,0,0,0.45); color:#fff; border:none; padding:6px 10px; border-radius:8px; font-weight:700; cursor:pointer;">
-                                ⛶
-                            </button>
-                        </div>
-
-                     @else
-                         <p style="color: white; padding: 20px;">No playable YouTube link found. If this is an external video, open it in a new tab.</p>
-                     @endif
-
-                    <div id="video-shield"></div>
-                 </div>
-             </div>
-
-            <!-- Lesson Description -->
-            <div style="background-color: #ffffff; padding: 30px; border-radius: 12px; margin-top: 20px;">
-                <h2 style="font-size: 1.5rem; margin-bottom: 10px;">{{ $lesson->name }}</h2>
-
-                <p style="color: #4a5568;">{{ $lesson->description }}</p>
-
-                @if($lesson->notice)
-                    <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-left: 4px solid #ffce3d;">
-                        <strong>Notice:</strong> {{ $lesson->notice }}
-                    </div>
-                @endif
-
-                <p style="margin-top: 15px;">
-                    <strong>Status:</strong> {{ $lesson->is_paid ? 'Paid Lesson' : 'Free Lesson' }}
-                </p>
-            </div>
-
-        </div>
-
-        <!-- RIGHT SIDE -->
-        <div id="sidebar" style="flex: 1 1 30%;">
-
-            <!-- Materials -->
-            <div style="background-color: #ffffff; padding: 25px; border-radius: 12px; margin-bottom: 20px;">
-                <h3 style="font-size: 1.25rem; margin-bottom: 15px;"><i class="fas fa-book-open"></i> Lesson Materials</h3>
-
-                @if($lesson->file_path)
-                    <a href="{{ route('storage.file', ['encoded' => base64_encode($lesson->file_path)]) }}" target="_blank"
-                       style="display: flex; align-items: center; padding: 10px; background: #e0f2fe; border: 1px solid #bfdbfe; border-radius: 8px; color: #1e40af; margin-bottom: 10px;">
-                        <i class="fas fa-file-download" style="margin-right: 10px;"></i>
-                        Download Attached File
+    <!-- Sub-header Breadcrumb Bar -->
+    <div class="bg-slate-900/90 border-b border-slate-800/80 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-3">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs sm:text-sm">
+            
+            <div class="flex items-center space-x-2 text-slate-400 truncate">
+                <a href="{{ route('dashboard') }}" class="hover:text-white transition">Dashboard</a>
+                <svg class="w-3.5 h-3.5 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+                @if($class)
+                    <a href="{{ route('classview', $class->id) }}" class="hover:text-brand-400 transition truncate max-w-[200px]">
+                        {{ $class->className }}
                     </a>
-                @else
-                    <p>No materials uploaded.</p>
+                    <svg class="w-3.5 h-3.5 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
                 @endif
+                <span class="text-white font-semibold truncate">{{ $lesson->name }}</span>
             </div>
 
-            <!-- Outline Placeholder -->
-            <div style="background-color: #ffffff; padding: 25px; border-radius: 12px;">
-                <h3 style="font-size: 1.25rem; margin-bottom: 15px;"><i class="fas fa-list-ol"></i> Course Outline</h3>
-
-                <p style="color: #4a5568;">This will later show module outline for the class.</p>
-            </div>
+            @if($class)
+                <a href="{{ route('classview', $class->id) }}"
+                   class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700/80 px-3 py-1.5 rounded-lg border border-slate-700/60 transition self-start sm:self-auto">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Back to Course Syllabus
+                </a>
+            @endif
 
         </div>
     </div>
-</div>
 
-<!-- Initialize Lucide Icons -->
-<script>
-	lucide.createIcons();
-</script>
+    <!-- Main Player & Content Grid -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+        <div class="flex flex-col lg:flex-row gap-8 items-start">
 
-<!-- YouTube IFrame API + improved unmute/play flow -->
-<script>
-(function(){
-    const iframe = document.getElementById('lessonIframe');
-    if (!iframe) return;
+            <!-- LEFT: Video Player + Details + Navigation (Flex 1) -->
+            <div class="flex-1 w-full space-y-6">
 
-    // container used for fullscreen
-    const embedContainer = document.getElementById('video-embed-container');
+                <!-- Responsive YouTube Embed Component -->
+                <div class="w-full">
+                    <x-youtube-player :url="$lesson->link" :title="$lesson->name" :autoplay="true" />
+                </div>
 
-    // Load YT API if not already present
-    if (!window.YT) {
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScript = document.getElementsByTagName('script')[0];
-        firstScript.parentNode.insertBefore(tag, firstScript);
-    }
+                <!-- Lesson Info & Metadata Card -->
+                <div class="bg-slate-900 rounded-3xl border border-slate-800/80 p-6 sm:p-8 space-y-6 shadow-xl">
+                    
+                    <!-- Title & Badges Header -->
+                    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-slate-800/80 pb-6">
+                        <div class="space-y-2">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded-md text-[11px] font-extrabold uppercase tracking-wider bg-brand-500/20 text-brand-400 border border-brand-500/30">
+                                    Module {{ $currentIndex + 1 }} of {{ $allLessons->count() }}
+                                </span>
 
-    let player;
-    let seekTimer = null;
-    let isUserSeeking = false;
+                                @if($lesson->is_paid)
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                        Paid Session
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                                        Free Preview
+                                    </span>
+                                @endif
 
-    window.onYouTubeIframeAPIReady = function() {
-        try {
-            player = new YT.Player('lessonIframe', {
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange,
-                    'onError': onPlayerError
-                }
-            });
-        } catch (err) {
-            console.error('YT Player init error', err);
-            document.getElementById('unmuteOverlay').style.display = 'flex';
-        }
-    };
+                                @if($class && $class->className)
+                                    <span class="text-xs text-slate-400 font-medium">
+                                        in <strong class="text-slate-200">{{ $class->className }}</strong>
+                                    </span>
+                                @endif
+                            </div>
 
-    function onPlayerReady(event){
-        // expose player globally for control
-        window.lessonPlayer = event.target;
+                            <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                                {{ $lesson->name }}
+                            </h1>
+                        </div>
 
-        console.info('Player ready — attempting autoplay (muted).');
-        try {
-            // Start muted playback (most browsers allow muted autoplay)
-            event.target.mute();
-            event.target.playVideo();
-        } catch (e) {
-            console.warn('playVideo muted failed', e);
-        }
+                        <!-- Instructor Mini Avatar -->
+                        <div class="flex items-center gap-3 bg-slate-950/60 p-2.5 rounded-2xl border border-slate-800 flex-shrink-0">
+                            <img src="{{ asset('images/profile1.jpeg') }}" 
+                                 alt="Lakshitha Thennakoon" 
+                                 class="w-10 h-10 rounded-xl object-cover ring-1 ring-brand-500/40">
+                            <div class="text-left">
+                                <p class="text-[11px] font-semibold text-white">Lakshitha Thennakoon</p>
+                                <p class="text-[10px] text-slate-400">Biology Instructor</p>
+                            </div>
+                        </div>
+                    </div>
 
-        // After a short delay attempt to unmute (may be blocked)
-        setTimeout(function(){
-            try {
-                event.target.unMute();
-                event.target.setVolume(100);
-                setTimeout(checkMuted, 300);
-            } catch (err) {
-                console.warn('Programmatic unmute blocked or errored', err);
-                showOverlay();
-            }
-        }, 600);
+                    <!-- Teacher Notice (if present) -->
+                    @if($lesson->notice)
+                        <div class="p-4 rounded-2xl bg-amber-950/40 border border-amber-800/60 text-amber-200 flex items-start gap-3 text-xs sm:text-sm">
+                            <svg class="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <div>
+                                <span class="font-bold text-amber-300">Important Teacher Notice:</span>
+                                <p class="mt-0.5 text-amber-200/90 leading-relaxed">{{ $lesson->notice }}</p>
+                            </div>
+                        </div>
+                    @endif
 
-        // Populate playback rates & quality options if available
-        try {
-            // Playback rates
-            const rates = (typeof event.target.getAvailablePlaybackRates === 'function')
-                ? event.target.getAvailablePlaybackRates()
-                : [];
-            // store availableRates on window for later use
-            window._availableRates = Array.isArray(rates) && rates.length ? rates : [0.25,0.5,0.75,1,1.25,1.5,1.75,2];
+                    <!-- Lesson Description -->
+                    <div class="space-y-2">
+                        <h3 class="text-xs uppercase font-extrabold tracking-wider text-slate-400">Lesson Description</h3>
+                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed whitespace-pre-line">
+                            {{ $lesson->description ?: 'No detailed written description provided for this lesson module.' }}
+                        </p>
+                    </div>
 
-            // Update speed label
-            updateSpeedLabel();
+                    <!-- Attached Study Material (if any) -->
+                    @if($lesson->file_path)
+                        <div class="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-10 h-10 rounded-xl bg-bio-500/15 text-bio-400 flex items-center justify-center flex-shrink-0 border border-bio-500/20">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-white">Lesson Study Notes / Worksheet</h4>
+                                    <p class="text-xs text-slate-400">Download the PDF notes attached to this lecture module.</p>
+                                </div>
+                            </div>
 
-            // Quality levels
-            const qLevels = (typeof event.target.getAvailableQualityLevels === 'function')
-                ? event.target.getAvailableQualityLevels()
-                : [];
-            const qualitySelect = document.getElementById('qualitySelect');
-            if (qualitySelect) {
-                // clear existing options but keep placeholder
-                qualitySelect.innerHTML = '<option value="">Quality</option>';
-                const unique = Array.isArray(qLevels) && qLevels.length ? qLevels : ['small','medium','large','hd720','hd1080','highres','default'];
-                // Map known codes to readable labels
-                const labelMap = { small:'144p', medium:'360p', large:'480p', hd720:'720p', hd1080:'1080p', highres:'High', default:'Auto' };
-                unique.forEach(q => {
-                    const opt = document.createElement('option');
-                    opt.value = q;
-                    opt.textContent = labelMap[q] || q;
-                    qualitySelect.appendChild(opt);
-                });
+                            <a href="{{ route('storage.file', ['encoded' => base64_encode($lesson->file_path)]) }}"
+                               target="_blank"
+                               class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-bio-500 hover:bg-bio-600 text-white text-xs font-bold shadow-xs transition duration-150 flex-shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                <span>Download PDF Notes</span>
+                            </a>
+                        </div>
+                    @endif
 
-                // set current quality if possible
-                try { 
-                    const current = event.target.getPlaybackQuality && event.target.getPlaybackQuality();
-                    if (current) qualitySelect.value = current;
-                } catch(e){ /* ignore */ }
-            }
-        } catch(err){
-            console.warn('populate rates/quality failed', err);
-        }
+                    <!-- Lesson Navigation Controls -->
+                    <div class="pt-6 border-t border-slate-800/80 flex items-center justify-between gap-4">
+                        
+                        <!-- Previous Lesson Button -->
+                        @if($prevLesson)
+                            <a href="{{ route('classvideo', $prevLesson->id) }}"
+                               class="inline-flex items-center gap-2 px-4 sm:px-5 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white text-xs sm:text-sm font-bold border border-slate-700/80 transition duration-150 active:scale-[0.99] group">
+                                <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                </svg>
+                                <span class="hidden sm:inline">Previous Lesson</span>
+                                <span class="sm:hidden">Prev</span>
+                            </a>
+                        @else
+                            <button disabled class="inline-flex items-center gap-2 px-4 sm:px-5 py-3 rounded-2xl bg-slate-800/40 text-slate-600 text-xs sm:text-sm font-semibold border border-slate-800/50 cursor-not-allowed">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                </svg>
+                                <span class="hidden sm:inline">Previous Lesson</span>
+                                <span class="sm:hidden">Prev</span>
+                            </button>
+                        @endif
 
-        // Setup seek bar and timers
-        setupSeekBar();
+                        <!-- Course Syllabus Center Link -->
+                        @if($class)
+                            <a href="{{ route('classview', $class->id) }}"
+                               class="text-xs font-semibold text-slate-400 hover:text-white transition hidden md:inline-flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                                </svg>
+                                View All Modules
+                            </a>
+                        @endif
 
-        // update play/pause button initial label based on state
-        updatePlayPauseButton();
-    }
+                        <!-- Next Lesson Button -->
+                        @if($nextLesson)
+                            <a href="{{ route('classvideo', $nextLesson->id) }}"
+                               class="inline-flex items-center gap-2 px-4 sm:px-5 py-3 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white text-xs sm:text-sm font-bold shadow-lg shadow-brand-500/20 transition duration-150 active:scale-[0.99] group">
+                                <span class="hidden sm:inline">Next Lesson</span>
+                                <span class="sm:hidden">Next</span>
+                                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
+                        @else
+                            <button disabled class="inline-flex items-center gap-2 px-4 sm:px-5 py-3 rounded-2xl bg-slate-800/40 text-slate-600 text-xs sm:text-sm font-semibold border border-slate-800/50 cursor-not-allowed">
+                                <span class="hidden sm:inline">Course Completed</span>
+                                <span class="sm:hidden">Completed</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </button>
+                        @endif
 
-    function onPlayerStateChange(e){
-        // update button label when state changes
-        updatePlayPauseButton();
-    }
+                    </div>
 
-    function onPlayerError(e){
-        console.error('YT Player error', e.data);
-        showOverlay();
-    }
+                </div>
 
-    function checkMuted(){
-        try {
-            if (!window.lessonPlayer) return showOverlay();
-            if (window.lessonPlayer.isMuted && window.lessonPlayer.isMuted()) {
-                showOverlay();
-                return;
-            }
-            if (typeof window.lessonPlayer.getVolume === 'function' && window.lessonPlayer.getVolume() === 0) {
-                showOverlay();
-                return;
-            }
-            hideOverlay();
-        } catch (err) {
-            console.warn('checkMuted error', err);
-            showOverlay();
-        }
-    }
+            </div>
 
-    function showOverlay(){
-        const ov = document.getElementById('unmuteOverlay');
-        if (ov) ov.style.display = 'flex';
-    }
-    function hideOverlay(){
-        const ov = document.getElementById('unmuteOverlay');
-        if (ov) ov.style.display = 'none';
-    }
+            <!-- RIGHT: Modern Course Content Sidebar (Sticky on desktop, w-80/w-96) -->
+            <aside class="w-full lg:w-88 xl:w-96 space-y-6 flex-shrink-0">
+                
+                <div class="bg-slate-900 rounded-3xl border border-slate-800/80 p-6 shadow-xl space-y-4">
+                    
+                    <!-- Sidebar Header -->
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                        <div>
+                            <h2 class="text-base font-bold text-white tracking-tight flex items-center gap-2">
+                                <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                </svg>
+                                Course Lessons
+                            </h2>
+                            <p class="text-xs text-slate-400 mt-0.5">
+                                {{ $allLessons->count() }} modules in this class
+                            </p>
+                        </div>
 
-    // Play / Pause toggle
-    function isPlaying() {
-        if (!window.lessonPlayer || typeof window.lessonPlayer.getPlayerState !== 'function') return false;
-        // YT states: 1 = playing, 2 = paused, 0 = ended, 3 = buffering
-        return window.lessonPlayer.getPlayerState() === 1;
-    }
+                        <span class="text-xs font-bold text-slate-300 bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700/50">
+                            {{ $currentIndex + 1 }}/{{ $allLessons->count() }}
+                        </span>
+                    </div>
 
-    function updatePlayPauseButton() {
-        const btn = document.getElementById('playPauseBtn');
-        if (!btn) return;
-        try {
-            if (isPlaying()) {
-                btn.textContent = 'Pause';
-                btn.setAttribute('aria-pressed', 'true');
-            } else {
-                btn.textContent = 'Play';
-                btn.setAttribute('aria-pressed', 'false');
-            }
-        } catch(e){ /* ignore */ }
-    }
+                    <!-- Lessons List Scroll Area -->
+                    <div class="space-y-2 max-h-[600px] overflow-y-auto pr-1">
+                        @foreach($allLessons as $idx => $item)
+                            @php
+                                $isCurrent = ($item->id === $lesson->id);
+                                $num = str_pad($idx + 1, 2, '0', STR_PAD_LEFT);
+                            @endphp
 
-    function togglePlayPause() {
-        if (!window.lessonPlayer) {
-            // fallback: reload iframe to autoplay if needed
-            const iframe = document.getElementById('lessonIframe');
-            if (iframe) iframe.src = iframe.src; 
-            return;
-        }
-        try {
-            if (isPlaying()) {
-                window.lessonPlayer.pauseVideo();
-            } else {
-                window.lessonPlayer.playVideo();
-            }
-            // short delay then update label
-            setTimeout(updatePlayPauseButton, 200);
-        } catch (e) {
-            console.warn('togglePlayPause error', e);
-        }
-    }
+                            @if($isCurrent)
+                                <!-- Currently Playing Active Lesson -->
+                                <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-brand-500/15 border-l-4 border-brand-500 text-white shadow-inner">
+                                    <div class="w-8 h-8 rounded-xl bg-brand-500 text-white flex items-center justify-center font-black text-xs flex-shrink-0 shadow-xs">
+                                        <svg class="w-4 h-4 fill-current animate-pulse" viewBox="0 0 24 24">
+                                            <path d="M8 5v14l11-7z" />
+                                        </svg>
+                                    </div>
+                                    <div class="flex-grow min-w-0">
+                                        <div class="flex items-center justify-between gap-1">
+                                            <span class="text-[10px] font-extrabold uppercase text-brand-400 tracking-wider">Now Playing</span>
+                                            @if(!$item->is_paid)
+                                                <span class="text-[9px] text-blue-400 font-bold">FREE</span>
+                                            @endif
+                                        </div>
+                                        <h4 class="text-xs font-bold text-white truncate">{{ $item->name }}</h4>
+                                    </div>
+                                </div>
+                            @else
+                                <!-- Clickable Navigation Item -->
+                                <a href="{{ route('classvideo', $item->id) }}"
+                                   class="group flex items-center gap-3 p-3.5 rounded-2xl bg-slate-950/40 hover:bg-slate-800/80 border border-slate-800/60 hover:border-slate-700 transition duration-150">
+                                    <div class="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 group-hover:text-white group-hover:bg-brand-500/30 flex items-center justify-center font-bold text-xs flex-shrink-0 transition">
+                                        {{ $num }}
+                                    </div>
+                                    <div class="flex-grow min-w-0">
+                                        <div class="flex items-center justify-between gap-1">
+                                            <span class="text-[10px] font-medium text-slate-500 group-hover:text-slate-400">Lesson {{ $idx + 1 }}</span>
+                                            @if(!$item->is_paid)
+                                                <span class="text-[9px] text-blue-400 font-bold">FREE</span>
+                                            @endif
+                                        </div>
+                                        <h4 class="text-xs font-semibold text-slate-300 group-hover:text-white truncate transition">
+                                            {{ $item->name }}
+                                        </h4>
+                                    </div>
+                                    <svg class="w-4 h-4 text-slate-600 group-hover:text-brand-400 group-hover:translate-x-0.5 transition flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                            @endif
+                        @endforeach
+                    </div>
 
-    // --- New: Playback speed helpers ---
-    function getCurrentRate() {
-        try {
-            if (window.lessonPlayer && typeof window.lessonPlayer.getPlaybackRate === 'function') {
-                return parseFloat(window.lessonPlayer.getPlaybackRate()) || 1;
-            }
-        } catch(e){}
-        return 1;
-    }
+                    @if($class)
+                        <div class="pt-2 border-t border-slate-800">
+                            <a href="{{ route('classview', $class->id) }}"
+                               class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-bold text-slate-300 hover:text-white bg-slate-800/70 hover:bg-slate-800 border border-slate-700/60 transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                                </svg>
+                                <span>Full Course Syllabus</span>
+                            </a>
+                        </div>
+                    @endif
 
-    function setPlaybackRate(rate) {
-        try {
-            if (window.lessonPlayer && typeof window.lessonPlayer.setPlaybackRate === 'function') {
-                window.lessonPlayer.setPlaybackRate(rate);
-            }
-        } catch(e){
-            console.warn('setPlaybackRate failed', e);
-        }
-        updateSpeedLabel();
-    }
+                </div>
 
-    function updateSpeedLabel() {
-        const lbl = document.getElementById('speedLabel');
-        if (!lbl) return;
-        const r = getCurrentRate();
-        lbl.textContent = (Math.round(r * 100) / 100) + 'x';
-    }
+                <!-- Instructor Card -->
+                <div class="bg-slate-900 rounded-3xl border border-slate-800/80 p-5 shadow-xl space-y-3">
+                    <div class="flex items-center gap-3">
+                        <img src="{{ asset('images/profile1.jpeg') }}" 
+                             alt="Lakshitha Thennakoon" 
+                             class="w-12 h-12 rounded-2xl object-cover ring-2 ring-brand-500/40">
+                        <div>
+                            <h4 class="text-sm font-bold text-white">Lakshitha Thennakoon</h4>
+                            <p class="text-xs text-slate-400">B.Sc. Biology Specialist</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Need assistance with this lecture or past paper question? Reach out through the student support portal.
+                    </p>
+                </div>
 
-    function changeSpeed(delta) {
-        let rates = window._availableRates || [0.25,0.5,0.75,1,1.25,1.5,1.75,2];
-        rates = Array.from(new Set(rates)).sort((a,b)=>a-b);
-        const curr = getCurrentRate();
-        // find nearest index
-        let idx = rates.findIndex(v => v >= curr - 1e-6);
-        if (idx === -1) idx = rates.length - 1;
-        let newIdx = idx;
-        if (delta > 0) {
-            newIdx = Math.min(rates.length - 1, idx + 1);
-        } else {
-            newIdx = Math.max(0, idx - 1);
-        }
-        const newRate = rates[newIdx] || curr;
-        setPlaybackRate(newRate);
-    }
+            </aside>
 
-    // --- New: Quality change helper ---
-    function setQuality(q) {
-        try {
-            if (window.lessonPlayer && typeof window.lessonPlayer.setPlaybackQuality === 'function') {
-                window.lessonPlayer.setPlaybackQuality(q);
-            } else {
-                console.warn('setPlaybackQuality not available on this player');
-            }
-        } catch(e){
-            console.warn('setQuality failed', e);
-        }
-    }
+        </div>
+    </main>
 
-    // SEEK BAR IMPLEMENTATION
-    function setupSeekBar() {
-        const seekBar = document.getElementById('seekBar');
-        const currentTimeEl = document.getElementById('currentTime');
-        const durationEl = document.getElementById('durationTime');
-        if (!seekBar || !window.lessonPlayer) return;
+    <!-- Simple Footer -->
+    <footer class="mt-auto border-t border-slate-800 bg-slate-950 py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <div class="flex items-center gap-2">
+                <span class="font-extrabold text-slate-200">LT<span class="text-brand-500">bio</span></span>
+                <span>&copy; {{ date('Y') }} Lakshitha Thennakoon. All rights reserved.</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="{{ route('dashboard') }}" class="hover:text-brand-400 transition">Dashboard</a>
+                <a href="{{ route('buyclass') }}" class="hover:text-brand-400 transition">Courses</a>
+                <a href="{{ route('cart.view') }}" class="hover:text-brand-400 transition">Cart</a>
+            </div>
+        </div>
+    </footer>
 
-        // helper: set background gradient to show filled portion
-        function updateSeekBackground() {
-            try {
-                const max = parseFloat(seekBar.max) || 1;
-                const val = parseFloat(seekBar.value) || 0;
-                const pct = Math.max(0, Math.min(100, (val / max) * 100));
-                // gradient: filled = red, rest = subtle track color
-                seekBar.style.background = `linear-gradient(90deg, #F53003 ${pct}%, rgba(255,255,255,0.12) ${pct}%)`;
-            } catch(e) {
-                // ignore
-            }
-        }
-
-        // set duration once available
-        try {
-            const dur = window.lessonPlayer.getDuration();
-            if (dur && isFinite(dur) && dur > 0) {
-                seekBar.max = Math.floor(dur);
-                durationEl.textContent = formatTime(dur);
-            } else {
-                // poll duration for a short while if not ready
-                setTimeout(() => {
-                    const d2 = window.lessonPlayer.getDuration();
-                    if (d2 && isFinite(d2) && d2 > 0) {
-                        seekBar.max = Math.floor(d2);
-                        durationEl.textContent = formatTime(d2);
-                        updateSeekBackground();
-                    }
-                }, 800);
-            }
-        } catch(e){}
-
-        // initial background update
-        updateSeekBackground();
-
-        // update seek periodically
-        if (seekTimer) clearInterval(seekTimer);
-        seekTimer = setInterval(() => {
-            if (!window.lessonPlayer || isUserSeeking) return;
-            try {
-                const t = window.lessonPlayer.getCurrentTime();
-                const dur = window.lessonPlayer.getDuration();
-                if (isFinite(t) && dur && isFinite(dur)) {
-                    seekBar.value = Math.floor(t);
-                    currentTimeEl.textContent = formatTime(t);
-                    durationEl.textContent = formatTime(dur);
-                    updateSeekBackground(); // <-- reflect progress visually
-                }
-            } catch(e){}
-        }, 500);
-
-        // User interactions
-        let hold = false;
-        seekBar.addEventListener('input', function(e){
-            // show preview time while dragging
-            isUserSeeking = true;
-            const val = parseFloat(this.value);
-            currentTimeEl.textContent = formatTime(val);
-            updateSeekBackground(); // <-- update while dragging
-        }, { passive:true });
-
-        seekBar.addEventListener('change', function(e){
-            // commit seek
-            const val = parseFloat(this.value);
-            try {
-                window.lessonPlayer.seekTo(val, true);
-            } catch(err){ console.warn('seekTo failed', err); }
-            isUserSeeking = false;
-            updateSeekBackground(); // ensure background matches final value
-        });
-    }
-
-    function formatTime(seconds) {
-        if (!isFinite(seconds) || seconds < 0) return '0:00';
-        seconds = Math.floor(seconds);
-        const m = Math.floor(seconds / 60);
-        const s = seconds % 60;
-        return m + ':' + (s < 10 ? '0' + s : s);
-    }
-
-    // FULLSCREEN HELPERS
-    function toggleFullscreen() {
-        if (!embedContainer) return;
-        const el = embedContainer;
-        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-            if (el.requestFullscreen) {
-                el.requestFullscreen();
-            } else if (el.webkitRequestFullscreen) {
-                el.webkitRequestFullscreen();
-            } else if (el.msRequestFullscreen) {
-                el.msRequestFullscreen();
-            }
-        } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-            } else if (document.msExitFullscreen) {
-                document.msExitFullscreen();
-            }
-        }
-    }
-
-    // Wire fullscreen button
-    const fsBtn = document.getElementById('fullscreenBtn');
-    if (fsBtn) {
-        fsBtn.addEventListener('click', function(e){
-            e.stopPropagation();
-            toggleFullscreen();
-        });
-    }
-
-    // Cleanup on page unload
-    window.addEventListener('beforeunload', function(){
-        if (seekTimer) clearInterval(seekTimer);
-    });
-
-    // Attach handlers to buttons and select
-    const ppBtn = document.getElementById('playPauseBtn');
-    if (ppBtn) {
-        ppBtn.addEventListener('click', function(e){
-            e.stopPropagation();
-            togglePlayPause();
-        });
-    }
-
-    const speedUpBtn = document.getElementById('speedUpBtn');
-    if (speedUpBtn) speedUpBtn.addEventListener('click', function(e){ e.stopPropagation(); changeSpeed(1); });
-
-    const speedDownBtn = document.getElementById('speedDownBtn');
-    if (speedDownBtn) speedDownBtn.addEventListener('click', function(e){ e.stopPropagation(); changeSpeed(-1); });
-
-    const qualitySelect = document.getElementById('qualitySelect');
-    if (qualitySelect) {
-        qualitySelect.addEventListener('change', function(){
-            const q = this.value;
-            if (!q) return;
-            setQuality(q);
-            // reflect selection visually
-        });
-    }
-
-    // Keyboard: Space toggles play/pause when page has focus
-    document.addEventListener('keydown', function(e){
-        // ignore if user focused an input/textarea
-        const tag = (document.activeElement && document.activeElement.tagName) || '';
-        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-        if (e.code === 'Space' || e.key === ' ') {
-            e.preventDefault();
-            togglePlayPause();
-        }
-    });
-
-    // If YT API doesn't load after X seconds, show overlay so user can play
-    setTimeout(function(){
-        if (!window.YT || !window.YT.Player) {
-            console.warn('YT API not available — showing overlay fallback.');
-            showOverlay();
-        }
-    }, 3000);
-
-    // --- Double-tap / double-click skip (±10s) ---
-    function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
-
-    function showDTFeedback(text){
-        const fb = document.getElementById('dtFeedback');
-        if (!fb) return;
-        fb.textContent = text;
-        fb.classList.add('show');
-        clearTimeout(fb._t);
-        fb._t = setTimeout(()=> fb.classList.remove('show'), 650);
-    }
-
-    function seekBy(delta){
-        try {
-            if (!window.lessonPlayer || typeof window.lessonPlayer.getCurrentTime !== 'function') return;
-            const dur = window.lessonPlayer.getDuration() || 0;
-            const curr = window.lessonPlayer.getCurrentTime() || 0;
-            const target = clamp(curr + delta, 0, dur || Number.MAX_SAFE_INTEGER);
-            window.lessonPlayer.seekTo(target, true);
-            showDTFeedback((delta > 0 ? '+' : '') + Math.floor(delta) + 's');
-        } catch(e){
-            console.warn('seekBy failed', e);
-        }
-    }
-
-    function attachDoubleTapAreas(){
-        const areas = document.querySelectorAll('.double-tap-area');
-        if (!areas || !areas.length) return;
-
-        areas.forEach(area => {
-            // Desktop dblclick
-            area.addEventListener('dblclick', (ev)=>{
-                const side = area.dataset.side;
-                seekBy(side === 'right' ? 10 : -10);
-            });
-
-            // Mobile: custom double-tap detection
-            let lastTouch = 0;
-            let lastX = 0, lastY = 0;
-            area.addEventListener('touchend', function(e){
-                const t = Date.now();
-                const touch = (e.changedTouches && e.changedTouches[0]) || {};
-                const dx = Math.abs((touch.clientX || 0) - lastX);
-                const dy = Math.abs((touch.clientY || 0) - lastY);
-                const tapInterval = t - lastTouch;
-                // consider it a double-tap if within 300ms and movement small
-                if (tapInterval > 0 && tapInterval < 330 && dx < 30 && dy < 30) {
-                    const side = area.dataset.side;
-                    seekBy(side === 'right' ? 10 : -10);
-                    lastTouch = 0; // reset
-                } else {
-                    lastTouch = t;
-                    lastX = touch.clientX || 0;
-                    lastY = touch.clientY || 0;
-                }
-            }, {passive:true});
-        });
-    }
-
-    // expose a handler for unmute button so overlay works on mobile
-    const unmuteBtn = document.getElementById('unmuteBtn');
-    if (unmuteBtn) {
-        unmuteBtn.addEventListener('click', function(){
-            try {
-                if (window.lessonPlayer && typeof window.lessonPlayer.unMute === 'function') {
-                    window.lessonPlayer.unMute();
-                    window.lessonPlayer.setVolume && window.lessonPlayer.setVolume(100);
-                    window.lessonPlayer.playVideo && window.lessonPlayer.playVideo();
-                } else {
-                    // fallback: reload iframe with autoplay=1&mute=0 (best-effort)
-                    const iframe = document.getElementById('lessonIframe');
-                    if (iframe) {
-                        const src = new URL(iframe.src);
-                        src.searchParams.set('autoplay', '1');
-                        src.searchParams.set('mute', '0');
-                        iframe.src = src.toString();
-                    }
-                }
-            } catch(e){ console.warn('unmuteBtn click failed', e); }
-            document.getElementById('unmuteOverlay') && (document.getElementById('unmuteOverlay').style.display = 'none');
-        });
-    }
-
-    // call attach once API ready; also attempt attach early for UI to be responsive
-    attachDoubleTapAreas();
-    // ensure it's present after player ready as well
-    const origOnReady = window.onYouTubeIframeAPIReady;
-    // existing onPlayerReady called by YT API will run attachDoubleTapAreas via onPlayerReady's setupSeekBar call
-    // but keep safe: run again after small delay
-    setTimeout(attachDoubleTapAreas, 800);
-
-    // ...existing code...
-})();
-</script>
 </body>
 </html>

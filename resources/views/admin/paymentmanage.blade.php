@@ -1,422 +1,180 @@
-<!DOCTYPE html>
-<html lang="en">
+<x-admin-layout title="Payment Management" subtitle="Review student bank slips, verify transfers, and grant instant course access">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Admin Dashboard</title>
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Inline Styling -->
-    <style>
-        /* Global Reset and Typography */
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            background-color: #1f2937;
-            /* Dark background */
-            color: #f3f4f6;
-            line-height: 1.5;
-        }
+    @php
+        $totalCheckouts = $checkouts->count();
+        $approvedCount = $checkouts->where('status', 'approved')->count();
+        $pendingCount = $checkouts->where('status', 'pending')->count();
+        $rejectedCount = $checkouts->where('status', 'rejected')->count();
+    @endphp
 
-        h1,
-        h2,
-        h3,
-        h4 {
-            color: #f3f4f6;
-            margin-top: 0;
-            font-weight: 600;
-        }
-
-        a {
-            text-decoration: none;
-            color: #60a5fa;
-            transition: color 0.2s;
-        }
-
-        a:hover {
-            color: #3b82f6;
-        }
-
-        /* Utility Classes (Inline Emulation) */
-        .flex {
-            display: flex;
-        }
-
-        .flex-col {
-            flex-direction: column;
-        }
-
-        .items-center {
-            align-items: center;
-        }
-
-        .justify-between {
-            justify-content: space-between;
-        }
-
-        .p-4 {
-            padding: 1rem;
-        }
-
-        .m-4 {
-            margin: 1rem;
-        }
-
-        .rounded-lg {
-            border-radius: 0.5rem;
-        }
-
-        .shadow-xl {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Dashboard Layout */
-        #dashboard-container {
-            min-height: 100vh;
-        }
-
-        #sidebar {
-            width: 250px;
-            background-color: #111827;
-            /* Deeper dark blue for sidebar */
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100%;
-            transition: transform 0.3s ease-in-out;
-            transform: translateX(0);
-            z-index: 20;
-            padding-top: 20px;
-            box-sizing: border-box;
-        }
-
-        #main-content {
-            margin-left: 250px;
-            padding: 20px;
-            transition: margin-left 0.3s ease-in-out;
-            width: calc(100% - 250px);
-            box-sizing: border-box;
-        }
-
-        #topbar {
-            background-color: #1f2937;
-            padding: 10px 20px;
-            border-bottom: 1px solid #374151;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        /* Sidebar Navigation */
-        #sidebar a {
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            color: #d1d5db;
-            font-size: 1rem;
-            margin-bottom: 5px;
-            border-left: 3px solid transparent;
-            transition: background-color 0.2s, border-left-color 0.2s;
-        }
-
-        #sidebar a:hover,
-        #sidebar .active {
-            background-color: #374151;
-            border-left-color: #4f46e5;
-            /* Indigo accent */
-            color: #fff;
-        }
-
-        #sidebar a i {
-            margin-right: 12px;
-            width: 20px;
-            text-align: center;
-        }
-
-        /* Mobile Styles */
-        #menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        @media (max-width: 1024px) {
-            #sidebar {
-                transform: translateX(-100%);
-            }
-
-            #sidebar.open {
-                transform: translateX(0);
-            }
-
-            #main-content {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            #menu-toggle {
-                display: block;
-            }
-
-            .hidden-mobile {
-                display: none;
-            }
-        }
-
-        /* Card and Table Styles */
-        .card {
-            background-color: #1f2937;
-            border: 1px solid #374151;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .kpi-card {
-            background-color: #374151;
-            color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 5px solid #4f46e5;
-        }
-
-        .kpi-card .value {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .kpi-card .label {
-            font-size: 0.9rem;
-            color: #9ca3af;
-        }
-
-        /* Data Table */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .data-table th,
-        .data-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #374151;
-        }
-
-        .data-table th {
-            background-color: #374151;
-            color: #e5e7eb;
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-        }
-
-        .data-table tr:hover {
-            background-color: #2c3a4d;
-        }
-
-        .data-table button {
-            background: none;
-            border: 1px solid #4f46e5;
-            color: #60a5fa;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s, color 0.2s;
-        }
-
-        .data-table button:hover {
-            background-color: #4f46e5;
-            color: #fff;
-        }
-    </style>
-</head>
-
-<body id="dashboard-container">
-
-    <!-- Sidebar -->
-    <nav id="sidebar">
-        <div style="text-align: center; padding: 10px 0 30px 0;">
-            <h2 style="font-size: 1.8rem; color: #4f46e5;">Admin Panel</h2>
-            <p style="font-size: 0.9rem; color: #9ca3af;">Content Management</p>
+    <!-- Stats Ribbon -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-xs">
+            <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Total Slips</p>
+            <p class="text-2xl font-black text-slate-900 mt-1">{{ $totalCheckouts }}</p>
         </div>
-        <a href="{{ route('admindashboard') }}">
-            <i class="fas fa-tachometer-alt"></i> Dashboard
-        </a>
-  <a href="{{ route('usermanagement') }}">            <i class="fas fa-users"></i> User Management
-        </a>
-        <a href="{{ route('classmanage') }}">
-            <i class="fas fa-book-open"></i> Courses & Lectures
-        </a>
-        <a href="{{ route('feedbackmanage') }}">
-            <i class="fas fa-book-open"></i> Feedback
-        </a>
-        <a href="{{route('lesson.lessoncreate')}}">
-            <i class="fas fa-cog"></i> lessons
-        </a>
-         <a href="{{route('package.create')}}">
-            <i class="fas fa-cog"></i> Packages
-        </a>
-         <a href="{{ route('paymentmanage') }}">
-            <i class="fas fa-file-invoice-dollar"></i> Payment Management
-        </a>   
-        <div style="position: absolute; bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box;">
-            <a href="#" style="border-left: none; background-color: #374151; border-radius: 6px;">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
+
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-xs">
+            <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Pending Review</p>
+            <p class="text-2xl font-black text-amber-500 mt-1">{{ $pendingCount }}</p>
         </div>
-    </nav>
 
-      <div id="main-content">
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-xs">
+            <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Approved Payments</p>
+            <p class="text-2xl font-black text-emerald-600 mt-1">{{ $approvedCount }}</p>
+        </div>
 
-        <!-- Section: Recent Content Activity -->
-        <section id="content-activity" style="padding-top: 40px;">
-            <h2 style="font-size: 1.8rem; margin-bottom: 20px;">Payment Management</h2>
-            <div class="card" style="overflow-x: auto;">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Student Name</th>
-                            <th>Class name</th>
-                            <th>Remark</th>
-                            <th>Slip</th>
-                            <th>Date</th>
-                            <th>Action</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                @foreach($checkouts as $checkout)
-                <tr style="border-bottom: 1px solid #374151;">
-                    <td style="padding: 10px; color:#e5e7eb;">{{ $checkout->student_name }}</td>
-                    <td style="padding: 10px; color:#e5e7eb;">{{ $checkout->class_name }}</td>
-                    <td style="padding: 10px; color:#e5e7eb;">{{ $checkout->remark }}</td>
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-xs">
+            <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Rejected</p>
+            <p class="text-2xl font-black text-red-500 mt-1">{{ $rejectedCount }}</p>
+        </div>
+    </div>
 
-                    <td style="padding: 10px;">
-                        @if($checkout->file_path)
-                            <a href="{{ route('storage.file', ['encoded' => base64_encode($checkout->file_path)]) }}" 
-                               style="color:#60a5fa;" target="_blank">View File</a>
-                        @else
-                            <span style="color:#9ca3af;">No File</span>
-                        @endif
-                    </td>
-
-                    <td style="padding: 10px; color:#9ca3af;">
-                        {{ $checkout->created_at->format('Y-m-d') }}
-                    </td>
-
-                    <td style="padding: 10px;">
-                        <form action="{{ route('payment.approve', $checkout->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('PUT')
-                            <button type="submit" style="padding:6px 10px; background:#10b981; color:white; border:none; border-radius:4px; margin-right:6px;">
-                                Approve
-                            </button>
-                        </form>
-
-                        <form action="{{ route('payment.reject', $checkout->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('PUT')
-                            <button type="submit" style="padding:6px 10px; background:#ef4444; color:white; border:none; border-radius:4px;">
-                                Reject
-                            </button>
-                        </form>
-                    </td>
-
-                    <td style="padding:10px; color:#e5e7eb; font-weight:700;">
-                        @php $status = $checkout->status ?? 'pending'; @endphp
-                        @if($status === 'approved')
-                            <span style="color:#10b981;">Approved</span>
-                        @elseif($status === 'rejected')
-                            <span style="color:#ef4444;">Rejected</span>
-                        @else
-                            <span style="color:#f59e0b;">Pending</span>
-                        @endif
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-
-                </table>
+    <!-- Payment Slips Table Card -->
+    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden space-y-4">
+        <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                    <span class="w-2.5 h-5 rounded-full bg-brand-500 inline-block"></span>
+                    Student Payment Verification Queue
+                </h2>
+                <p class="text-xs text-slate-500 mt-0.5">Click on the attached deposit slip to inspect before approving class access</p>
             </div>
-        </section>
 
-      
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-semibold text-slate-400">Auto-sorted by latest submissions</span>
+            </div>
+        </div>
 
-<div class="overflow-x-auto">
-   
-</div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                <thead>
+                    <tr class="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-bold uppercase text-[11px] tracking-wider">
+                        <th class="py-3.5 px-6">Student</th>
+                        <th class="py-3.5 px-6">Enrolled Course(s)</th>
+                        <th class="py-3.5 px-6">Student Remark</th>
+                        <th class="py-3.5 px-6">Deposit Slip</th>
+                        <th class="py-3.5 px-6">Submission Date</th>
+                        <th class="py-3.5 px-6">Status</th>
+                        <th class="py-3.5 px-6 text-right">Verification Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse($checkouts as $checkout)
+                        @php
+                            $status = $checkout->status ?? 'pending';
+                            $initials = strtoupper(substr($checkout->student_name, 0, 2));
+                        @endphp
+                        <tr class="hover:bg-slate-50/70 transition">
+                            
+                            <!-- Student -->
+                            <td class="py-4 px-6 font-bold text-slate-900 whitespace-nowrap">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-xl bg-slate-800 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                                        {{ $initials }}
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-slate-900">{{ $checkout->student_name }}</p>
+                                        @if($checkout->user_id)
+                                            <p class="text-[10px] text-slate-400 font-mono">User #{{ $checkout->user_id }}</p>
+                                        @endif
+                                    </div>
+                                </div>
+                            </td>
 
+                            <!-- Course Name -->
+                            <td class="py-4 px-6 font-semibold text-slate-800 whitespace-nowrap">
+                                <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">
+                                    {{ $checkout->class_name }}
+                                </span>
+                            </td>
+
+                            <!-- Remark -->
+                            <td class="py-4 px-6 text-slate-500 max-w-xs truncate">
+                                {{ $checkout->remark ?: '-' }}
+                            </td>
+
+                            <!-- Deposit Slip File Link -->
+                            <td class="py-4 px-6 whitespace-nowrap">
+                                @if($checkout->file_path)
+                                    <a href="{{ route('storage.file', ['encoded' => base64_encode($checkout->file_path)]) }}" 
+                                       target="_blank" 
+                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-bio-50 hover:bg-bio-100 text-bio-700 font-bold text-xs border border-bio-200/70 transition">
+                                        <svg class="w-4 h-4 text-bio-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        <span>View Slip</span>
+                                    </a>
+                                @else
+                                    <span class="text-slate-400 italic">No file</span>
+                                @endif
+                            </td>
+
+                            <!-- Submission Date -->
+                            <td class="py-4 px-6 text-slate-600 font-mono text-xs whitespace-nowrap">
+                                {{ optional($checkout->created_at)->format('Y-m-d H:i') }}
+                            </td>
+
+                            <!-- Status Badge -->
+                            <td class="py-4 px-6 whitespace-nowrap">
+                                @if($status === 'approved')
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                                        <svg class="w-3 h-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                                        Approved
+                                    </span>
+                                @elseif($status === 'rejected')
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800">
+                                        <svg class="w-3 h-3 text-red-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>
+                                        Rejected
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                        Pending Review
+                                    </span>
+                                @endif
+                            </td>
+
+                            <!-- Action Buttons -->
+                            <td class="py-4 px-6 text-right whitespace-nowrap">
+                                <div class="inline-flex items-center gap-2">
+                                    
+                                    <!-- Approve Form -->
+                                    <form action="{{ route('payment.approve', $checkout->id) }}" method="POST" class="inline-block">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit" 
+                                                class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition disabled:opacity-50"
+                                                {{ $status === 'approved' ? 'disabled' : '' }}>
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                            <span>Approve</span>
+                                        </button>
+                                    </form>
+
+                                    <!-- Reject Form -->
+                                    <form action="{{ route('payment.reject', $checkout->id) }}" method="POST" class="inline-block">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit" 
+                                                class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-600 border border-slate-200 hover:border-red-200 font-bold text-xs transition disabled:opacity-50"
+                                                {{ $status === 'rejected' ? 'disabled' : '' }}>
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                            <span>Reject</span>
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </td>
+
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="py-10 text-center text-slate-400">
+                                No payment submissions found.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebar = document.getElementById('sidebar');
-            const mainContent = document.getElementById('main-content');
-            const menuToggle = document.getElementById('menu-toggle');
-            const sidebarLinks = sidebar.querySelectorAll('a');
-
-            // --- Mobile Sidebar Toggle Logic ---
-            menuToggle.addEventListener('click', function() {
-                sidebar.classList.toggle('open');
-            });
-
-            // Close sidebar when a link is clicked (useful for mobile)
-            sidebarLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth <= 1024) {
-                        sidebar.classList.remove('open');
-                    }
-
-                    // Simple simulated tab switching
-                    sidebarLinks.forEach(l => l.classList.remove('active'));
-                    link.classList.add('active');
-                });
-            });
-
-            // --- Scrollspy/Active Link Simulation (for desktop/large screens) ---
-            window.addEventListener('scroll', function() {
-                const scrollPos = window.scrollY + 100; // Offset for fixed topbar
-
-                document.querySelectorAll('section[id]').forEach(section => {
-                    if (section.offsetTop <= scrollPos && section.offsetTop + section.offsetHeight >
-                        scrollPos) {
-                        // Activate corresponding sidebar link
-                        sidebarLinks.forEach(link => {
-                            if (link.getAttribute('href') === '#' + section.id) {
-                                sidebarLinks.forEach(l => l.classList.remove('active'));
-                                link.classList.add('active');
-                            }
-                        });
-                    }
-                });
-            });
-
-            // Set initial active link
-            sidebarLinks[0].classList.add('active');
-        });
-    </script>
-
-    <div class="container">
-
-      
-
-    </div>
-
-
-
-</body>
-
-</html>
+</x-admin-layout>
